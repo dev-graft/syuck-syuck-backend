@@ -1,1 +1,0 @@
-# syuck-syuck-backend
