@@ -20,22 +20,27 @@ public class MembershipRequestValidator {
     public List<ValidationError> validate(final MembershipRequest request) {
         final List<ValidationError> errors = new ArrayList<>();
 
-//        if (!MEMBER_ID_PATTERN.matcher(request.getMemberId()).matches()) {
-//            errors.add(ValidationError.of("memberId", "MembershipRequest.memberId pattern must match."));
-//        }
-//
-//        if (!PASSWORD_ID_PATTERN.matcher(request.getPassword()).matches()) {
-//            errors.add(ValidationError.of("password", "MembershipRequest.password pattern must match."));
-//        }
-//
-//        if (!NICKNAME_ID_PATTERN.matcher(request.getNickname()).matches()) {
-//            errors.add(ValidationError.of("nickname", "MembershipRequest.nickname pattern must match."));
-//        }
+        validatedRequiredElements(request, errors);
+        validatedPattern(request, errors);
 
-        return validateRequiredElements(request, errors);
+        return errors;
     }
 
-    private List<ValidationError> validateRequiredElements(MembershipRequest request, List<ValidationError> errors) {
+    private void validatedPattern(final MembershipRequest request, final List<ValidationError> errors) {
+        if (StringUtils.hasText(request.getMemberId()) && !MEMBER_ID_PATTERN.matcher(request.getMemberId()).matches()) {
+            errors.add(ValidationError.of("memberId", "MembershipRequest.memberId pattern must match."));
+        }
+
+        if (StringUtils.hasText(request.getPassword()) && !PASSWORD_ID_PATTERN.matcher(request.getPassword()).matches()) {
+            errors.add(ValidationError.of("password", "MembershipRequest.password pattern must match."));
+        }
+
+        if (StringUtils.hasText(request.getNickname()) && !NICKNAME_ID_PATTERN.matcher(request.getNickname()).matches()) {
+            errors.add(ValidationError.of("nickname", "MembershipRequest.nickname pattern must match."));
+        }
+    }
+
+    private void validatedRequiredElements(final MembershipRequest request, final List<ValidationError> errors) {
         if (!StringUtils.hasText(request.getMemberId())) {
             errors.add(ValidationError.of("memberId", "MembershipRequest.memberId must not be null."));
         }
@@ -45,7 +50,5 @@ public class MembershipRequestValidator {
         if (!StringUtils.hasText(request.getNickname())) {
             errors.add(ValidationError.of("nickname", "MembershipRequest.nickname must not be null."));
         }
-
-        return errors;
     }
 }
