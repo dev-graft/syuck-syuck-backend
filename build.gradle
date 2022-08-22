@@ -1,6 +1,9 @@
 plugins {
     id 'org.springframework.boot' version '2.7.3'
     id 'io.spring.dependency-management' version '1.0.13.RELEASE'
+//    id("org.asciidoctor.jvm.pdf") version "3.3.2"
+//    id("org.asciidoctor.jvm.gems") version "3.3.2"
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
     id 'java'
 }
 
@@ -12,20 +15,76 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    asciidoctorExt
 }
 
 repositories {
     mavenCentral()
 }
 
+ext {
+    snippetDir = file('build/generated-snippets')
+}
+
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    //h2
+    runtimeOnly 'com.h2database:h2'
+
+    //rest docs
+    asciidoctorExt 'org.springframework.restdocs:spring-restdocs-asciidoctor'
+    testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+ext {
+    snippetDir = file('build/generated-snippets')
+}
+
+test {
+    useJUnitPlatform()
+    outputs.dir snippetDir
+}
+
+asciidoctor {
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@ [asciidoctor] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    configurations 'asciidoctorExt'
+    inputs.dir snippetDir
+    dependsOn test
+}
+
+asciidoctor.doFirst {
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@ [asciidoctor.doFirst] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    delete files('src/main/resources/static/docs')
+}
+
+task copyDocument(type: Copy) {
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@ [copyDocument] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    dependsOn asciidoctor
+
+    from file("build/docs/asciidoc/")
+    into file("src/main/resources/static/docs")
+}
+
+bootJar {
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@ [bootJar] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    dependsOn copyDocument
+}
+
+bootRun {
+    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@ [bootRun] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 }
