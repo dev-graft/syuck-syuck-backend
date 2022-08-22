@@ -4,8 +4,11 @@ import devgraft.member.app.MemberId;
 import devgraft.member.app.MembershipRequest;
 import devgraft.member.app.MembershipService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequestMapping("api/members")
@@ -14,12 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class MemberApi {
     private final MembershipService membershipService;
 
-    @GetMapping
-    public MemberId membership(){//@RequestBody final MembershipRequest request) {
-        return membershipService.membership(MembershipRequest.builder()
-                        .memberId("qweqwe123")
-                        .password("Zqwe123!")
-                        .nickname("AA")
-                .build());
+    @ResponseStatus(code = HttpStatus.CREATED)
+    @PostMapping
+    public MemberId membership(@RequestBody final MembershipRequest request) {
+        return membershipService.membership(request);
     }
 }
