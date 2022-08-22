@@ -19,9 +19,8 @@ public class MembershipService {
     @Transactional
     public MemberId membership(final MembershipRequest request) {
         List<ValidationError> errors = membershipRequestValidator.validate(request);
-        if (!errors.isEmpty()) throw new ValidationException(errors);
-
-        // 아이디 중복 체크
+        if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
+        if (memberRepository.existsById(request.getMemberId())) throw new RuntimeException();
 
         Member member = Member.of(request.getMemberId(),
                 request.getPassword(),

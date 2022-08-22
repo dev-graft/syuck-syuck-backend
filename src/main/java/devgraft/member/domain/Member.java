@@ -24,6 +24,10 @@ public class Member extends BaseEntity {
     private String stateMessage;
     private MemberStatus status;
 
+    void setIdx(final Long idx) {
+        this.idx = idx;
+    }
+
     @Builder
     public Member(Long idx, String id, String password, String nickname, String profileImage, String stateMessage, MemberStatus status) {
         this.idx = idx;
