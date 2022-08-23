@@ -12,7 +12,7 @@ class MembershipRequestValidatorTest {
 
     @DisplayName("회원가입의 필수 값이 입력되지 않으면 에러가 발생한다")
     @Test
-    void requiredElementsCheck() {
+    void requiredElementsCheckHasError() {
         final MembershipRequest request = MembershipRequest.builder()
                 .build();
 
@@ -26,7 +26,7 @@ class MembershipRequestValidatorTest {
 
     @DisplayName("회원가입의 입력 값이 정규식에 일치하지 않으면 에러가 발생한다")
     @Test
-    void validatePatternTest() {
+    void validatedHasError() {
         final MembershipRequest request = MembershipRequest.builder()
                 .loginId("a")
                 .password("a")
