@@ -48,7 +48,7 @@ class ModifyMemberProfileServiceTest {
     void validatedHasError() {
         given(mockValidator.validate(any())).willReturn(List.of(ValidationError.of("field", "message")));
 
-        ValidationException validationException = Assertions.catchThrowableOfType(
+        final ValidationException validationException = Assertions.catchThrowableOfType(
                 () -> modifyMemberProfileService.modifyMemberProfile(ModifyMemberProfileRequest.builder().build(), 1L),
                 ValidationException.class);
 
@@ -60,7 +60,7 @@ class ModifyMemberProfileServiceTest {
     @Test
     void profileUpdate() {
         final Long givenMemberId = 1L;
-        Member givenMember = Member.builder()
+        final Member givenMember = Member.builder()
                 .id(givenMemberId)
                 .loginId("loginId")
                 .password("password")
@@ -71,10 +71,10 @@ class ModifyMemberProfileServiceTest {
                 .build();
         given(mockValidator.validate(any())).willReturn(List.of());
         given(spyMemberRepository.findById(givenMemberId)).willReturn(Optional.of(givenMember));
-        String givenUpdateNickname = "updateNickname";
-        String givenUpdateProfileImage = "updateProfileImage";
-        String givenUpdateStateMessage = "updateStateMessage";
-        ModifyMemberProfileRequest givenRequest = ModifyMemberProfileRequest.builder()
+        final String givenUpdateNickname = "updateNickname";
+        final String givenUpdateProfileImage = "updateProfileImage";
+        final String givenUpdateStateMessage = "updateStateMessage";
+        final ModifyMemberProfileRequest givenRequest = ModifyMemberProfileRequest.builder()
                 .nickname(givenUpdateNickname)
                 .profileImage(givenUpdateProfileImage)
                 .stateMessage(givenUpdateStateMessage)
