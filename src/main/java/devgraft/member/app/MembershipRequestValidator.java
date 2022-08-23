@@ -30,13 +30,13 @@ public class MembershipRequestValidator {
 
     private void validatedPattern(final MembershipRequest request, final Collection<? super ValidationError> errors) {
         if (StringUtils.hasText(request.getLoginId()) && !LOGIN_ID_PATTERN.matcher(request.getLoginId()).matches()) {
-            errors.add(ValidationError.of("loginId", "MembershipRequest.loginId pattern must match."));
+            errors.add(ValidationError.of("loginId", "MembershipRequest.loginId pattern don't match."));
         }
         if (StringUtils.hasText(request.getPassword()) && !PASSWORD_ID_PATTERN.matcher(request.getPassword()).matches()) {
-            errors.add(ValidationError.of("password", "MembershipRequest.password pattern must match."));
+            errors.add(ValidationError.of("password", "MembershipRequest.password pattern don't match."));
         }
         if (StringUtils.hasText(request.getNickname()) && !NICKNAME_ID_PATTERN.matcher(request.getNickname()).matches()) {
-            errors.add(ValidationError.of("nickname", "MembershipRequest.nickname pattern must match."));
+            errors.add(ValidationError.of("nickname", "MembershipRequest.nickname pattern don't match."));
         }
     }
 

@@ -35,8 +35,8 @@ class MembershipRequestValidatorTest {
 
         final List<ValidationError> errors = validator.validate(request);
 
-        ValidationAsserts.assertHasCall(errors, "loginId", "MembershipRequest.loginId pattern must match.");
-        ValidationAsserts.assertHasCall(errors, "password", "MembershipRequest.password pattern must match.");
-        ValidationAsserts.assertHasCall(errors, "nickname", "MembershipRequest.nickname pattern must match.");
+        ValidationAsserts.assertHasCall(errors, "loginId", "MembershipRequest.loginId pattern don't match.");
+        ValidationAsserts.assertHasCall(errors, "password", "MembershipRequest.password pattern don't match.");
+        ValidationAsserts.assertHasCall(errors, "nickname", "MembershipRequest.nickname pattern don't match.");
     }
 }
