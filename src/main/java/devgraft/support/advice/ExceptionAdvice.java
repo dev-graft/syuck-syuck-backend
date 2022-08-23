@@ -22,64 +22,64 @@ import java.util.Optional;
 public class ExceptionAdvice {
 
     @ExceptionHandler(AbstractRequestException.class)
-    public Object handleRequestException(AbstractRequestException e) {
+    public Object handleRequestException(final AbstractRequestException e) {
         return CommonResult.error(e.getHttpStatus().value(), e.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public Object handle(RuntimeException e) {
+    public Object handle(final RuntimeException e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
-    public Object handleException(Exception e) {
+    public Object handleException(final Exception e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Object handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public Object handleMethodArgumentNotValidException(final MethodArgumentNotValidException e) {
         e.printStackTrace();
-        Optional<ObjectError> first = e.getAllErrors().stream().findFirst();
+        final Optional<ObjectError> first = e.getAllErrors().stream().findFirst();
         return CommonResult.error(HttpStatus.BAD_REQUEST.value(),
                 first.isPresent() ? first.get().getDefaultMessage() : e.getMessage());
     }
 
 
     @ExceptionHandler(AccessDeniedException.class)
-    public Object handleAccessDeniedException(AccessDeniedException e) {
+    public Object handleAccessDeniedException(final AccessDeniedException e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.UNAUTHORIZED.value(), e.getMessage());
     }
 
     @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
-    public Object handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+    public Object handleHttpMediaTypeNotSupportedException(final HttpMediaTypeNotSupportedException e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.BAD_REQUEST.value(), "Unsupported Media Type");
     }
 
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public Object handleNoHandlerFoundException(NoHandlerFoundException e) {
+    public Object handleNoHandlerFoundException(final NoHandlerFoundException e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public Object handleNotSupportedMethodException(Exception e) {
+    public Object handleNotSupportedMethodException(final Exception e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.METHOD_NOT_ALLOWED);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
-    public Object handleMissingRequestParameterException(Exception e) {
+    public Object handleMissingRequestParameterException(final Exception e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(ServletRequestBindingException.class)
-    public Object handleServletRequestBindingException(Exception e) {
+    public Object handleServletRequestBindingException(final Exception e) {
         e.printStackTrace();
         return CommonResult.error(HttpStatus.BAD_REQUEST.value(), "Missing Attribute");
     }

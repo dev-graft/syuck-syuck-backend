@@ -1,6 +1,6 @@
 package devgraft.member.api;
 
-import devgraft.member.app.MemberId;
+import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipRequest;
 import devgraft.member.app.MembershipService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ public class MemberApi {
 
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping
-    public MemberId membership(@RequestBody final MembershipRequest request) {
+    public MemberIds membership(@RequestBody final MembershipRequest request) {
         return membershipService.membership(request);
     }
 }

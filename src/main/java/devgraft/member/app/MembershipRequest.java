@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class MembershipRequest {
-    private String memberId;
+    private String loginId;
     private String password;
     private String nickname;
     private String profileImage;

@@ -72,6 +72,10 @@ asciidoctor.doFirst {
     delete files('src/main/resources/static/docs')
 }
 
+clean {
+    delete files('src/main/resources/static/docs')
+}
+
 task copyDocument(type: Copy) {
     System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@ [copyDocument] @@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
     dependsOn asciidoctor

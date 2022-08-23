@@ -17,12 +17,12 @@ public class MembershipService {
     private final MembershipRequestValidator membershipRequestValidator;
 
     @Transactional
-    public MemberId membership(final MembershipRequest request) {
-        List<ValidationError> errors = membershipRequestValidator.validate(request);
+    public MemberIds membership(final MembershipRequest request) {
+        final List<ValidationError> errors = membershipRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
-        if (memberRepository.existsById(request.getMemberId())) throw new RuntimeException();
+        if (memberRepository.existsByLoginId(request.getLoginId())) throw new RuntimeException();
 
-        Member member = Member.of(request.getMemberId(),
+        final Member member = Member.of(request.getLoginId(),
                 request.getPassword(),
                 request.getNickname(),
                 request.getProfileImage(),
@@ -30,6 +30,6 @@ public class MembershipService {
 
         memberRepository.save(member);
 
-        return MemberId.of(member.getIdx(), member.getId());
+        return MemberIds.of(member.getId(), member.getLoginId());
     }
 }
