@@ -34,8 +34,8 @@ class MembershipServiceTest {
     @DisplayName("회원가입 요청이 조건과 맞지 않으면 에러")
     @Test
     void membershipHasError() {
-        MembershipRequest givenRequest = MembershipRequest.builder()
-                .memberId("memberId")
+        final MembershipRequest givenRequest = MembershipRequest.builder()
+                .loginId("memberId")
                 .password("password")
                 .nickname("nickname")
                 .profileImage("profileImage")
@@ -43,7 +43,7 @@ class MembershipServiceTest {
         given(validator.validate(givenRequest))
                 .willReturn(List.of(ValidationError.of("field", "message")));
 
-        ValidationException validationException = Assertions.catchThrowableOfType(
+        final ValidationException validationException = Assertions.catchThrowableOfType(
                 () -> membershipService.membership(givenRequest),
                 ValidationException.class);
 
@@ -56,16 +56,16 @@ class MembershipServiceTest {
     @DisplayName("회원가입 요청의 아이디가 중복일 경우 에러")
     @Test
     void existsMemberByIdHasError() {
-        MembershipRequest givenRequest = MembershipRequest.builder()
-                .memberId("memberId")
+        final MembershipRequest givenRequest = MembershipRequest.builder()
+                .loginId("memberId")
                 .password("password")
                 .nickname("nickname")
                 .profileImage("profileImage")
                 .build();
         given(validator.validate(givenRequest)).willReturn(List.of());
-        given(spyMemberRepository.existsById(eq("memberId"))).willReturn(true);
+        given(spyMemberRepository.existsByLoginId(eq("memberId"))).willReturn(true);
 
-        RuntimeException runtimeException = Assertions.catchThrowableOfType(
+        final RuntimeException runtimeException = Assertions.catchThrowableOfType(
                 () -> membershipService.membership(givenRequest),
                 RuntimeException.class);
 
@@ -75,24 +75,24 @@ class MembershipServiceTest {
     @DisplayName("회원가입 성공")
     @Test
     void membershipSuccess() {
-        MembershipRequest givenRequest = MembershipRequest.builder()
-                .memberId("memberId")
+        final MembershipRequest givenRequest = MembershipRequest.builder()
+                .loginId("memberId")
                 .password("password")
                 .nickname("nickname")
                 .profileImage("profileImage")
                 .build();
         given(validator.validate(givenRequest)).willReturn(List.of());
 
-        final MemberId result = membershipService.membership(givenRequest);
+        final MemberIds result = membershipService.membership(givenRequest);
 
         verify(validator, times(1)).validate(eq(givenRequest));
         verify(spyMemberRepository, times(1)).save(any(Member.class));
 
-        assertThat(spyMemberRepository.data.get(1L).getId()).isEqualTo("memberId");
+        assertThat(spyMemberRepository.data.get(1L).getLoginId()).isEqualTo("memberId");
         assertThat(spyMemberRepository.data.get(1L).getPassword()).isEqualTo("password");
         assertThat(spyMemberRepository.data.get(1L).getNickname()).isEqualTo("nickname");
         assertThat(spyMemberRepository.data.get(1L).getProfileImage()).isEqualTo("profileImage");
-        assertThat(result.getIdx()).isEqualTo(1L);
-        assertThat(result.getId()).isEqualTo("memberId");
+        assertThat(result.getId()).isEqualTo(1L);
+        assertThat(result.getLoginId()).isEqualTo("memberId");
     }
 }

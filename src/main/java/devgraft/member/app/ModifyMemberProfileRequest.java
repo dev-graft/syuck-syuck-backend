@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class MembershipRequest {
-    private String loginId;
-    private String password;
+public class ModifyMemberProfileRequest {
     private String nickname;
+    private String stateMessage;
     private String profileImage;
 }

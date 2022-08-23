@@ -337,3 +337,4 @@ gradle-app.setting
 /components/module-auth/src/main/resources/application-oauth.yml
 
 /applications/*/src/main/resources/*-local.yml
+/src/main/resources/static/docs/

@@ -1,7 +1,7 @@
 package devgraft.apidoc;
 
 import devgraft.member.api.MemberApi;
-import devgraft.member.app.MemberId;
+import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,13 +54,13 @@ public class MemberApiDoc {
     @DisplayName("회원가입 Api 요청")
     @Test
     void membership() throws Exception {
-        given(membershipService.membership(any())).willReturn(MemberId.of(1L, "memberId123"));
+        given(membershipService.membership(any())).willReturn(MemberIds.of(1L, "memberId123"));
 
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {
-                                    "memberId": "memberId123",
+                                    "loginId": "memberId123",
                                     "password": "qwe123!@#",
                                     "nickname": "MEMBER",
                                     "profileImage": ""
@@ -71,7 +71,7 @@ public class MemberApiDoc {
                 .andDo(print())
                 .andDo(document.document(
                                 requestFields(
-                                    fieldWithPath("memberId").type(JsonFieldType.STRING).description("회원 아이디"),
+                                    fieldWithPath("loginId").type(JsonFieldType.STRING).description("회원 아이디"),
                                     fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
                                     fieldWithPath("nickname").type(JsonFieldType.STRING).description("별명"),
                                     fieldWithPath("profileImage").type(JsonFieldType.STRING).description("프로필 이미지").optional()
@@ -81,9 +81,9 @@ public class MemberApiDoc {
                                         fieldWithPath("status").type(JsonFieldType.NUMBER).description("결과 코드"),
                                         fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
                                         fieldWithPath("timestamp").type(JsonFieldType.STRING).description("결과 시간"),
-                                        fieldWithPath("data.idx").type(JsonFieldType.NUMBER).description("인덱스"),
-                                        fieldWithPath("data.id").type(JsonFieldType.STRING).description("아이디")
-                                )
+                                        fieldWithPath("data.id").type(JsonFieldType.NUMBER).description("인덱스"),
+                                        fieldWithPath("data.loginId").type(JsonFieldType.STRING).description("아이디")
+                                        )
                         )
                 );
     }

@@ -9,23 +9,23 @@ public class SpyMemberRepository implements MemberRepository {
     public final Map<Long, Member> data = new HashMap<>();
 
     @Override
-    public boolean existsById(String id) {
+    public boolean existsByLoginId(String id) {
         return data.containsKey(id);
     }
 
     @Override
-    public Optional<Member> findByIdx(Long idx) {
+    public Optional<Member> findById(Long idx) {
         return Optional.ofNullable(data.get(nextIdx));
     }
 
     @Override
     public void save(Member member) {
-        if (null == member.getIdx()) {
-            member.setIdx(nextIdx);
+        if (null == member.getId()) {
+            member.setId(nextIdx);
             data.put(nextIdx, member);
             nextIdx++;
         } else {
-            data.put(member.getIdx(), member);
+            data.put(member.getId(), member);
         }
     }
 }
