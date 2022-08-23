@@ -2,6 +2,7 @@ package devgraft.member.app;
 
 import devgraft.member.domain.Member;
 import devgraft.member.domain.SpyMemberRepository;
+import devgraft.member.exception.AlreadyExistsLoginIdException;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import org.assertj.core.api.Assertions;
@@ -65,11 +66,11 @@ class MembershipServiceTest {
         given(validator.validate(givenRequest)).willReturn(List.of());
         given(spyMemberRepository.existsByLoginId(eq("memberId"))).willReturn(true);
 
-        final RuntimeException runtimeException = Assertions.catchThrowableOfType(
+        final AlreadyExistsLoginIdException alreadyExistsLoginIdException = Assertions.catchThrowableOfType(
                 () -> membershipService.membership(givenRequest),
-                RuntimeException.class);
+                AlreadyExistsLoginIdException.class);
 
-        assertThat(runtimeException).isNotNull();
+        assertThat(alreadyExistsLoginIdException).isNotNull();
     }
 
     @DisplayName("회원가입 성공")

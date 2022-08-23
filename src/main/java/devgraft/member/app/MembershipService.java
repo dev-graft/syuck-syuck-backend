@@ -2,6 +2,7 @@ package devgraft.member.app;
 
 import devgraft.member.domain.Member;
 import devgraft.member.domain.MemberRepository;
+import devgraft.member.exception.AlreadyExistsLoginIdException;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ public class MembershipService {
     public MemberIds membership(final MembershipRequest request) {
         final List<ValidationError> errors = membershipRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
-        if (memberRepository.existsByLoginId(request.getLoginId())) throw new RuntimeException();
+        if (memberRepository.existsByLoginId(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
         final Member member = Member.of(request.getLoginId(),
                 request.getPassword(),
