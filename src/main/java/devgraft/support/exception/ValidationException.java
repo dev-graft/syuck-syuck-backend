@@ -10,7 +10,7 @@ import java.util.List;
 public class ValidationException extends AbstractRequestException {
     private final List<ValidationError> errors;
 
-    public ValidationException(List<ValidationError> errors, String message) {
+    public ValidationException(final List<ValidationError> errors, final String message) {
         super(message, HttpStatus.PAYMENT_REQUIRED);
         this.errors = Collections.unmodifiableList(errors);
     }

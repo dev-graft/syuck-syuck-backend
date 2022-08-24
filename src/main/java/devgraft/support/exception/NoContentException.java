@@ -1,6 +1,5 @@
-package devgraft.support.support.exception;
+package devgraft.support.exception;
 
-import devgraft.support.exception.AbstractRequestException;
 import org.springframework.http.HttpStatus;
 
 public class NoContentException extends AbstractRequestException {

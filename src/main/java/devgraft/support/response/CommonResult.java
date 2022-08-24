@@ -28,6 +28,10 @@ public class CommonResult implements Serializable {
         return new CommonResult(true, status, "Success", LocalDateTime.now());
     }
 
+    public static CommonResult success(final HttpStatus status) {
+        return new CommonResult(true, status.value(), "Success", LocalDateTime.now());
+    }
+
     public static CommonResult error(final HttpStatus errorStatus) {
         return new CommonResult(false, errorStatus.value(), errorStatus.getReasonPhrase(), LocalDateTime.now());
     }

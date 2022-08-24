@@ -24,6 +24,7 @@ import java.util.List;
 public class ResponseAdvice implements ResponseBodyAdvice<Object> {
     private final List<PathPattern> whitelist = Arrays.asList(
             new PathPatternParser().parse("/v*/api-docs"),
+            new PathPatternParser().parse("/docs/**"),
             new PathPatternParser().parse("/swagger-resources/**"),
             new PathPatternParser().parse("/swagger-ui.html"),
             new PathPatternParser().parse("/webjars/**"),
@@ -38,15 +39,15 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
         if (whitelist.stream().anyMatch(pathPattern -> pathPattern.matches(PathContainer.parsePath(request.getURI().getPath())))) return body;
         if (body instanceof final CommonResult commonResult) {
             try {
-                HttpStatus status = HttpStatus.valueOf(commonResult.getStatus());
+                final HttpStatus status = HttpStatus.valueOf(commonResult.getStatus());
                 response.setStatusCode(status);
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
             }
 
             return commonResult;
         }
-        int status = response instanceof ServletServerHttpResponse ? ((ServletServerHttpResponse) response).getServletResponse().getStatus() : 200;
-        return body != null ? SingleResult.success(body, status) : CommonResult.success(status);
+        final int status = response instanceof ServletServerHttpResponse ? ((ServletServerHttpResponse) response).getServletResponse().getStatus() : 200;
+        return null != body ? SingleResult.success(body, status) : CommonResult.success(status);
     }
 }
