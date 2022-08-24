@@ -4,12 +4,14 @@ import devgraft.member.api.MemberApi;
 import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipService;
 import devgraft.member.query.MemberQueryService;
+import devgraft.support.crypt.RSA;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.payload.JsonFieldType;
 
@@ -32,8 +34,9 @@ public class MemberApiDoc extends AbstractApiDoc {
     @DisplayName("회원가입 요청")
     @Test
     void membership() throws Exception {
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        mockHttpSession.setAttribute(RSA.KEY_PAIR, RSA.generatedKeyPair());
         given(membershipService.membership(any(), any())).willReturn(MemberIds.of(1L, "memberId123"));
-
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -44,7 +47,7 @@ public class MemberApiDoc extends AbstractApiDoc {
                                     "profileImage": ""
                                 }
                                 """
-                        ))
+                        ).session(mockHttpSession))
                 .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document.document(
