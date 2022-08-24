@@ -1,5 +1,7 @@
 package devgraft.support.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,10 +18,13 @@ import java.util.List;
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
 @Configuration
 public class ServletConfig implements WebMvcConfigurer {
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         converters.clear();
-        converters.add(new MappingJackson2HttpMessageConverter());
+        converters.add(new MappingJackson2HttpMessageConverter(objectMapper));
     }
 
     @Override
