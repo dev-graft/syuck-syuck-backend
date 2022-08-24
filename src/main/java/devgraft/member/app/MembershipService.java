@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.KeyPair;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -16,19 +17,22 @@ import java.util.List;
 public class MembershipService {
     private final MemberRepository memberRepository;
     private final MembershipRequestValidator membershipRequestValidator;
+    private final MemberPasswordHelper memberPasswordHelper;
 
     @Transactional
-    public MemberIds membership(final MembershipRequest request) {
-        // 리퀘스트의 패스워드 가져옴
-        // 패스워드 대칭키로 복호화
-        // 리퀘스트 객체 재생성
-        final List<ValidationError> errors = membershipRequestValidator.validate(request);
+    public MemberIds membership(final MembershipRequest request, final KeyPair keyPair) {
+        final String plainPassword = memberPasswordHelper.decryptPassword(request.getPassword(), keyPair);
+        final List<ValidationError> errors = membershipRequestValidator.validate(MembershipRequest.builder()
+                        .loginId(request.getLoginId())
+                        .password(plainPassword)
+                        .nickname(request.getNickname())
+                        .profileImage(request.getProfileImage())
+                .build());
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
         if (memberRepository.existsByLoginId(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
-        // 패스워드 해싱 처리
         final Member member = Member.of(request.getLoginId(),
-                request.getPassword(),
+                memberPasswordHelper.hashingPassword(request.getPassword()),
                 request.getNickname(),
                 request.getProfileImage(),
                 "");

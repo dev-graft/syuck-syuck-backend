@@ -32,7 +32,7 @@ public class MemberApiDoc extends AbstractApiDoc {
     @DisplayName("회원가입 요청")
     @Test
     void membership() throws Exception {
-        given(membershipService.membership(any())).willReturn(MemberIds.of(1L, "memberId123"));
+        given(membershipService.membership(any(), any())).willReturn(MemberIds.of(1L, "memberId123"));
 
         mockMvc.perform(post("/api/members")
                         .contentType(MediaType.APPLICATION_JSON)

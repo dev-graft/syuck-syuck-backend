@@ -9,13 +9,17 @@ import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Table(name = "MEMBER")
 @Entity
+@Getter
 public class Member extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,6 +33,7 @@ public class Member extends BaseEntity {
     private String profileImage;
     @Column(name = "state_message")
     private String stateMessage;
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private MemberStatus status;
     void setId(final Long idx) {
@@ -57,5 +62,5 @@ public class Member extends BaseEntity {
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
     }
 
-
+    // TODO 패스워드 비교 구현
 }

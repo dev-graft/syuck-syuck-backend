@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
 import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 @RequestMapping("api/code")
@@ -15,7 +14,7 @@ import java.util.Base64;
 public class CodeApi {
 
     @GetMapping
-    public InitCodeResult initCode(HttpSession httpSession) throws NoSuchAlgorithmException {
+    public InitCodeResult initCode(HttpSession httpSession) {
         final KeyPair keyPair = RSA.generatedKeyPair();
         httpSession.setAttribute(RSA.KEY_PAIR, keyPair);
         return new InitCodeResult(Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
