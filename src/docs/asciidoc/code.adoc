@@ -1,0 +1,18 @@
+= Member APIs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-curl-request-title: 요청 예시
+:operation-request-fields-title: 요청 필드
+:operation-http-response-title: 결과 예시
+:operation-response-fields-title: 결과 필드
+
+
+== 공개키 초기화(발급)
+operation::code-api-doc/init-code[snippets='curl-request']
+
+operation::code-api-doc/init-code[snippets='http-response,response-fields']
+

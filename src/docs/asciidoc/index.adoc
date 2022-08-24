@@ -7,3 +7,4 @@
 :sectlinks:
 
 - xref:member.adoc[Member APIs]
+- xref:code.adoc[Code APIs]

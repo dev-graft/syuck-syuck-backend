@@ -19,10 +19,14 @@ public class MembershipService {
 
     @Transactional
     public MemberIds membership(final MembershipRequest request) {
+        // 리퀘스트의 패스워드 가져옴
+        // 패스워드 대칭키로 복호화
+        // 리퀘스트 객체 재생성
         final List<ValidationError> errors = membershipRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
         if (memberRepository.existsByLoginId(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
+        // 패스워드 해싱 처리
         final Member member = Member.of(request.getLoginId(),
                 request.getPassword(),
                 request.getNickname(),

@@ -58,5 +58,4 @@ public class Member extends BaseEntity {
     }
 
 
-    // 음 여기에 정규식 체크 구현하는게 맞는거 같기도 하고 씁
 }
