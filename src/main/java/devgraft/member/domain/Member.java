@@ -16,8 +16,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-//TODO loginId, password 같은 인증에 필요한 정보를 이동
-
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "MEMBER")
 @Entity
@@ -63,4 +61,6 @@ public class Member extends BaseEntity {
         this.stateMessage = StringUtils.hasText(stateMessage) ? stateMessage : this.stateMessage;
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
     }
+
+    // TODO 패스워드 비교 구현
 }

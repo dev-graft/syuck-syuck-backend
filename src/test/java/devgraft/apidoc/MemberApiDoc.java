@@ -3,7 +3,6 @@ package devgraft.apidoc;
 import devgraft.member.api.MemberApi;
 import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipService;
-import devgraft.member.query.MemberQueryService;
 import devgraft.support.crypt.RSA;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

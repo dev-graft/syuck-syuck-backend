@@ -2,7 +2,6 @@ package devgraft.member.app;
 
 import devgraft.member.domain.Member;
 import devgraft.member.domain.MemberRepository;
-import devgraft.member.exception.AlreadyExistsLoginIdException;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import lombok.RequiredArgsConstructor;

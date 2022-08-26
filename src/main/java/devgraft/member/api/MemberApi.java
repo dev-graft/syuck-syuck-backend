@@ -3,7 +3,8 @@ package devgraft.member.api;
 import devgraft.member.app.MembershipRequest;
 import devgraft.member.app.MembershipService;
 import devgraft.member.query.MemberData;
-import devgraft.member.query.MemberQueryService;
+import devgraft.member.query.MemberDataDao;
+import devgraft.member.query.MemberDataSpec;
 import devgraft.support.crypt.RSA;
 import devgraft.support.exception.NoContentException;
 import devgraft.support.response.CommonResult;
@@ -24,10 +25,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @RestController
 public class MemberApi {
-    private final MemberQueryService memberQueryService;
+    private final MemberDataDao memberDataDao;
     private final MembershipService membershipService;
-
-    // TODO 회원가입 이동 예정
 
     @PostMapping
     public CommonResult membership(@RequestBody final MembershipRequest request, final HttpSession httpSession) { //@SessionAttribute(name = RSA.KEY_PAIR) final KeyPair keyPair) {
@@ -39,16 +38,16 @@ public class MemberApi {
 
     @GetMapping("{loginId}")
     public MemberProfileGetResult getMemberProfile(@PathVariable(name = "loginId") final String loginId) {
-        final MemberData memberData = memberQueryService.getMemberData(loginId)
-                .orElseThrow(() -> new NoContentException("존재하지 않는 회원입니다."));
+        // TODO 아이디 기준 조회이기 때문에 Spec의 내용을 변경할 필요가 있다. 우선 빌드를 위해 1L 상수 입력
+        Optional<MemberData> memberDataOpt = memberDataDao.findOne(MemberDataSpec.memberIdEquals(1L)
+                .and(MemberDataSpec.normalEquals()));
+
+        MemberData memberData = memberDataOpt.orElseThrow(() -> new NoContentException("존재하지 않는 회원입니다."));
 
         return MemberProfileGetResult.builder()
-                .loginId(memberData.getLoginId())
                 .nickname(memberData.getNickname())
                 .profileImage(memberData.getProfileImage())
                 .stateMessage(memberData.getStateMessage())
-                .createdAt(memberData.getCreatedAt())
                 .build();
     }
-
 }

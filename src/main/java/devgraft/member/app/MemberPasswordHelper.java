@@ -1,6 +1,5 @@
 package devgraft.member.app;
 
-import devgraft.member.exception.MemberPasswordDecryptFailedException;
 import devgraft.support.crypt.PBKDF2;
 import devgraft.support.crypt.RSA;
 import org.springframework.stereotype.Component;
@@ -10,7 +9,6 @@ import java.util.Base64;
 
 @Component
 public class MemberPasswordHelper {
-
     public String encryptPassword(String plainPassword, KeyPair keyPair) {
         try {
             return RSA.encrypt(plainPassword, keyPair.getPublic());
