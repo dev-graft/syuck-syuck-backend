@@ -23,10 +23,10 @@ import javax.persistence.Table;
 public class Member extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "login_id", unique = true)
-    private String loginId;
-    @Column(name = "password")
-    private String password;
+//    @Column(name = "login_id", unique = true)
+//    private String loginId;
+//    @Column(name = "password")
+//    private String password;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "profile_image")
@@ -42,8 +42,8 @@ public class Member extends BaseEntity {
     @Builder
     private Member(final Long id, final String loginId, final String password, final String nickname, final String profileImage, final String stateMessage, final MemberStatus status) {
         this.id = id;
-        this.loginId = loginId;
-        this.password = password;
+//        this.loginId = loginId;
+//        this.password = password;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.stateMessage = stateMessage;
