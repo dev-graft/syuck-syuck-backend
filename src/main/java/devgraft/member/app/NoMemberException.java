@@ -1,4 +1,4 @@
-package devgraft.member.exception;
+package devgraft.member.app;
 
 import devgraft.support.exception.AbstractRequestException;
 import org.springframework.http.HttpStatus;

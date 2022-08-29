@@ -7,7 +7,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -21,12 +24,16 @@ import javax.persistence.Table;
 @Entity
 @Getter
 public class Member extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "login_id", unique = true)
-    private String loginId;
-    @Column(name = "password")
-    private String password;
+
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "loggedId", column = @Column(name = "logged_id", unique = true, nullable = false)),
+            @AttributeOverride(name = "password", column = @Column(name = "password"))
+    })
+    private LoggedIn loggedIn;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "profile_image")
@@ -36,22 +43,25 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private MemberStatus status;
+
     void setId(final Long idx) {
         this.id = idx;
     }
+
     @Builder
-    private Member(final Long id, final String loginId, final String password, final String nickname, final String profileImage, final String stateMessage, final MemberStatus status) {
+    private Member(final Long id, final LoggedIn loggedIn, final String nickname, final String profileImage, final String stateMessage, final MemberStatus status) {
         this.id = id;
-        this.loginId = loginId;
-        this.password = password;
+        this.loggedIn = loggedIn;
         this.nickname = nickname;
         this.profileImage = profileImage;
         this.stateMessage = stateMessage;
         this.status = status;
     }
+
     public static Member of(final String loginId, final String password, final String nickname, final String profileImage, final String stateMessage) {
-        return new Member(null, loginId, password, nickname, profileImage, stateMessage, MemberStatus.N);
+        return new Member(null, LoggedIn.of(loginId, password), nickname, profileImage, stateMessage, MemberStatus.N);
     }
+
     public boolean isLeave() {
         return this.status.isLeave();
     }

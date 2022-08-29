@@ -11,7 +11,7 @@ import static devgraft.member.app.MemberPatterns.NICKNAME_ID_PATTERN;
 
 @Component
 public class ModifyMemberProfileRequestValidator {
-    public List<ValidationError> validate(ModifyMemberProfileRequest request) {
+    public List<ValidationError> validate(final ModifyMemberProfileRequest request) {
         final List<ValidationError> errors = new ArrayList<>();
         if (StringUtils.hasText(request.getNickname()) && !NICKNAME_ID_PATTERN.matcher(request.getNickname()).matches()) {
             errors.add(ValidationError.of("nickname", "ModifyMemberProfileRequest.nickname pattern don't match."));

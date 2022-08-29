@@ -21,7 +21,7 @@ public class ModifyMemberProfileService {
         List<ValidationError> errors = validator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원 수정 요청이 실패하였습니다.");
 
-        final Member member = MemberServiceHelper.findExistingMember(memberRepository, memberId);
+        final Member member = MemberFindHelper.findExistingMember(memberRepository, memberId);
 
         member.setProfile(request.getNickname(), request.getStateMessage(), request.getProfileImage());
     }

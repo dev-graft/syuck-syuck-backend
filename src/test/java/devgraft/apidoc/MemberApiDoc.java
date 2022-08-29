@@ -3,7 +3,7 @@ package devgraft.apidoc;
 import devgraft.member.api.MemberApi;
 import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipService;
-import devgraft.member.query.MemberQueryService;
+import devgraft.member.query.MemberDataDao;
 import devgraft.support.crypt.RSA;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,7 +29,7 @@ public class MemberApiDoc extends AbstractApiDoc {
     @MockBean
     private MembershipService membershipService;
     @MockBean
-    private MemberQueryService memberQueryService;
+    private MemberDataDao memberDataDao;
 
     @DisplayName("회원가입 요청")
     @Test
