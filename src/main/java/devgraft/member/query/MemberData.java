@@ -21,6 +21,8 @@ public class MemberData {
     @Id
     @Column(name = "id")
     private Long id;
+    @Column(name = "logged_id")
+    private String loginId;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "profile_image")

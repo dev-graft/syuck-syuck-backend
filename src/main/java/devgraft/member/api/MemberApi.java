@@ -38,8 +38,7 @@ public class MemberApi {
 
     @GetMapping("{loginId}")
     public MemberProfileGetResult getMemberProfile(@PathVariable(name = "loginId") final String loginId) {
-        // TODO 아이디 기준 조회이기 때문에 Spec의 내용을 변경할 필요가 있다. 우선 빌드를 위해 1L 상수 입력
-        Optional<MemberData> memberDataOpt = memberDataDao.findOne(MemberDataSpec.memberIdEquals(1L)
+        Optional<MemberData> memberDataOpt = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
                 .and(MemberDataSpec.normalEquals()));
 
         MemberData memberData = memberDataOpt.orElseThrow(() -> new NoContentException("존재하지 않는 회원입니다."));

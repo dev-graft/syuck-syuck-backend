@@ -1,9 +1,9 @@
 package devgraft.member.app;
 
+import devgraft.member.domain.LoggedIn;
 import devgraft.member.domain.Member;
 import devgraft.member.domain.MemberStatus;
 import devgraft.member.domain.SpyMemberRepository;
-import devgraft.member.exception.NoMemberException;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import org.assertj.core.api.Assertions;
@@ -62,8 +62,7 @@ class ModifyMemberProfileServiceTest {
         final Long givenMemberId = 1L;
         final Member givenMember = Member.builder()
                 .id(givenMemberId)
-                .loginId("loginId")
-                .password("password")
+                .loggedIn(LoggedIn.of("loginId", "password"))
                 .nickname("nickname")
                 .profileImage("profileImage")
                 .stateMessage("stateMessage")

@@ -28,7 +28,7 @@ public class MembershipService {
                         .profileImage(request.getProfileImage())
                 .build());
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
-        if (memberRepository.existsByLoginId(request.getLoginId())) throw new AlreadyExistsLoginIdException();
+        if (memberRepository.existsByLoggedId(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
         final Member member = Member.of(request.getLoginId(),
                 memberPasswordHelper.hashingPassword(request.getPassword()),
@@ -38,6 +38,6 @@ public class MembershipService {
 
         memberRepository.save(member);
 
-        return MemberIds.of(member.getId(), member.getLoginId());
+        return MemberIds.of(member.getId(), member.getLoggedIn().getLoggedId());
     }
 }

@@ -5,6 +5,6 @@ import org.springframework.data.repository.Repository;
 
 import java.util.Optional;
 
-public interface MemberDataDao extends Repository<MemberDataDao, Long> {
+public interface MemberDataDao extends Repository<MemberData, Long> {
     Optional<MemberData> findOne(Specification<MemberData> spec);
 }
