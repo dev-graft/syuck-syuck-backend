@@ -65,7 +65,7 @@ class MembershipServiceTest {
     @DisplayName("회원가입 요청의 아이디가 중복일 경우 에러")
     @Test
     void existsMemberByIdHasError() {
-        given(spyMemberRepository.existsByLoggedId(any())).willReturn(true);
+        given(spyMemberRepository.existsByNickname(any())).willReturn(true);
 
         final AlreadyExistsLoginIdException alreadyExistsLoginIdException = Assertions.catchThrowableOfType(
                 () -> membershipService.membership(MembershipRequest.builder().build(), RSA.generatedKeyPair()),

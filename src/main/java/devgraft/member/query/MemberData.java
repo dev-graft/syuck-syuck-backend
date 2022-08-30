@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "MEMBER")
+@Table(name = "member")
 @Entity
 @Getter
 public class MemberData {
@@ -22,7 +22,7 @@ public class MemberData {
     @Column(name = "id")
     private Long id;
     @Column(name = "logged_id")
-    private String loginId;
+    private String loggedId;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "profile_image")

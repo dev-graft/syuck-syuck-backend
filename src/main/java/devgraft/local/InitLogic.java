@@ -1,7 +1,6 @@
 package devgraft.local;
 
 import devgraft.member.app.MemberPasswordHelper;
-import devgraft.member.app.MembershipRequest;
 import devgraft.member.app.MembershipService;
 import devgraft.support.crypt.RSA;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +21,10 @@ public class InitLogic {
     public void init() {
         final KeyPair keyPair = RSA.generatedKeyPair();
         final String encryptedPassword = memberPasswordHelper.encryptPassword("qweR123$", keyPair);
-        membershipService.membership(MembershipRequest.builder()
-                .loginId("qwerty123")
-                .password(encryptedPassword)
-                .nickname("nic")
-                .build(), keyPair);
+//        membershipService.membership(MembershipRequest.builder()
+//                .loginId("qwerty123")
+//                .password(encryptedPassword)
+//                .nickname("nic")
+//                .build(), keyPair);
     }
 }

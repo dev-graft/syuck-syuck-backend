@@ -28,7 +28,7 @@ public class MembershipService {
                         .profileImage(request.getProfileImage())
                 .build());
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
-        if (memberRepository.existsByLoggedId(request.getLoginId())) throw new AlreadyExistsLoginIdException();
+        if (memberRepository.existsByNickname(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
         final Member member = Member.of(request.getLoginId(),
                 memberPasswordHelper.hashingPassword(request.getPassword()),

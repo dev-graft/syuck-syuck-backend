@@ -9,7 +9,7 @@ public class SpyMemberRepository implements MemberRepository {
     public final Map<Long, Member> data = new HashMap<>();
 
     @Override
-    public boolean existsByLoggedId(String id) {
+    public boolean existsByNickname(String id) {
         return data.containsKey(id);
     }
 

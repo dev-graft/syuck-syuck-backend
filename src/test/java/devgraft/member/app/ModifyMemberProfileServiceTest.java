@@ -62,7 +62,7 @@ class ModifyMemberProfileServiceTest {
         final Long givenMemberId = 1L;
         final Member givenMember = Member.builder()
                 .id(givenMemberId)
-                .loggedIn(LoggedIn.of("loginId", "password"))
+                .loggedIn(new LoggedIn("loginId", "password"))
                 .nickname("nickname")
                 .profileImage("profileImage")
                 .stateMessage("stateMessage")

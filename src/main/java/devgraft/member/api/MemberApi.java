@@ -30,7 +30,7 @@ public class MemberApi {
 
     @PostMapping
     public CommonResult membership(@RequestBody final MembershipRequest request, final HttpSession httpSession) { //@SessionAttribute(name = RSA.KEY_PAIR) final KeyPair keyPair) {
-        KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(RSA.KEY_PAIR)).orElseThrow(RuntimeException::new);
+        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(RSA.KEY_PAIR)).orElseThrow(RuntimeException::new);
         membershipService.membership(request, keyPair);
         httpSession.removeAttribute(RSA.KEY_PAIR);
         return CommonResult.success(HttpStatus.CREATED);
@@ -38,10 +38,10 @@ public class MemberApi {
 
     @GetMapping("{loginId}")
     public MemberProfileGetResult getMemberProfile(@PathVariable(name = "loginId") final String loginId) {
-        Optional<MemberData> memberDataOpt = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+        final Optional<MemberData> memberDataOpt = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
                 .and(MemberDataSpec.normalEquals()));
 
-        MemberData memberData = memberDataOpt.orElseThrow(() -> new NoContentException("존재하지 않는 회원입니다."));
+        final MemberData memberData = memberDataOpt.orElseThrow(() -> new NoContentException("존재하지 않는 회원입니다."));
 
         return MemberProfileGetResult.builder()
                 .nickname(memberData.getNickname())
