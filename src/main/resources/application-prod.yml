@@ -1,0 +1,29 @@
+spring:
+  datasource:
+    url: ${db.url}
+    username: ${db.username}
+    password: ${db.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    dbcp2:
+      validation-query: "SELECT 1"
+      test-on-borrow: true
+      test-on-return: false
+    hikari:
+      pool-name: SpringBootJPAHikariCP
+      maximum-pool-size: 50
+      connection-timeout: 10000
+      validation-timeout: 10000
+      idle-timeout: 10000
+      max-lifetime: 28797000 # 480000
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+      use-new-id-generator-mappings: false
+    properties:
+      hibernate:
+        show_sql: false
+        format_sql: true
+        default_batch_fetch_size: 100
+    show-sql: false
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
