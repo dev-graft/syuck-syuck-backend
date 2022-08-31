@@ -2,7 +2,7 @@
 name: Backend_CD
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "prod" ]
 
 env:
   S3_BUCKET_NAME: devgraft-deploy
