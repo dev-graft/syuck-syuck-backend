@@ -8,6 +8,7 @@ import devgraft.member.query.MemberDataSpec;
 import devgraft.support.crypt.RSA;
 import devgraft.support.exception.NoContentException;
 import devgraft.support.response.CommonResult;
+import devgraft.support.response.SingleResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -34,6 +36,13 @@ public class MemberApi {
         membershipService.membership(request, keyPair);
         httpSession.removeAttribute(RSA.KEY_PAIR);
         return CommonResult.success(HttpStatus.CREATED);
+    }
+
+    @GetMapping("check")
+    public SingleResult<Boolean> existsLoginId(@RequestParam(name = "loginId") String loginId) {
+        boolean exists = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+                .and(MemberDataSpec.normalEquals())).isPresent();
+        return SingleResult.success(exists);
     }
 
     @GetMapping("{loginId}")
