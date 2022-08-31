@@ -1,7 +1,7 @@
 name: Backend_CI
 on:
   pull_request:
-    branches: [ "main" ]
+    branches: [ "prod" ]
 
 jobs:
   backend-ci-task:
