@@ -1,7 +1,9 @@
 package devgraft.member.query;
 
 import devgraft.member.domain.MemberStatus;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +14,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-@Table(name = "MEMBER")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(name = "member")
 @Entity
 @Getter
 public class MemberData {
@@ -22,7 +25,7 @@ public class MemberData {
     @Column(name = "id")
     private Long id;
     @Column(name = "logged_id")
-    private String loginId;
+    private String loggedId;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "profile_image")

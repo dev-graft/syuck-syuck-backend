@@ -29,4 +29,17 @@ public class CodeApiDoc extends AbstractApiDoc {
                         )
                 ));
     }
+
+    @DisplayName("기본 프로필 이미지 요청")
+    @Test
+    void getDefaultProfileImage() throws Exception {
+        mockMvc.perform(get("/api/code/profile"))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document.document(
+                        responseFields.and(
+                                fieldWithPath("data").type(JsonFieldType.STRING).description("프로필 이미지 URL")
+                        )
+                ));
+    }
 }

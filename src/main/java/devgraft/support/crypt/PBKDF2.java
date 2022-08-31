@@ -22,7 +22,7 @@ public class PBKDF2 {
 
     public static byte[] encrypt(final String text) {
         try {
-            KeySpec spec = new PBEKeySpec(text.toCharArray(), DEFAULT_SALT, DEFAULT_ITERATION, DEFAULT_D_LEN);
+            final KeySpec spec = new PBEKeySpec(text.toCharArray(), DEFAULT_SALT, DEFAULT_ITERATION, DEFAULT_D_LEN);
             return factory.generateSecret(spec).getEncoded();
         } catch (final Exception e) {
             throw new RuntimeException(e);
