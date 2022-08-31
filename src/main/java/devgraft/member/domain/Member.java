@@ -25,7 +25,7 @@ import javax.persistence.Table;
 @Getter
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Embedded
     @AttributeOverrides({
@@ -57,8 +57,8 @@ public class Member extends BaseEntity {
         this.status = status;
     }
 
-    public static Member of(final String loginId, final String password, final String nickname, final String profileImage, final String stateMessage) {
-        return new Member(null, new LoggedIn(loginId, password), nickname, profileImage, stateMessage, MemberStatus.N);
+    public static Member of(final LoggedIn loggedIn, final String nickname, final String profileImage) {
+        return new Member(null, loggedIn, nickname, profileImage, "", MemberStatus.N);
     }
 
     public boolean isLeave() {

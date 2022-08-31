@@ -2,6 +2,7 @@ package devgraft.member.app;
 
 import devgraft.support.crypt.PBKDF2;
 import devgraft.support.crypt.RSA;
+import devgraft.support.exception.DecryptException;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;
@@ -20,7 +21,7 @@ public class MemberPasswordHelper {
         try {
             return RSA.decrypt(encryptedPassword, keyPair.getPrivate());
         } catch (final Exception e) {
-            throw new MemberPasswordDecryptFailedException();
+            throw new DecryptException();
         }
     }
     public String hashingPassword(final String password) {

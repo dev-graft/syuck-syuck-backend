@@ -2,7 +2,6 @@ package devgraft.member.app;
 
 import devgraft.member.domain.Member;
 import devgraft.member.domain.SpyMemberRepository;
-import devgraft.member.exception.MemberPasswordDecryptFailedException;
 import devgraft.support.crypt.RSA;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
@@ -38,13 +37,13 @@ class MembershipServiceTest {
     @DisplayName("복호화 키가 일치하지 않으면 에러")
     @Test
     void notMatchKey() {
-        given(mockMemberPasswordHelper.decryptPassword(any(), any())).willThrow(new MemberPasswordDecryptFailedException());
+        given(mockMemberPasswordHelper.decryptPassword(any(), any())).willThrow(new MembershipDecryptFailedException());
 
-        final MemberPasswordDecryptFailedException memberPasswordDecryptFailedException = Assertions.catchThrowableOfType(
+        final MembershipDecryptFailedException membershipDecryptFailedException = Assertions.catchThrowableOfType(
                 () -> membershipService.membership(MembershipRequest.builder().build(), RSA.generatedKeyPair()),
-                MemberPasswordDecryptFailedException.class);
+                MembershipDecryptFailedException.class);
 
-        assertThat(memberPasswordDecryptFailedException).isNotNull();
+        assertThat(membershipDecryptFailedException).isNotNull();
     }
 
     @DisplayName("회원가입 요청이 입력 조건과 맞지 않으면 에러")

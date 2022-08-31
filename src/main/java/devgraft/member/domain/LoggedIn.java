@@ -10,14 +10,16 @@ public class LoggedIn {
     private String loggedId;
     private String password;
 
-    public LoggedIn() {
+    protected LoggedIn() {
     }
-
-    public LoggedIn(String loggedId, String password) {
+    private LoggedIn(final String loggedId, final String password) {
         this.loggedId = loggedId;
         this.password = password;
     }
 
+    public static LoggedIn of(final String loggedId, final String password) {
+        return new LoggedIn(loggedId, password);
+    }
     public String getLoggedId() {
         return loggedId;
     }

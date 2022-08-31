@@ -44,6 +44,7 @@ public class MemberApi {
         final MemberData memberData = memberDataOpt.orElseThrow(() -> new NoContentException("존재하지 않는 회원입니다."));
 
         return MemberProfileGetResult.builder()
+                .loginId(memberData.getLoggedId())
                 .nickname(memberData.getNickname())
                 .profileImage(memberData.getProfileImage())
                 .stateMessage(memberData.getStateMessage())
