@@ -16,3 +16,7 @@ operation::code-api-doc/init-code[snippets='curl-request']
 
 operation::code-api-doc/init-code[snippets='http-response,response-fields']
 
+== 기본 프로필 이미지 요청
+operation::code-api-doc/get-default-profile-image[snippets='curl-request']
+
+operation::code-api-doc/get-default-profile-image[snippets='http-response,response-fields']

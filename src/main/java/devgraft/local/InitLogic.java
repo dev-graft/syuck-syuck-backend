@@ -26,6 +26,7 @@ public class InitLogic {
                 .loginId("qwerty123")
                 .password(encryptedPassword)
                 .nickname("nic")
+                .profileImage("https://secure.gravatar.com/avatar/835628379d78a39af54f1c5ebfc050b4?s=800&d=identicon")
                 .build(), keyPair);
     }
 }

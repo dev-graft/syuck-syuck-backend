@@ -20,18 +20,17 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "MEMBER")
+@Table(name = "member")
 @Entity
 @Getter
 public class Member extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     @Embedded
     @AttributeOverrides({
-            @AttributeOverride(name = "loggedId", column = @Column(name = "logged_id", unique = true, nullable = false)),
-            @AttributeOverride(name = "password", column = @Column(name = "password"))
+            @AttributeOverride(name = "loggedId", column = @Column(table = "member", name = "logged_id", unique = true, nullable = false)),
+            @AttributeOverride(name = "password", column = @Column(table = "member", name = "password"))
     })
     private LoggedIn loggedIn;
     @Column(name = "nickname")
@@ -58,8 +57,8 @@ public class Member extends BaseEntity {
         this.status = status;
     }
 
-    public static Member of(final String loginId, final String password, final String nickname, final String profileImage, final String stateMessage) {
-        return new Member(null, LoggedIn.of(loginId, password), nickname, profileImage, stateMessage, MemberStatus.N);
+    public static Member of(final LoggedIn loggedIn, final String nickname, final String profileImage) {
+        return new Member(null, loggedIn, nickname, profileImage, "", MemberStatus.N);
     }
 
     public boolean isLeave() {

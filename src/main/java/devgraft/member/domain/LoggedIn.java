@@ -1,36 +1,31 @@
 package devgraft.member.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Embeddable;
 
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Getter
+@Access(AccessType.FIELD)
 @Embeddable
-public class LoggedIn {//implements Serializable {
+public class LoggedIn {
     private String loggedId;
     private String password;
+
+    protected LoggedIn() {
+    }
+    private LoggedIn(final String loggedId, final String password) {
+        this.loggedId = loggedId;
+        this.password = password;
+    }
 
     public static LoggedIn of(final String loggedId, final String password) {
         return new LoggedIn(loggedId, password);
     }
+    public String getLoggedId() {
+        return loggedId;
+    }
 
-//    @Override
-//    public boolean equals(final Object o) {
-//        if (this == o) return true;
-//        if (null == o || getClass() != o.getClass()) return false;
-//        final LoggedIn loggedIn = (LoggedIn) o;
-//        return Objects.equals(id, loggedIn.id) &&
-//                Objects.equals(password, loggedIn.password);
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(id, password);
-//    }
+    public String getPassword() {
+        return password;
+    }
 }
 
