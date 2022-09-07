@@ -38,6 +38,10 @@ public class MemberApi {
         return CommonResult.success(HttpStatus.CREATED);
     }
 
+    // 로그인
+
+
+
     @GetMapping("check")
     public SingleResult<Boolean> existsLoginId(@RequestParam(name = "loginId") String loginId) {
         boolean exists = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)

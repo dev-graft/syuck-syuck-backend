@@ -27,6 +27,11 @@ class LoginServiceTest {
         loginService = new LoginService(passwordHelper, validator);
     }
 
+    @Test
+    void decryptPasswordHasError() {
+
+    }
+
     @DisplayName("로그인 요청 입력 값 검증 에러")
     @Test
     void validateHasError() {
@@ -38,10 +43,5 @@ class LoginServiceTest {
 
         assertThat(validationException).isNotNull();
         assertThat(validationException.getErrors()).isNotEmpty();
-    }
-
-    @Test
-    void decryptPasswordHasError() {
-
     }
 }

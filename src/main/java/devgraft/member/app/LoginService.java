@@ -13,10 +13,12 @@ import java.util.List;
 public class LoginService {
     private final MemberPasswordHelper memberPasswordHelper;
     private final LoginRequestValidator loginRequestValidator;
+
     public void login(LoginRequest loginRequest, KeyPair keyPair) {
         List<ValidationError> errors = loginRequestValidator.validate(loginRequest);
         if (!errors.isEmpty()) throw new ValidationException(errors, "로그인 요청이 실패하였습니다.");
-
+        // 전달받은 패스워드 복호화 - 복호화 에러
+        // 아이디 기준 사용자 조회 - 존재하지 않음 에러
     }
     // 전달받은 패스워드 복호화 - 복호화 에러
     // 아이디 기준 사용자 조회 - 존재하지 않음 에러
