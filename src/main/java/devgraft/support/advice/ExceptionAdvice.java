@@ -1,7 +1,9 @@
 package devgraft.support.advice;
 
 import devgraft.support.exception.AbstractRequestException;
+import devgraft.support.exception.ValidationException;
 import devgraft.support.response.CommonResult;
+import devgraft.support.response.SingleResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.ObjectError;
@@ -24,6 +26,11 @@ public class ExceptionAdvice {
     @ExceptionHandler(AbstractRequestException.class)
     public Object handleRequestException(final AbstractRequestException e) {
         return CommonResult.error(e.getHttpStatus().value(), e.getMessage());
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    public Object handleValidationException(final ValidationException e) {
+        return SingleResult.error(e.getHttpStatus(), e.getMessage(), e.getErrors());
     }
 
     @ExceptionHandler(RuntimeException.class)

@@ -21,4 +21,12 @@ public class SingleResult<T> extends CommonResult {
     public static <T>SingleResult<T> success(final T data, final int status) {
         return new SingleResult<>(true, status, "Success", LocalDateTime.now(), data);
     }
+
+    public static <T>SingleResult<T> error(final HttpStatus errorStatus, final String errorMessage, final T data) {
+        return new SingleResult<>(false, errorStatus.value(), errorMessage, LocalDateTime.now(), data);
+    }
+
+    public static <T>SingleResult<T> error(final int errorStatus, final String errorMessage, final T data) {
+        return new SingleResult<>(false, errorStatus, errorMessage, LocalDateTime.now(), data);
+    }
 }

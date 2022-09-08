@@ -1,6 +1,7 @@
 package devgraft.member.app;
 
 import devgraft.member.domain.Member;
+import devgraft.member.domain.MemberPasswordService;
 import devgraft.member.domain.SpyMemberRepository;
 import devgraft.support.crypt.RSA;
 import devgraft.support.exception.ValidationError;
@@ -24,20 +25,20 @@ class MembershipServiceTest {
     private SpyMemberRepository spyMemberRepository;
     private MembershipRequestValidator validator;
     private MembershipService membershipService;
-    private MemberPasswordHelper mockMemberPasswordHelper;
+    private MemberPasswordService mockMemberPasswordService;
 
     @BeforeEach
     void setUp() {
         spyMemberRepository = spy(SpyMemberRepository.class);
         validator = mock(MembershipRequestValidator.class);
-        mockMemberPasswordHelper = mock(MemberPasswordHelper.class);
-        membershipService = new MembershipService(spyMemberRepository, validator, mockMemberPasswordHelper);
+        mockMemberPasswordService = mock(MemberPasswordService.class);
+        membershipService = new MembershipService(spyMemberRepository, validator, mockMemberPasswordService);
     }
 
     @DisplayName("복호화 키가 일치하지 않으면 에러")
     @Test
     void notMatchKey() {
-        given(mockMemberPasswordHelper.decryptPassword(any(), any())).willThrow(new MembershipDecryptFailedException());
+        given(mockMemberPasswordService.decryptPassword(any(), any())).willThrow(new MembershipDecryptFailedException());
 
         final MembershipDecryptFailedException membershipDecryptFailedException = Assertions.catchThrowableOfType(
                 () -> membershipService.membership(MembershipRequest.builder().build(), RSA.generatedKeyPair()),
@@ -84,7 +85,7 @@ class MembershipServiceTest {
                 .profileImage("profileImage")
                 .build();
         String givenHashPassword = "hash_password";
-        given(mockMemberPasswordHelper.hashingPassword(any())).willReturn(givenHashPassword);
+        given(mockMemberPasswordService.hashingPassword(any())).willReturn(givenHashPassword);
 
         MemberIds memberIds = membershipService.membership(givenRequest, RSA.generatedKeyPair());
 
