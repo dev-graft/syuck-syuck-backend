@@ -1,8 +1,9 @@
 package devgraft.code.api;
 
+import devgraft.member.domain.MemberPasswordService;
 import devgraft.support.crypt.MD5;
-import devgraft.support.crypt.RSA;
 import devgraft.support.response.SingleResult;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,15 +13,17 @@ import javax.servlet.http.HttpSession;
 import java.security.KeyPair;
 import java.util.Base64;
 
+@RequiredArgsConstructor
 @RequestMapping("api/code")
 @RestController
 public class CodeApi {
     private static final int COUNT = 12;
+    private final MemberPasswordService memberPasswordService;
 
     @GetMapping
     public InitCodeResult initCode(HttpSession httpSession) {
-        final KeyPair keyPair = RSA.generatedKeyPair();
-        httpSession.setAttribute(RSA.KEY_PAIR, keyPair);
+        final KeyPair keyPair = memberPasswordService.generateCryptoKey();
+        httpSession.setAttribute(MemberPasswordService.KEY_PAIR, keyPair);
         return new InitCodeResult(Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()));
     }
 

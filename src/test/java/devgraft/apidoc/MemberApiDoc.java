@@ -1,6 +1,7 @@
 package devgraft.apidoc;
 
 import devgraft.member.api.MemberApi;
+import devgraft.member.app.LoginService;
 import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipService;
 import devgraft.member.query.MemberData;
@@ -38,15 +39,17 @@ public class MemberApiDoc extends AbstractApiDoc {
     @MockBean
     private MembershipService membershipService;
     @MockBean
+    private LoginService loginService;
+    @MockBean
     private MemberDataDao memberDataDao;
 
     @DisplayName("회원가입 요청")
     @Test
     void membership() throws Exception {
-        MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(RSA.KEY_PAIR, RSA.generatedKeyPair());
-        given(membershipService.membership(any(), any())).willReturn(MemberIds.of(1L, "qwerty123"));
         KeyPair keyPair = RSA.generatedKeyPair();
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        mockHttpSession.setAttribute(RSA.KEY_PAIR, keyPair);
+        given(membershipService.membership(any(), any())).willReturn(MemberIds.of(1L, "qwerty123"));
         String originPassword = "qweR123$";
         String encryptPassword = RSA.encrypt(originPassword, keyPair.getPublic());
 
@@ -94,14 +97,46 @@ public class MemberApiDoc extends AbstractApiDoc {
                 );
     }
 
+    @DisplayName("로그인 요청")
+    @Test
+    void login() throws Exception {
+        KeyPair keyPair = RSA.generatedKeyPair();
+        MockHttpSession mockHttpSession = new MockHttpSession();
+        mockHttpSession.setAttribute(RSA.KEY_PAIR, keyPair);
+        String originPassword = "qweR123$";
+        String encryptPassword = RSA.encrypt(originPassword, keyPair.getPublic());
+
+        mockMvc.perform(post("/api/members/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                    "loginId": "qwerty123",
+                                    "password": "%s"
+                                }
+                                """.formatted(encryptPassword)
+                        ).session(mockHttpSession))
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document.document(
+                                requestFields(
+                                        fieldWithPath("loginId").type(JsonFieldType.STRING).description("회원 아이디"),
+                                        fieldWithPath("password").type(JsonFieldType.STRING)
+                                                .description("비밀번호(암호화)  원본: " + originPassword + "  공개키: " + Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()))
+                                        ),
+                                responseFields
+                        )
+                );
+
+    }
+
     @DisplayName("프로필 조회 요청")
     @Test
     void getMemberProfile() throws Exception {
         given(memberDataDao.findOne(any())).willReturn(Optional.of(MemberData.builder()
-                        .loggedId("qwerty123")
-                        .nickname("nic")
-                        .profileImage("https://secure.gravatar.com/avatar/835628379d78a39af54f1c5ebfc050b4?s=800&d=identicon")
-                        .stateMessage("좋은 날이에요!!")
+                .loggedId("qwerty123")
+                .nickname("nic")
+                .profileImage("https://secure.gravatar.com/avatar/835628379d78a39af54f1c5ebfc050b4?s=800&d=identicon")
+                .stateMessage("좋은 날이에요!!")
                 .build()));
 
         mockMvc.perform(get("/api/members/{loginId}", "qwerty123"))
