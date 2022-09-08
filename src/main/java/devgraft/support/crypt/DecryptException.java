@@ -1,5 +1,6 @@
-package devgraft.support.exception;
+package devgraft.support.crypt;
 
+import devgraft.support.exception.AbstractRequestException;
 import org.springframework.http.HttpStatus;
 
 public class DecryptException extends AbstractRequestException {

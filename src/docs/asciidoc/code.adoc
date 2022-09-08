@@ -1,4 +1,4 @@
-= Member APIs
+= Code APIs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs

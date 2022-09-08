@@ -18,6 +18,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.security.KeyPair;
+import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
@@ -71,5 +73,37 @@ public class Member extends BaseEntity {
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
     }
 
-    // TODO 패스워드 비교 구현
+    public void compareToPassword(final MemberPasswordService decryptPasswordService, final String encryptedPwd, final KeyPair keyPair) throws RuntimeException {
+        try {
+            final String decryptPwd = decryptPasswordService.decryptPassword(encryptedPwd, keyPair);
+            final String hash = decryptPasswordService.hashingPassword(decryptPwd);
+            if (!Objects.equals(loggedIn.getPassword(), hash)) {
+                throw new RuntimeException();
+            }
+        } catch (final Exception e) {
+            throw new NotCorrectPasswordException();
+        }
+    }
+
+    /// TODO 지금 테스트 코드에서 키 전달이 당연히 RSA가 사용되듯이 되어 있는데
+    ///      직접 호출은 로직에 변경이 발생했을 때 좋지 못한 것 같다.
+
+    /**
+     * 지금 회원가입과 로그인의 로직이 분리되어진 상태
+     * 문제는 두 과정에 암호화/복호화 과정이 일어나는데
+     * 암호화 모듈을 각자 따로 접근해서 사용하기 떄문에,
+     * 회원가입의 암/복호화와 로그인의 암/복호화가 서로 다르게 구성할 수 있다.
+     * 이를 해결이 필요하다.
+     * 회원가입 프로세스(전달 받은 값의 널 체크 -> 전달받은 패스워드 복호화 -> 정규식 체크 -> 중복 아이디 확인 -> 복호화된 패스워드 해싱처리 -> 저장
+     * 로그인 프로세스 (전달 받은 값의 널 체크 -> 전달받은 패스워드 복호화 -> 해싱처리 -> 아이디 조회 -> 조회된 엔티티의 패스워드와 비교 -> 끝
+     *
+     *
+     * 그러면 member domain에 cryptService 인터페이스를 추가하고
+     * 구현을 따로 시키게 하고
+     *
+     * 물론 이렇게 만들면 다른 암호화와 혼동되지 않게 구현클래스를 만들어 정리할 수 있지만
+     * 마지막 문제는 기껏 만들어준 구현 클래스를 사용하지 않고 멋대로 개발할 수 있다.
+     * 이를 막으려면 DecryptPasswordService 인터페이스의 함수의 반환 타입을 커스텀하는 것.
+     * 흠 올바른 방법인지 생각 좀 하고 작성하자
+     */
 }

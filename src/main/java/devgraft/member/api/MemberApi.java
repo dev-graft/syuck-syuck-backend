@@ -1,11 +1,13 @@
 package devgraft.member.api;
 
+import devgraft.member.app.LoginRequest;
+import devgraft.member.app.LoginService;
 import devgraft.member.app.MembershipRequest;
 import devgraft.member.app.MembershipService;
+import devgraft.member.domain.MemberPasswordService;
 import devgraft.member.query.MemberData;
 import devgraft.member.query.MemberDataDao;
 import devgraft.member.query.MemberDataSpec;
-import devgraft.support.crypt.RSA;
 import devgraft.support.exception.NoContentException;
 import devgraft.support.response.CommonResult;
 import devgraft.support.response.SingleResult;
@@ -29,18 +31,23 @@ import java.util.Optional;
 public class MemberApi {
     private final MemberDataDao memberDataDao;
     private final MembershipService membershipService;
+    private final LoginService loginService;
 
     @PostMapping
     public CommonResult membership(@RequestBody final MembershipRequest request, final HttpSession httpSession) { //@SessionAttribute(name = RSA.KEY_PAIR) final KeyPair keyPair) {
-        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(RSA.KEY_PAIR)).orElseThrow(RuntimeException::new);
+        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(MemberPasswordService.KEY_PAIR)).orElseThrow(NotFindCodeException::new);
         membershipService.membership(request, keyPair);
-        httpSession.removeAttribute(RSA.KEY_PAIR);
+        httpSession.removeAttribute(MemberPasswordService.KEY_PAIR);
         return CommonResult.success(HttpStatus.CREATED);
     }
 
-    // 로그인
-
-
+    @PostMapping("/login")
+    public CommonResult login(@RequestBody final LoginRequest request, final HttpSession httpSession) {
+        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(MemberPasswordService.KEY_PAIR)).orElseThrow(NotFindCodeException::new);
+        loginService.login(request, keyPair);
+        httpSession.removeAttribute(MemberPasswordService.KEY_PAIR);
+        return CommonResult.success(HttpStatus.OK);
+    }
 
     @GetMapping("check")
     public SingleResult<Boolean> existsLoginId(@RequestParam(name = "loginId") String loginId) {

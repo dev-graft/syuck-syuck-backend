@@ -2,8 +2,9 @@ package devgraft.member.app;
 
 import devgraft.member.domain.LoggedIn;
 import devgraft.member.domain.Member;
+import devgraft.member.domain.MemberPasswordService;
 import devgraft.member.domain.MemberRepository;
-import devgraft.support.exception.DecryptException;
+import devgraft.support.crypt.DecryptException;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -18,17 +19,18 @@ import java.util.List;
 public class MembershipService {
     private final MemberRepository memberRepository;
     private final MembershipRequestValidator membershipRequestValidator;
-    private final MemberPasswordHelper memberPasswordHelper;
+    private final MemberPasswordService memberPasswordService;
 
     @Transactional
     public MemberIds membership(final MembershipRequest request, final KeyPair keyPair) {
 
         final String plainPassword;
         try {
-            plainPassword = memberPasswordHelper.decryptPassword(request.getPassword(), keyPair);
+            plainPassword = memberPasswordService.decryptPassword(request.getPassword(), keyPair);
         } catch (DecryptException e) {
             throw new MembershipDecryptFailedException();
         }
+
         final List<ValidationError> errors = membershipRequestValidator.validate(MembershipRequest.builder()
                 .loginId(request.getLoginId())
                 .password(plainPassword)
@@ -39,7 +41,7 @@ public class MembershipService {
         if (memberRepository.existsByNickname(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
         Member member = Member.of(
-                LoggedIn.of(request.getLoginId(), memberPasswordHelper.hashingPassword(request.getPassword())),
+                LoggedIn.of(request.getLoginId(), memberPasswordService.hashingPassword(plainPassword)),
                 request.getNickname(),
                 request.getProfileImage());
 
