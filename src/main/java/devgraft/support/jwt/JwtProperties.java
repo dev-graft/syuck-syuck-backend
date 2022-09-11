@@ -1,15 +1,13 @@
 package devgraft.support.jwt;
 
 import io.jsonwebtoken.security.Keys;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.ConstructorBinding;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 
-@ConstructorBinding
-@ConfigurationProperties(prefix = "support.jwt")
+//@ConstructorBinding
+//@ConfigurationProperties(prefix = "support.jwt")
 public class JwtProperties {
     private final String secret;
     private final Key signKey;
