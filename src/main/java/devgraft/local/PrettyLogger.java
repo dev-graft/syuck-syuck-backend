@@ -60,7 +60,7 @@ public class PrettyLogger {
 
     public static class PrettyLoggerBuilder {
         private List<String> msgs;
-        private String headerMessage = "Syuck Syuck Service";
+        private String headerMessage = " Syuck Syuck Service ";
 
         public PrettyLoggerBuilder() {
             this.msgs = msgs = new ArrayList<>();

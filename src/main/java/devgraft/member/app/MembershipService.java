@@ -23,7 +23,6 @@ public class MembershipService {
 
     @Transactional
     public MemberIds membership(final MembershipRequest request, final KeyPair keyPair) {
-
         final String plainPassword;
         try {
             plainPassword = memberPasswordService.decryptPassword(request.getPassword(), keyPair);
