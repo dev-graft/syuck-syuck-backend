@@ -19,7 +19,7 @@ public class LoginService {
     private final LoginRequestValidator loginRequestValidator;
     private final MemberRepository memberRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional()
     public void login(LoginRequest request, KeyPair keyPair) {
         List<ValidationError> errors = loginRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "로그인 요청이 실패하였습니다.");
@@ -42,5 +42,7 @@ public class LoginService {
      * 도메인 로직이라 트랜잭션 태우는 로직은 빼고 단순 생성만 해서 반환하는 쪽으로 하면
      * 흠 streamAllBy 를 사용해놔서 readOnly 밖에 안되는데?? db에 인가 정보를 넣어두는건 안되려나
      * 흠 아니지 streamAllBy를 바꿔보던지, 이전처럼 redis를 써보던지
+     *
+     * Id 설정을 잘못해준듯 싶다. idx는 딱히 향후 로직에도 쓰일 것 같지는 않고,
      */
 }
