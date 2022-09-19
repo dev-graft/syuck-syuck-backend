@@ -49,7 +49,7 @@ public class MemberApiDoc extends AbstractApiDoc {
         KeyPair keyPair = RSA.generatedKeyPair();
         MockHttpSession mockHttpSession = new MockHttpSession();
         mockHttpSession.setAttribute(RSA.KEY_PAIR, keyPair);
-        given(membershipService.membership(any(), any())).willReturn(MemberIds.of(1L, "qwerty123"));
+        given(membershipService.membership(any(), any())).willReturn(new MemberIds(1L, "qwerty123"));
         String originPassword = "qweR123$";
         String encryptPassword = RSA.encrypt(originPassword, keyPair.getPublic());
 

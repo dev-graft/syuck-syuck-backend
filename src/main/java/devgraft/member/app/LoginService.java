@@ -25,9 +25,6 @@ public class LoginService {
         if (!errors.isEmpty()) throw new ValidationException(errors, "로그인 요청이 실패하였습니다.");
         Member member = MemberFindHelper.findMember(memberRepository, request.getLoginId());
         member.compareToPassword(memberPasswordService, request.getPassword(), keyPair);
-        // 인증 성공했으므로, api 호출 승인을 위한 권한 발급
-        //  ㅎ
-        // 토큰 생성 및 반환
     }
 
     /**

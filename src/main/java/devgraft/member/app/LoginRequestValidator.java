@@ -19,7 +19,6 @@ public class LoginRequestValidator {
         if (!StringUtils.hasText(request.getPassword())) {
             errors.add(ValidationError.of("password", "LoginRequest.password must not be null."));
         }
-
         return errors;
     }
 }

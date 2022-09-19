@@ -39,13 +39,15 @@ public class MembershipService {
         if (!errors.isEmpty()) throw new ValidationException(errors, "회원가입 요청이 실패하였습니다");
         if (memberRepository.existsByNickname(request.getLoginId())) throw new AlreadyExistsLoginIdException();
 
-        Member member = Member.of(
-                LoggedIn.of(request.getLoginId(), memberPasswordService.hashingPassword(plainPassword)),
+        final String hashPassword = memberPasswordService.hashingPassword(plainPassword);
+
+        final Member member = Member.of(
+                LoggedIn.of(request.getLoginId(), hashPassword),
                 request.getNickname(),
                 request.getProfileImage());
 
         memberRepository.save(member);
 
-        return MemberIds.of(member.getId(), member.getLoggedIn().getLoggedId());
+        return new MemberIds(member.getId(), member.getLoggedIn().getLoggedId());
     }
 }

@@ -1,15 +1,14 @@
 package devgraft.member.api;
 
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 
-@Builder
-@AllArgsConstructor
+@Builder(access = AccessLevel.PUBLIC)
 @Getter
 public class MemberProfileGetResult {
-    private String loginId;
-    private String nickname;
-    private String profileImage;
-    private String stateMessage;
+    private final String loginId;
+    private final String nickname;
+    private final String profileImage;
+    private final String stateMessage;
 }
