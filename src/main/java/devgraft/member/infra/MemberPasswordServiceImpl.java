@@ -1,5 +1,6 @@
 package devgraft.member.infra;
 
+import devgraft.member.app.MembershipDecryptFailedException;
 import devgraft.member.domain.MemberPasswordService;
 import devgraft.support.crypt.DecryptException;
 import devgraft.support.crypt.PBKDF2;
@@ -25,11 +26,11 @@ public class MemberPasswordServiceImpl implements MemberPasswordService {
         }
     }
     @Override
-    public String decryptPassword(final String encryptedPassword, final KeyPair keyPair) {
+    public String decryptPassword(final String encryptedPassword, final KeyPair keyPair) throws MembershipDecryptFailedException {
         try {
             return RSA.decrypt(encryptedPassword, keyPair.getPrivate());
-        } catch (final Exception e) {
-            throw new DecryptException();
+        } catch (final DecryptException e) {
+            throw new MembershipDecryptFailedException();
         }
     }
     @Override

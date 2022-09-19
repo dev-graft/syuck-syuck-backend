@@ -13,6 +13,6 @@ public class DecryptException extends AbstractRequestException {
     }
 
     public DecryptException() {
-        super("패스워드 복호화에 실패하였습니다. 새로고침을 진행해주세요");
+        super("복호화에 실패하였습니다.");
     }
 }

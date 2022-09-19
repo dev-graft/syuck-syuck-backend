@@ -47,7 +47,7 @@ public class RSA {
             final byte[] bytePlain = cipher.doFinal(byteEncrypted);
             return new String(bytePlain, StandardCharsets.UTF_8);
         } catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new DecryptException();
         }
     }
 

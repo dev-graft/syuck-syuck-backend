@@ -4,7 +4,6 @@ import devgraft.member.domain.LoggedIn;
 import devgraft.member.domain.Member;
 import devgraft.member.domain.MemberPasswordService;
 import devgraft.member.domain.MemberRepository;
-import devgraft.support.crypt.DecryptException;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
@@ -23,12 +22,7 @@ public class MembershipService {
 
     @Transactional
     public MemberIds membership(final MembershipRequest request, final KeyPair keyPair) {
-        final String plainPassword;
-        try {
-            plainPassword = memberPasswordService.decryptPassword(request.getPassword(), keyPair);
-        } catch (DecryptException e) {
-            throw new MembershipDecryptFailedException();
-        }
+        final String plainPassword = memberPasswordService.decryptPassword(request.getPassword(), keyPair);
 
         final List<ValidationError> errors = membershipRequestValidator.validate(MembershipRequest.builder()
                 .loginId(request.getLoginId())
