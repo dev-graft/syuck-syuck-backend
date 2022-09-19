@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -30,10 +29,8 @@ public class Member extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "loggedId", column = @Column(table = "member", name = "logged_id", unique = true, nullable = false)),
-            @AttributeOverride(name = "password", column = @Column(table = "member", name = "password"))
-    })
+    @AttributeOverride(name = "loggedId", column = @Column(table = "member", name = "logged_id", unique = true, nullable = false))
+    @AttributeOverride(name = "password", column = @Column(table = "member", name = "password"))
     private LoggedIn loggedIn;
     @Column(name = "nickname")
     private String nickname;
@@ -73,12 +70,12 @@ public class Member extends BaseEntity {
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
     }
 
-    public void compareToPassword(final MemberPasswordService decryptPasswordService, final String encryptedPwd, final KeyPair keyPair) throws RuntimeException {
+    public void compareToPassword(final MemberPasswordService decryptPasswordService, final String encryptedPwd, final KeyPair keyPair) {
         try {
             final String decryptPwd = decryptPasswordService.decryptPassword(encryptedPwd, keyPair);
             final String hash = decryptPasswordService.hashingPassword(decryptPwd);
             if (!Objects.equals(loggedIn.getPassword(), hash)) {
-                throw new RuntimeException();
+                throw new NotCorrectPasswordException();
             }
         } catch (final Exception e) {
             throw new NotCorrectPasswordException();

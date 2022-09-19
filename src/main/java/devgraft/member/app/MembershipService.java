@@ -48,6 +48,6 @@ public class MembershipService {
 
         memberRepository.save(member);
 
-        return new MemberIds(member.getId(), member.getLoggedIn().getLoggedId());
+        return MemberIds.of(member.getId(), member.getLoggedIn().getLoggedId());
     }
 }
