@@ -24,7 +24,7 @@ public class LoginService {
         List<ValidationError> errors = loginRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "로그인 요청이 실패하였습니다.");
         Member member = MemberFindHelper.findMember(memberRepository, request.getLoginId());
-        member.compareToPassword(memberPasswordService, request.getPassword(), keyPair);
+        member.getLoggedIn().compareToPassword(memberPasswordService, request.getPassword(), keyPair);
     }
 
     /**

@@ -17,8 +17,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.security.KeyPair;
-import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "member")
@@ -68,17 +66,5 @@ public class Member extends BaseEntity {
         this.nickname = StringUtils.hasText(nickname) ? nickname : this.nickname;
         this.stateMessage = StringUtils.hasText(stateMessage) ? stateMessage : this.stateMessage;
         this.profileImage = StringUtils.hasText(profileImage) ? profileImage : this.profileImage;
-    }
-
-    public void compareToPassword(final MemberPasswordService decryptPasswordService, final String encryptedPwd, final KeyPair keyPair) {
-        try {
-            final String decryptPwd = decryptPasswordService.decryptPassword(encryptedPwd, keyPair);
-            final String hash = decryptPasswordService.hashingPassword(decryptPwd);
-            if (!Objects.equals(loggedIn.getPassword(), hash)) {
-                throw new NotCorrectPasswordException();
-            }
-        } catch (final Exception e) {
-            throw new NotCorrectPasswordException();
-        }
     }
 }
