@@ -15,8 +15,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.security.KeyPair;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
@@ -37,18 +38,14 @@ class LoginServiceTest {
         loginService = new LoginService(memberPasswordService, validator, memberRepository);
     }
 
-    @Test
-    void decryptPasswordHasError() {
-
-    }
-
     @DisplayName("로그인 요청 입력 값 검증 에러")
     @Test
     void validateHasError() {
         given(validator.validate(any())).willReturn(List.of(ValidationError.of("field", "message")));
+        final LoginRequest givenRequest = LoginRequest.builder().build();
 
         final ValidationException validationException = catchThrowableOfType(
-                () -> loginService.login(LoginRequest.builder().build(), RSA.generatedKeyPair()),
+                () -> loginService.login(givenRequest, null),
                 ValidationException.class);
 
         assertThat(validationException).isNotNull();
@@ -58,10 +55,11 @@ class LoginServiceTest {
     @DisplayName("회원 찾기 실패 에러")
     @Test
     void notFindMemberError() {
-        given(memberRepository.streamAllBy()).willReturn(Stream.empty());
+        given(memberRepository.findByLoggedId(any())).willReturn(Optional.empty());
+        final LoginRequest givenRequest = LoginRequest.builder().build();
 
         NoMemberException noMemberException = catchThrowableOfType(
-                () -> loginService.login(LoginRequest.builder().build(), RSA.generatedKeyPair()),
+                () -> loginService.login(givenRequest, null),
                 NoMemberException.class);
 
         assertThat(noMemberException).isNotNull();
@@ -70,14 +68,15 @@ class LoginServiceTest {
     @DisplayName("패스워드 검증 실패 에러")
     @Test
     void notCorrectPasswordHasError() {
-        given(memberRepository.streamAllBy()).willReturn(
-                Stream.of(Member.builder()
-                        .loggedIn(LoggedIn.of("loggedId", "pwd"))
-                        .status(MemberStatus.N).build()));
+        given(memberRepository.findByLoggedId(any())).willReturn(Optional.of(Member.builder()
+                .loggedIn(LoggedIn.of("loggedId", "pwd"))
+                .status(MemberStatus.N).build()));
         given(memberPasswordService.decryptPassword(any(), any())).willThrow(DecryptException.class);
+        final LoginRequest givenRequest = LoginRequest.builder().loginId("loggedId").build();
+        final KeyPair givenKeyPair = RSA.generatedKeyPair();
 
         NotCorrectPasswordException notCorrectPasswordException = catchThrowableOfType(
-                () -> loginService.login(LoginRequest.builder().loginId("loggedId").build(), RSA.generatedKeyPair()),
+                () -> loginService.login(givenRequest, givenKeyPair),
                 NotCorrectPasswordException.class);
 
         assertThat(notCorrectPasswordException).isNotNull();

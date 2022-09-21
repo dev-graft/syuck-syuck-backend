@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(MemberApi.class)
-public class MemberApiDoc extends AbstractApiDoc {
+class MemberApiDoc extends AbstractApiDoc {
     @MockBean
     private MembershipService membershipService;
     @MockBean

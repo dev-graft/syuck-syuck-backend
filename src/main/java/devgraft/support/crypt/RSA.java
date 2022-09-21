@@ -24,7 +24,7 @@ public class RSA {
             gen.initialize(1024, secureRandom);
             return gen.genKeyPair();
         } catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new CryptException(e.getMessage());
         }
     }
 
@@ -35,7 +35,7 @@ public class RSA {
             final byte[] bytePlain = cipher.doFinal(plainText.getBytes());
             return Base64.getEncoder().encodeToString(bytePlain);
         } catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new EncryptException(e.getMessage());
         }
     }
 
@@ -47,7 +47,7 @@ public class RSA {
             final byte[] bytePlain = cipher.doFinal(byteEncrypted);
             return new String(bytePlain, StandardCharsets.UTF_8);
         } catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new DecryptException();
         }
     }
 
@@ -63,7 +63,7 @@ public class RSA {
 
             return keyFactory.generatePrivate(keySpecPKCS8);
         } catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new CryptException(e.getMessage());
         }
     }
 
@@ -79,7 +79,7 @@ public class RSA {
 
             return keyFactory.generatePublic(keySpecX509);
         } catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new CryptException(e.getMessage());
         }
     }
 }

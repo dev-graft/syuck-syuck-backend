@@ -34,7 +34,7 @@ public class MemberApi {
     private final LoginService loginService;
 
     @PostMapping
-    public CommonResult membership(@RequestBody final MembershipRequest request, final HttpSession httpSession) { //@SessionAttribute(name = RSA.KEY_PAIR) final KeyPair keyPair) {
+    public CommonResult membership(@RequestBody final MembershipRequest request, final HttpSession httpSession) {
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(MemberPasswordService.KEY_PAIR)).orElseThrow(NotFindCodeException::new);
         membershipService.membership(request, keyPair);
         httpSession.removeAttribute(MemberPasswordService.KEY_PAIR);

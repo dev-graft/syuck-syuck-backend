@@ -28,6 +28,11 @@ public class SpyMemberRepository implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findByLoggedId(String loggedId) {
+        return Optional.empty();
+    }
+
+    @Override
     public boolean existsById(Long aLong) {
         return false;
     }

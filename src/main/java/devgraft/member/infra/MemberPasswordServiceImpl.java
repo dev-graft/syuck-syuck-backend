@@ -1,7 +1,9 @@
 package devgraft.member.infra;
 
+import devgraft.member.app.MembershipDecryptFailedException;
 import devgraft.member.domain.MemberPasswordService;
 import devgraft.support.crypt.DecryptException;
+import devgraft.support.crypt.EncryptException;
 import devgraft.support.crypt.PBKDF2;
 import devgraft.support.crypt.RSA;
 import org.springframework.stereotype.Component;
@@ -21,15 +23,15 @@ public class MemberPasswordServiceImpl implements MemberPasswordService {
         try {
             return RSA.encrypt(plainPassword, keyPair.getPublic());
         }catch (final Exception e) {
-            throw new RuntimeException(e);
+            throw new EncryptException(e.getMessage());
         }
     }
     @Override
-    public String decryptPassword(final String encryptedPassword, final KeyPair keyPair) {
+    public String decryptPassword(final String encryptedPassword, final KeyPair keyPair) throws MembershipDecryptFailedException {
         try {
             return RSA.decrypt(encryptedPassword, keyPair.getPrivate());
-        } catch (final Exception e) {
-            throw new DecryptException();
+        } catch (final DecryptException e) {
+            throw new MembershipDecryptFailedException();
         }
     }
     @Override
