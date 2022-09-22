@@ -19,13 +19,15 @@ public class LoginService {
     private final LoginRequestValidator loginRequestValidator;
     private final MemberRepository memberRepository;
 
-    @Transactional()
+    @Transactional
     public void login(LoginRequest request, KeyPair keyPair) {
         List<ValidationError> errors = loginRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "로그인 요청이 실패하였습니다.");
         Member member = MemberFindHelper.findMember(memberRepository, request.getLoginId());
         member.getLoggedIn().compareToPassword(memberPasswordService, request.getPassword(), keyPair);
     }
+
+
 
     /**
      * 해당 로직은 jwt를 알 필요가 없지

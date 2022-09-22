@@ -59,15 +59,11 @@ public class PrettyLogger {
     }
 
     public static class PrettyLoggerBuilder {
-        private List<String> msgs;
+        private final List<String> msgList = new ArrayList<>();;
         private String headerMessage = " Syuck Syuck Service ";
 
-        public PrettyLoggerBuilder() {
-            this.msgs = msgs = new ArrayList<>();
-        }
-
         public PrettyLoggerBuilder add(final String msg) {
-            this.msgs.add(msg);
+            this.msgList.add(msg);
             return this;
         }
 
@@ -77,7 +73,7 @@ public class PrettyLogger {
         }
 
         public PrettyLogger build() {
-            return new PrettyLogger(msgs, headerMessage);
+            return new PrettyLogger(msgList, headerMessage);
         }
     }
 }
