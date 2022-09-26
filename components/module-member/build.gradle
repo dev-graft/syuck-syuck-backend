@@ -1,0 +1,5 @@
+dependencies {
+    implementation(project(':components:support-jpa'))
+    implementation(project(':components:support-crypto'))
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}

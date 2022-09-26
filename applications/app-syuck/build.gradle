@@ -1,0 +1,4 @@
+dependencies {
+    implementation(project(':components:module-member'))
+    implementation(project(':components:support-advice'))
+}

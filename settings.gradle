@@ -1,0 +1,10 @@
+rootProject.name = 'syuck-syuck'
+
+include ':components:support-jpa'
+include ':components:support-exception'
+include ':components:support-advice'
+include ':components:support-mapper'
+include ':components:support-crypto'
+include ':components:module-member'
+
+include ':applications:app-syuck'
