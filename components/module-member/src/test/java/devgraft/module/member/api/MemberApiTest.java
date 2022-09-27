@@ -3,6 +3,7 @@ package devgraft.module.member.api;
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.MembershipService;
 import devgraft.module.member.domain.MemberCryptService;
+import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
 import devgraft.support.crypto.RSA;
 import devgraft.support.mapper.ObjectMapperTest;
@@ -28,6 +29,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -79,12 +81,42 @@ class MemberApiTest extends ObjectMapperTest {
         assertThat(mockHttpSession.getAttribute(KEY_PAIR)).isNotNull();
     }
 
+    @DisplayName("아이디 존재 여부 검증")
     @Test
     void existsLoginId() throws Exception {
         given(memberDataDao.findOne(any())).willReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/members/check", "loginId"))
+        mockMvc.perform(get("/api/members/check/{loginId}", "loginId"))
                 .andExpect(status().isOk())
                 .andExpect(result -> Objects.equals(result, false));
+    }
+
+    @DisplayName("회원 조회 요청 / 회원이 존재하지 않을 경우 예외처리")
+    @Test
+    void getMemberProfile_NotFoundMemberHasError() throws Exception {
+        given(memberDataDao.findOne(any())).willReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/members/profile/{loginId}", "loginId"))
+                .andExpect(status().isNotFound());
+    }
+
+    @DisplayName("회원 조회 요청")
+    @Test
+    void getMemberProfile() throws Exception {
+        final MemberData givenMemberData = MemberData.builder()
+                .memberId("loginId")
+                .nickname("nickname")
+                .profileImage("profileImage")
+                .stateMessage("stateMessage")
+                .build();
+        given(memberDataDao.findOne(any())).willReturn(Optional.of(givenMemberData));
+
+        mockMvc.perform(get("/api/members/profile/{loginId}", "loginId"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.loginId", equalTo(givenMemberData.getMemberId())))
+                .andExpect(jsonPath("$.nickname", equalTo(givenMemberData.getNickname())))
+                .andExpect(jsonPath("$.profileImage", equalTo(givenMemberData.getProfileImage())))
+                .andExpect(jsonPath("$.stateMessage", equalTo(givenMemberData.getStateMessage())))
+                .andDo(print());
     }
 }
