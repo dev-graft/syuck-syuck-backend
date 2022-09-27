@@ -3,4 +3,5 @@ dependencies {
 
     //h2 - local running
     runtimeOnly 'com.h2database:h2'
+    testRuntimeOnly 'com.h2database:h2'
 }

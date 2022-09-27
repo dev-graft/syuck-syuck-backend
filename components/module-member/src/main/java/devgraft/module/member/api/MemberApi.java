@@ -33,10 +33,11 @@ public class MemberApi {
 
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("membership")
-    public void membership(@RequestBody final EncryptMembershipRequest request, final HttpSession httpSession) {
+    public String membership(@RequestBody final EncryptMembershipRequest request, final HttpSession httpSession) {
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
                 .orElseThrow(NotIssuedPublicKeyException::new);
         membershipService.membership(request, keyPair);
+        return "환영합니다!";
     }
 
     @GetMapping("code")

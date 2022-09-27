@@ -3,8 +3,9 @@ rootProject.name = 'syuck-syuck'
 include ':components:support-jpa'
 include ':components:support-exception'
 include ':components:support-advice'
-include ':components:support-mapper'
-include ':components:support-crypto'
+include ':components:support-mapper' // objectMapper 설정(기본 종속)
+include ':components:support-crypto' // 암호화 도구
+include ':components:support-restdocs' // restdocs 문서화 도구
 include ':components:module-member'
 
 include ':applications:app-syuck'

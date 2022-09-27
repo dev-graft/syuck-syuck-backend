@@ -1,4 +1,6 @@
 dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation(project(':components:module-member'))
     implementation(project(':components:support-advice'))
+    testImplementation(testFixtures(project(':components:support-restdocs')))
 }
