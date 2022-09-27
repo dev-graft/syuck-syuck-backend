@@ -11,6 +11,7 @@ import devgraft.support.exception.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.security.KeyPair;
 import java.util.List;
@@ -24,6 +25,7 @@ public class MembershipService {
     private final MemberCryptService memberCryptService;
     private final DecryptMembershipRequestValidator decryptMembershipRequestValidator;
     private final MemberRepository memberRepository;
+    private final ProfileImageProvider profileImageProvider;
 
     @Transactional
     public void membership(final EncryptMembershipRequest request, final KeyPair keyPair) {
@@ -35,7 +37,12 @@ public class MembershipService {
         if (memberRepository.existsById(memberId)) throw new AlreadyExistsMemberIdException();
 
         final Password password = memberCryptService.hashingPassword(deRequest.getPassword());
-        final Member member = Member.of(memberId, password, deRequest.getNickname(), deRequest.getProfileImage(), "", MemberStatus.N);
+        final Member member = Member.of(memberId,
+                password,
+                deRequest.getNickname(),
+                StringUtils.hasText(deRequest.getProfileImage()) ? deRequest.getProfileImage() : profileImageProvider.create(),
+                "",
+                MemberStatus.N);
 
         memberRepository.save(member);
     }

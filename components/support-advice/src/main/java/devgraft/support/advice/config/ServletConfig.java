@@ -14,8 +14,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.List;
 
-@EnableWebMvc
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.SERVLET)
+@EnableWebMvc
 @Configuration
 public class ServletConfig implements WebMvcConfigurer {
     @Autowired
@@ -29,14 +29,19 @@ public class ServletConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/", "classpath:/static/", "classpath:/public/", "classpath:/resources/", "classpath:/META-INF/resources")
-                .setCachePeriod(20);
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+
+//        registry.addResourceHandler("/**")
+//                .addResourceLocations("classpath:/", "classpath:/static/", "classpath:/public/", "classpath:/resources/", "classpath:/META-INF/resources")
+//                .setCachePeriod(20);
     }
 
     @Bean
     public DispatcherServlet dispatcherServlet () {
-        DispatcherServlet ds = new DispatcherServlet();
+        final DispatcherServlet ds = new DispatcherServlet();
         ds.setThrowExceptionIfNoHandlerFound(true);
         return ds;
     }

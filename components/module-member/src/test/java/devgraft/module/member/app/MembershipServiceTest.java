@@ -26,20 +26,23 @@ class MembershipServiceTest {
     private MemberCryptService memberCryptService;
     private DecryptMembershipRequestValidator decryptMembershipRequestValidator;
     private MemberRepository memberRepository;
-
+    private ProfileImageProvider profileImageProvider;
     @BeforeEach
     void setUp() {
         decryptMembershipRequestProvider = mock(DecryptMembershipRequestProvider.class);
         memberCryptService = mock(MemberCryptService.class);
         decryptMembershipRequestValidator = mock(DecryptMembershipRequestValidator.class);
         memberRepository = mock(MemberRepository.class);
+        profileImageProvider = mock(ProfileImageProvider.class);
 
         given(decryptMembershipRequestProvider.from(any(), any())).willReturn(new DecryptMembershipRequest("", "", "", ""));
         given(memberRepository.existsById(any())).willReturn(true);
         given(memberCryptService.hashingPassword(any())).willReturn(Password.from(""));
+        given(profileImageProvider.create()).willReturn("url");
+
 
         membershipService = new MembershipService(decryptMembershipRequestProvider, memberCryptService,
-                decryptMembershipRequestValidator, memberRepository);
+                decryptMembershipRequestValidator, memberRepository, profileImageProvider);
     }
 
     @DisplayName("회원가입 요청이 입력 조건과 맞지 않는 것이 있다면 에러")

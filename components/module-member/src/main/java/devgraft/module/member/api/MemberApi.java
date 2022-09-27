@@ -2,13 +2,21 @@ package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.MembershipService;
+import devgraft.module.member.app.NoMemberException;
 import devgraft.module.member.domain.MemberCryptService;
+import devgraft.module.member.query.MemberData;
+import devgraft.module.member.query.MemberDataDao;
+import devgraft.module.member.query.MemberDataSpec;
+import devgraft.support.crypto.DecryptException;
+import devgraft.support.exception.NoContentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +32,7 @@ public class MemberApi {
     public static final String KEY_PAIR = "key_pair";
     private final MembershipService membershipService;
     private final MemberCryptService memberCryptService;
-
+    private final MemberDataDao memberDataDao;
 
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("membership")
@@ -33,12 +41,31 @@ public class MemberApi {
         membershipService.membership(request, keyPair);
     }
 
-
-    @ResponseStatus(code = HttpStatus.ACCEPTED)
     @GetMapping("code")
     public String getPubKey(HttpSession httpSession) {
         final KeyPair keyPair = memberCryptService.generatedCryptKey();
         httpSession.setAttribute(KEY_PAIR, keyPair);
         return Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+    }
+
+    @GetMapping("check/{loginId}")
+    public Boolean existsLoginId(@PathVariable(name = "loginId") String loginId) {
+        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+                .and(MemberDataSpec.normalEquals())).isPresent();
+    }
+
+    @GetMapping("profile/{loginId}")
+    public MemberProfileGetResult getMemberProfile(@PathVariable(name = "loginId") String loginId) {
+        throw new NoMemberException();
+//        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+//                        .and(MemberDataSpec.normalEquals()))
+//                .orElseThrow(NoMemberException::new);
+//
+//        return MemberProfileGetResult.builder()
+//                .loginId(memberData.getMemberId())
+//                .nickname(memberData.getNickname())
+//                .profileImage(memberData.getProfileImage())
+//                .stateMessage(memberData.getStateMessage())
+//                .build();
     }
 }
