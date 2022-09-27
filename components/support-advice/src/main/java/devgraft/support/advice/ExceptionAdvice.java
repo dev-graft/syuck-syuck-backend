@@ -66,7 +66,7 @@ public class ExceptionAdvice {
     @ExceptionHandler(NoHandlerFoundException.class)
     public Object handleNoHandlerFoundException(final NoHandlerFoundException e) {
         e.printStackTrace();
-        return CommonResult.error(HttpStatus.NOT_FOUND.getReasonPhrase());
+        return CommonResult.error(e.getMessage());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
