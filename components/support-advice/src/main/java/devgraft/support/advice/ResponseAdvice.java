@@ -2,13 +2,11 @@ package devgraft.support.advice;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.PathContainer;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.pattern.PathPattern;
@@ -39,21 +37,11 @@ public class ResponseAdvice implements ResponseBodyAdvice<Object> {
             return body;
         if (body instanceof CommonResult) {
             final CommonResult commonResult = (CommonResult) body;
-            try {
-                final HttpStatus httpStatus;
-                if (null != HttpStatus.resolve(commonResult.getStatus())) {
-                    httpStatus = HttpStatus.valueOf(commonResult.getStatus());
-                } else {
-                    if (commonResult.isSuccess()) httpStatus = HttpStatus.OK;
-                    else httpStatus = HttpStatus.BAD_REQUEST;
-                }
-                response.setStatusCode(httpStatus);
-            } catch (final IllegalArgumentException e) {
-                response.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+            if (!commonResult.isSuccess()) {
+                response.setStatusCode(commonResult.getStatus());
             }
-            return commonResult;
+            return body;
         }
-        final int status = response instanceof ServletServerHttpResponse ? ((ServletServerHttpResponse) response).getServletResponse().getStatus() : 200;
-        return null != body ? SingleResult.success(body, status) : CommonResult.success(status);
+        return null != body ? SingleResult.success(body) : CommonResult.success();
     }
 }

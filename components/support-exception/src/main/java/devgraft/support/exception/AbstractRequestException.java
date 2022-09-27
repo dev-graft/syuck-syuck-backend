@@ -5,27 +5,34 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 public abstract class AbstractRequestException extends RuntimeException {
-    private final int httpStatus;
+    private final HttpStatus status;
     private final String message;
 
-    protected AbstractRequestException(final String message, final HttpStatus httpStatus) {
+    protected AbstractRequestException(final String message, final HttpStatus status) {
         super(message);
         this.message = message;
-        this.httpStatus = httpStatus.value();
+        this.status = status;
         this.printStackTrace();
     }
 
-    protected AbstractRequestException(final String message, final int httpStatus) {
-        super(message);
-        this.message = message;
-        this.httpStatus = httpStatus;
+    protected AbstractRequestException() {
+        super(HttpStatus.BAD_REQUEST.getReasonPhrase());
+        this.message = HttpStatus.BAD_REQUEST.getReasonPhrase();
+        this.status = HttpStatus.BAD_REQUEST;
         this.printStackTrace();
     }
 
     protected AbstractRequestException(final String message) {
         super(message);
         this.message = message;
-        this.httpStatus = HttpStatus.BAD_REQUEST.value();
+        this.status = HttpStatus.BAD_REQUEST;
+        this.printStackTrace();
+    }
+
+    protected AbstractRequestException(final ExceptionStatusConstant constant) {
+        super(constant.getMessage());
+        this.message = constant.getMessage();
+        this.status = constant.getStatus();
         this.printStackTrace();
     }
 }

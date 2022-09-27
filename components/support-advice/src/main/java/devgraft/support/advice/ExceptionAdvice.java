@@ -22,12 +22,12 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(AbstractRequestException.class)
     public Object handleRequestException(final AbstractRequestException e) {
-        return CommonResult.error(e.getMessage());
+        return CommonResult.error(e.getStatus(), e.getMessage());
     }
 
     @ExceptionHandler(ValidationException.class)
     public Object handleValidationException(final ValidationException e) {
-        return SingleResult.error(e.getMessage(), e.getErrors());
+        return SingleResult.error(e.getStatus(), e.getMessage(), e.getErrors());
     }
 
     @ExceptionHandler(RuntimeException.class)

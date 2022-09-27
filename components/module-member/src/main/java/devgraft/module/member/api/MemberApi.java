@@ -2,13 +2,11 @@ package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.MembershipService;
-import devgraft.module.member.app.NoMemberException;
+import devgraft.module.member.app.NotFoundMemberException;
 import devgraft.module.member.domain.MemberCryptService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
 import devgraft.module.member.query.MemberDataSpec;
-import devgraft.support.crypto.DecryptException;
-import devgraft.support.exception.NoContentException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +34,8 @@ public class MemberApi {
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping("membership")
     public void membership(@RequestBody final EncryptMembershipRequest request, final HttpSession httpSession) {
-        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR)).orElseThrow(NotFindCodeException::new);
+        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
+                .orElseThrow(NotIssuedPublicKeyException::new);
         membershipService.membership(request, keyPair);
     }
 
@@ -56,16 +54,15 @@ public class MemberApi {
 
     @GetMapping("profile/{loginId}")
     public MemberProfileGetResult getMemberProfile(@PathVariable(name = "loginId") String loginId) {
-        throw new NoMemberException();
-//        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
-//                        .and(MemberDataSpec.normalEquals()))
-//                .orElseThrow(NoMemberException::new);
-//
-//        return MemberProfileGetResult.builder()
-//                .loginId(memberData.getMemberId())
-//                .nickname(memberData.getNickname())
-//                .profileImage(memberData.getProfileImage())
-//                .stateMessage(memberData.getStateMessage())
-//                .build();
+        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+                        .and(MemberDataSpec.normalEquals()))
+                .orElseThrow(NotFoundMemberException::new);
+
+        return MemberProfileGetResult.builder()
+                .loginId(memberData.getMemberId())
+                .nickname(memberData.getNickname())
+                .profileImage(memberData.getProfileImage())
+                .stateMessage(memberData.getStateMessage())
+                .build();
     }
 }

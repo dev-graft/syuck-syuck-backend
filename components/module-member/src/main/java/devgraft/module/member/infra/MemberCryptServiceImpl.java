@@ -1,7 +1,7 @@
 package devgraft.module.member.infra;
 
 import devgraft.module.member.domain.MemberCryptService;
-import devgraft.module.member.domain.MemberDecryptException;
+import devgraft.module.member.domain.UnauthenticatedPublicKeyException;
 import devgraft.module.member.domain.MemberEncryptException;
 import devgraft.module.member.domain.Password;
 import devgraft.support.crypto.DecryptException;
@@ -24,6 +24,7 @@ public class MemberCryptServiceImpl implements MemberCryptService {
         try {
             return RSA.encrypt(plainText, keyPair.getPublic());
         }catch (final Exception e) {
+            e.printStackTrace();
             throw new MemberEncryptException(e.getMessage());
         }
     }
@@ -33,7 +34,8 @@ public class MemberCryptServiceImpl implements MemberCryptService {
         try {
             return RSA.decrypt(encryptText, keyPair.getPrivate());
         } catch (final DecryptException e) {
-            throw new MemberDecryptException();
+            e.printStackTrace();
+            throw new UnauthenticatedPublicKeyException();
         }
     }
 
