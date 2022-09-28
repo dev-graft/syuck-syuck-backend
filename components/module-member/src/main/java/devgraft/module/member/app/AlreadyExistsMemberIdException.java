@@ -1,11 +1,12 @@
 package devgraft.module.member.app;
 
-import devgraft.support.exception.AlreadyExistsException;
+import devgraft.support.exception.AbstractRequestException;
 
 import static devgraft.module.member.domain.MemberConstant.ALREADY_EXISTS_MEMBER_ID;
+import static devgraft.support.exception.StatusConstant.ALREADY_EXISTS_ERROR;
 
-public class AlreadyExistsMemberIdException extends AlreadyExistsException {
+public class AlreadyExistsMemberIdException extends AbstractRequestException {
     public AlreadyExistsMemberIdException() {
-        super(ALREADY_EXISTS_MEMBER_ID);
+        super(ALREADY_EXISTS_MEMBER_ID, ALREADY_EXISTS_ERROR);
     }
 }

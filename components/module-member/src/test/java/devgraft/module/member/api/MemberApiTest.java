@@ -2,7 +2,6 @@ package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.MembershipService;
-import devgraft.module.member.app.NotFoundMemberException;
 import devgraft.module.member.domain.MemberCryptService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
@@ -23,7 +22,6 @@ import java.util.Optional;
 import static devgraft.module.member.api.MemberApi.KEY_PAIR;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
@@ -114,7 +112,7 @@ class MemberApiTest extends ObjectMapperTest {
                 .build();
         given(memberDataDao.findOne(any())).willReturn(Optional.of(givenMemberData));
 
-        mockMvc.perform(get("/api/members/profile/{loginId}", "loginId"))
+        mockMvc.perform(get("/api/members/{loginId}", "loginId"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.loginId", equalTo(givenMemberData.getMemberId())))
                 .andExpect(jsonPath("$.nickname", equalTo(givenMemberData.getNickname())))

@@ -15,10 +15,17 @@ public abstract class AbstractRequestException extends RuntimeException {
         this.printStackTrace();
     }
 
+    protected AbstractRequestException(final String message, final StatusConstant constant) {
+        super(message);
+        this.message = message;
+        this.status = constant.getStatus();
+        this.printStackTrace();
+    }
+
     protected AbstractRequestException() {
-        super(HttpStatus.BAD_REQUEST.getReasonPhrase());
-        this.message = HttpStatus.BAD_REQUEST.getReasonPhrase();
-        this.status = HttpStatus.BAD_REQUEST;
+        super(StatusConstant.BAD_REQUEST.getMessage());
+        this.message = StatusConstant.BAD_REQUEST.getMessage();
+        this.status = StatusConstant.BAD_REQUEST.getStatus();
         this.printStackTrace();
     }
 
@@ -29,7 +36,7 @@ public abstract class AbstractRequestException extends RuntimeException {
         this.printStackTrace();
     }
 
-    protected AbstractRequestException(final ExceptionStatusConstant constant) {
+    protected AbstractRequestException(final StatusConstant constant) {
         super(constant.getMessage());
         this.message = constant.getMessage();
         this.status = constant.getStatus();

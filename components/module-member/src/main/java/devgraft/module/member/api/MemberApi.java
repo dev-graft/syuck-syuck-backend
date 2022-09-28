@@ -53,7 +53,7 @@ public class MemberApi {
                 .and(MemberDataSpec.normalEquals())).isPresent();
     }
 
-    @GetMapping("profile/{loginId}")
+    @GetMapping("{loginId}")
     public MemberProfileGetResult getMemberProfile(@PathVariable(name = "loginId") String loginId) {
         final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
                         .and(MemberDataSpec.normalEquals()))

@@ -1,9 +1,9 @@
 package devgraft.support.restdocs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import devgraft.support.mapper.ObjectMapperConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation;
@@ -22,7 +22,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 public class AbstractApiDocTest {
     protected MockMvc mockMvc;
     protected RestDocumentationResultHandler document;
-    private ObjectMapper objectMapper = new ObjectMapperConfig().objectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public ObjectMapper getObjectMapper() {
         return objectMapper;
@@ -32,7 +33,7 @@ public class AbstractApiDocTest {
             fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("결과 성공 여부"),
 //            fieldWithPath("status").type(JsonFieldType.NUMBER).description("결과 코드"),
             fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
-            fieldWithPath("timestamp").type(JsonFieldType.STRING).description("결과 시간")
+            fieldWithPath("timestamp").type(JsonFieldType.STRING).description("결과 시간(YYYY-MM-dd HH:mm:ss")
     );
 
     @BeforeEach

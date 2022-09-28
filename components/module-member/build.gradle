@@ -1,5 +1,5 @@
 dependencies {
-    implementation(project(':components:support-jpa'))
+    api(project(':components:support-jpa'))
     api(project(':components:support-crypto'))
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'

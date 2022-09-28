@@ -31,6 +31,8 @@ public class ServletConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html", "favicon.ico")
                 .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/docs/**")
+                .addResourceLocations("classpath:/static/docs/");
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 

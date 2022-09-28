@@ -20,7 +20,6 @@ subprojects {
 	group = 'devgraft'
 	version = '0.0.1'
 	sourceCompatibility = '11'
-
 	repositories {
 		mavenCentral()
 	}
@@ -39,6 +38,16 @@ subprojects {
 		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		compileOnly 'org.projectlombok:lombok'
 
+		if(!project.name.contentEquals('support-mapper')) {
+			implementation(project(':components:support-mapper'))
+		}
+
+		if (!project.name.contains("support-")) {
+			implementation(project(':components:support-exception'))
+			testImplementation(testFixtures(project(":components:support-exception")))
+			testImplementation(testFixtures(project(":components:support-mapper")))
+		}
+
 		testFixturesApi("org.mockito:mockito-core:3.5.13")
 		testFixturesApi("org.junit.jupiter:junit-jupiter-api:5.8.2")
 		testFixturesApi("org.assertj:assertj-core:3.22.0")
@@ -46,12 +55,7 @@ subprojects {
 		testFixturesApi 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
 		testFixturesApi 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
-		if (!project.name.contains("support-")) {
-			implementation(project(':components:support-mapper'))
-			implementation(project(':components:support-exception'))
-			testImplementation(testFixtures(project(":components:support-exception")))
-			testImplementation(testFixtures(project(":components:support-mapper")))
-		}
+
 
 		annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 		annotationProcessor 'org.projectlombok:lombok'

@@ -5,5 +5,4 @@ dependencies {
     implementation 'org.springframework:spring-webmvc:5.3.20'
 
     implementation(project(':components:support-exception'))
-    implementation(project(':components:support-mapper'))
 }
