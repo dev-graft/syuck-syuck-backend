@@ -1,7 +1,5 @@
 package devgraft.module.member.app;
 
-import devgraft.module.member.domain.MembershipDecryptedData;
-import devgraft.module.member.domain.MembershipDecryptedDataValidator;
 import devgraft.support.exception.ValidationAsserts;
 import devgraft.support.exception.ValidationError;
 import org.junit.jupiter.api.BeforeEach;

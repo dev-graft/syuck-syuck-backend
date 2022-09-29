@@ -1,5 +1,16 @@
 package devgraft.module.member.domain;
 
 public enum MemberStatus {
-    N, B, L
+    N,
+    L {
+        @Override
+        public boolean isLeave() {
+            return  true;
+        }
+    };
+
+    public boolean isLeave() {
+        return false;
+    }
+
 }

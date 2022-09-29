@@ -1,6 +1,10 @@
-package devgraft.module.member.domain;
+package devgraft.module.member.app;
 
-import devgraft.module.member.app.ProfileImageProvider;
+import devgraft.module.member.domain.Member;
+import devgraft.module.member.domain.MemberCryptService;
+import devgraft.module.member.domain.MemberId;
+import devgraft.module.member.domain.MemberStatus;
+import devgraft.module.member.domain.Password;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 

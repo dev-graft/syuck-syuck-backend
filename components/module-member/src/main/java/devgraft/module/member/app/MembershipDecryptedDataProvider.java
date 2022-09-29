@@ -1,7 +1,6 @@
 package devgraft.module.member.app;
 
 import devgraft.module.member.domain.MemberCryptService;
-import devgraft.module.member.domain.MembershipDecryptedData;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyPair;

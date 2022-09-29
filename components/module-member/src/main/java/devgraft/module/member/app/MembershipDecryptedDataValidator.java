@@ -1,4 +1,4 @@
-package devgraft.module.member.domain;
+package devgraft.module.member.app;
 
 import devgraft.support.exception.ValidationError;
 import org.springframework.stereotype.Component;

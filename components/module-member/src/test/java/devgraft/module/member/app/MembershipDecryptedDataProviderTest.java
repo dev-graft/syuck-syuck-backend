@@ -1,7 +1,6 @@
 package devgraft.module.member.app;
 
 import devgraft.module.member.domain.MemberCryptService;
-import devgraft.module.member.domain.MembershipDecryptedData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

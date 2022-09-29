@@ -19,5 +19,9 @@ public class Password {
     public static Password from(final String value) {
         return new Password(value);
     }
+
+    public boolean match(final String password) {
+        return this.value.equals(password);
+    }
 }
 

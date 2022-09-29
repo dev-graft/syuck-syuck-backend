@@ -47,4 +47,12 @@ public class Member extends BaseEntity {
                 .build();
     }
 
+    public boolean isLeave() {
+        return status.isLeave();
+    }
+
+    public boolean match(final MemberCryptService memberCryptService, final String pwd) {
+        final Password hashingPwd = memberCryptService.hashingPassword(pwd);
+        return password.match(hashingPwd.getValue());
+    }
 }
