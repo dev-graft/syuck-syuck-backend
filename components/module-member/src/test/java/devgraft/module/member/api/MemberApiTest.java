@@ -1,8 +1,8 @@
 package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptMembershipRequest;
+import devgraft.module.member.app.GenerateCryptoKeyService;
 import devgraft.module.member.app.MembershipService;
-import devgraft.module.member.domain.MemberCryptService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
 import devgraft.support.crypto.RSA;
@@ -36,16 +36,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MemberApiTest extends ObjectMapperTest {
     private MockMvc mockMvc;
     private MembershipService membershipService;
-    private MemberCryptService memberCryptService;
+    private GenerateCryptoKeyService generateCryptoKeyService;
     private MemberDataDao memberDataDao;
 
     @BeforeEach
     void setUp() {
         membershipService = mock(MembershipService.class);
-        memberCryptService = mock(MemberCryptService.class);
+        generateCryptoKeyService = mock(GenerateCryptoKeyService.class);
         memberDataDao = mock(MemberDataDao.class);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new MemberApi(membershipService, memberCryptService, memberDataDao))
+        mockMvc = MockMvcBuilders.standaloneSetup(new MemberApi(membershipService, generateCryptoKeyService, memberDataDao))
                 .build();
     }
 
@@ -72,7 +72,7 @@ class MemberApiTest extends ObjectMapperTest {
     @Test
     void getPubKey() throws Exception {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        given(memberCryptService.generatedCryptKey()).willReturn(RSA.generatedKeyPair());
+        given(generateCryptoKeyService.process()).willReturn(RSA.generatedKeyPair());
 
         mockMvc.perform(get("/api/members/code")
                 .session(mockHttpSession))

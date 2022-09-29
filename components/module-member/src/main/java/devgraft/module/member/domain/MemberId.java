@@ -2,7 +2,6 @@ package devgraft.module.member.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
@@ -19,10 +18,9 @@ public class MemberId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
         if (null == o || getClass() != o.getClass()) return false;
         MemberId memberId = (MemberId) o;
-        return Objects.equals(id, memberId.id);
+        return this == o || Objects.equals(id, memberId.id);
     }
 
     @Override

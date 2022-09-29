@@ -1,4 +1,4 @@
-package devgraft.module.member.app;
+package devgraft.module.member.domain;
 
 import devgraft.support.exception.ValidationError;
 import org.springframework.stereotype.Component;
@@ -12,27 +12,27 @@ import static devgraft.module.member.domain.MemberPatterns.NICKNAME_ID_PATTERN;
 import static devgraft.module.member.domain.MemberPatterns.PASSWORD_ID_PATTERN;
 
 @Component
-public class DecryptMembershipRequestValidator {
+public class MembershipDecryptedDataValidator {
 
-    public List<ValidationError> validate(final DecryptMembershipRequest request) {
+    public List<ValidationError> validate(final MembershipDecryptedData decryptedData) {
         final List<ValidationError> errors = new ArrayList<>();
 
-        if (StringUtils.hasText(request.getLoginId())) {
-            if (!LOGIN_ID_PATTERN.matcher(request.getLoginId()).matches()) {
+        if (StringUtils.hasText(decryptedData.getLoginId())) {
+            if (!LOGIN_ID_PATTERN.matcher(decryptedData.getLoginId()).matches()) {
                 errors.add(ValidationError.of("loginId", "MembershipRequest.loginId pattern don't match."));
             }
         } else {
             errors.add(ValidationError.of("loginId", "MembershipRequest.loginId must not be null."));
         }
-        if (StringUtils.hasText(request.getPassword())) {
-            if (!PASSWORD_ID_PATTERN.matcher(request.getPassword()).matches()) {
+        if (StringUtils.hasText(decryptedData.getPassword())) {
+            if (!PASSWORD_ID_PATTERN.matcher(decryptedData.getPassword()).matches()) {
                 errors.add(ValidationError.of("password", "MembershipRequest.password pattern don't match."));
             }
         } else {
             errors.add(ValidationError.of("password", "MembershipRequest.password must not be null."));
         }
-        if (StringUtils.hasText(request.getNickname())) {
-            if (!NICKNAME_ID_PATTERN.matcher(request.getNickname()).matches()) {
+        if (StringUtils.hasText(decryptedData.getNickname())) {
+            if (!NICKNAME_ID_PATTERN.matcher(decryptedData.getNickname()).matches()) {
                 errors.add(ValidationError.of("nickname", "MembershipRequest.nickname pattern don't match."));
             }
         } else {

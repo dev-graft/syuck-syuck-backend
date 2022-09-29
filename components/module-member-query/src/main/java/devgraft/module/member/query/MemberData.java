@@ -1,6 +1,5 @@
 package devgraft.module.member.query;
 
-import devgraft.module.member.domain.MemberStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,5 +31,5 @@ public class MemberData {
     private String stateMessage;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private MemberStatus status;
+    private MemberDataStatus status;
 }

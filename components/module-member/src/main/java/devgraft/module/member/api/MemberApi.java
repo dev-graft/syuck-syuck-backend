@@ -1,9 +1,9 @@
 package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptMembershipRequest;
+import devgraft.module.member.app.GenerateCryptoKeyService;
 import devgraft.module.member.app.MembershipService;
 import devgraft.module.member.app.NotFoundMemberException;
-import devgraft.module.member.domain.MemberCryptService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
 import devgraft.module.member.query.MemberDataSpec;
@@ -28,7 +28,7 @@ import java.util.Optional;
 public class MemberApi {
     public static final String KEY_PAIR = "key_pair";
     private final MembershipService membershipService;
-    private final MemberCryptService memberCryptService;
+    private final GenerateCryptoKeyService generateCryptoKeyService;
     private final MemberDataDao memberDataDao;
 
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -42,13 +42,13 @@ public class MemberApi {
 
     @GetMapping("code")
     public String getPubKey(HttpSession httpSession) {
-        final KeyPair keyPair = memberCryptService.generatedCryptKey();
+        final KeyPair keyPair = generateCryptoKeyService.process();
         httpSession.setAttribute(KEY_PAIR, keyPair);
         return Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
     }
 
     @GetMapping("check/{loginId}")
-    public Boolean existsLoginId(@PathVariable(name = "loginId") String loginId) {
+    public boolean isExistsLoginId(@PathVariable(name = "loginId") String loginId) {
         return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
                 .and(MemberDataSpec.normalEquals())).isPresent();
     }
@@ -66,4 +66,14 @@ public class MemberApi {
                 .stateMessage(memberData.getStateMessage())
                 .build();
     }
+
+    // 로그인
+    @PostMapping("login")
+    public void memberLogin() {
+        // ~~ 로그인 과정 이후
+        // 토큰 발급
+
+        // 여기서 토큰 할당
+    }
+    // 정보수정
 }

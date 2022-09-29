@@ -1,4 +1,4 @@
-package devgraft.module.member.app;
+package devgraft.module.member.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public class DecryptMembershipRequest {
+public class MembershipDecryptedData {
     private String loginId;
     private String password;
     private String nickname;

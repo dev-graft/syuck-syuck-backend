@@ -1,5 +1,7 @@
 package devgraft.module.member.app;
 
+import devgraft.module.member.domain.MembershipDecryptedData;
+import devgraft.module.member.domain.MembershipDecryptedDataValidator;
 import devgraft.support.exception.ValidationAsserts;
 import devgraft.support.exception.ValidationError;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,22 +10,20 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class DecryptMembershipRequestValidatorTest {
-    private DecryptMembershipRequestValidator decryptMembershipRequestValidator;
+class MembershipDecryptedDataValidatorTest {
+    private MembershipDecryptedDataValidator membershipDecryptedDataValidator;
 
     @BeforeEach
     void setUp() {
-        decryptMembershipRequestValidator = new DecryptMembershipRequestValidator();
+        membershipDecryptedDataValidator = new MembershipDecryptedDataValidator();
     }
 
     @DisplayName("회원가입 요청문의 필수 값이 null일 경우 에러")
     @Test
     void requiredElementsCheckHasError() {
-        final DecryptMembershipRequest givenRequest = new DecryptMembershipRequest("", "", "", "");
+        final MembershipDecryptedData givenRequest = new MembershipDecryptedData("", "", "", "");
 
-        final List<ValidationError> errors = decryptMembershipRequestValidator.validate(givenRequest);
+        final List<ValidationError> errors = membershipDecryptedDataValidator.validate(givenRequest);
 
         ValidationAsserts.assertHasCall(errors, "loginId", "MembershipRequest.loginId must not be null.");
         ValidationAsserts.assertHasCall(errors, "password", "MembershipRequest.password must not be null.");
@@ -33,9 +33,9 @@ class DecryptMembershipRequestValidatorTest {
     @DisplayName("")
     @Test
     void elementRegexMatchNotCorrectHasError() {
-        final DecryptMembershipRequest givenRequest = new DecryptMembershipRequest("qwe", "qwe", "!", "");
+        final MembershipDecryptedData givenRequest = new MembershipDecryptedData("qwe", "qwe", "!", "");
 
-        final List<ValidationError> errors = decryptMembershipRequestValidator.validate(givenRequest);
+        final List<ValidationError> errors = membershipDecryptedDataValidator.validate(givenRequest);
 
         ValidationAsserts.assertHasCall(errors, "loginId", "MembershipRequest.loginId pattern don't match.");
         ValidationAsserts.assertHasCall(errors, "password", "MembershipRequest.password pattern don't match.");

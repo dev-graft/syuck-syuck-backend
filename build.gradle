@@ -40,12 +40,12 @@ subprojects {
 
 		if(!project.name.contentEquals('support-mapper')) {
 			implementation(project(':components:support-mapper'))
+			testImplementation(testFixtures(project(":components:support-mapper")))
 		}
 
 		if (!project.name.contains("support-")) {
 			implementation(project(':components:support-exception'))
 			testImplementation(testFixtures(project(":components:support-exception")))
-			testImplementation(testFixtures(project(":components:support-mapper")))
 		}
 
 		testFixturesApi("org.mockito:mockito-core:3.5.13")
@@ -54,8 +54,6 @@ subprojects {
 		testFixturesApi "com.fasterxml.jackson.core:jackson-databind"
 		testFixturesApi 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8'
 		testFixturesApi 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
-
-
 
 		annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 		annotationProcessor 'org.projectlombok:lombok'

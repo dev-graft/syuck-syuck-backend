@@ -2,8 +2,8 @@ package devgraft.docs;
 
 import devgraft.module.member.api.MemberApi;
 import devgraft.module.member.app.EncryptMembershipRequest;
+import devgraft.module.member.app.GenerateCryptoKeyService;
 import devgraft.module.member.app.MembershipService;
-import devgraft.module.member.domain.MemberCryptService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
 import devgraft.support.crypto.RSA;
@@ -41,7 +41,7 @@ class MemberApiDoc extends AbstractApiDocTest {
     @MockBean
     private MembershipService membershipService;
     @MockBean
-    private MemberCryptService memberCryptService;
+    private GenerateCryptoKeyService generateCryptoKeyService;
     @MockBean
     private MemberDataDao memberDataDao;
 
@@ -49,7 +49,7 @@ class MemberApiDoc extends AbstractApiDocTest {
     @Test
     void getPubKey() throws Exception{
         MockHttpSession mockHttpSession = new MockHttpSession();
-        given(memberCryptService.generatedCryptKey()).willReturn(RSA.generatedKeyPair());
+        given(generateCryptoKeyService.process()).willReturn(RSA.generatedKeyPair());
 
 
         mockMvc.perform(get("/api/members/code")

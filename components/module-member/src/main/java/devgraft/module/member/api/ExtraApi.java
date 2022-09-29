@@ -8,10 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RestController
 public class ExtraApi {
-    private final ProfileImageProvider profileImageProvider;
 
     @GetMapping("api/extra/dp-image")
     public String getDefaultProfileImage() {
-        return profileImageProvider.create();
+        return ProfileImageProvider.create();
     }
 }

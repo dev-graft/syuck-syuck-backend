@@ -1,6 +1,5 @@
 package devgraft.module.member.query;
 
-import devgraft.module.member.domain.MemberStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 public class MemberDataSpec {
@@ -9,7 +8,7 @@ public class MemberDataSpec {
     }
 
     public static Specification<MemberData> normalEquals() {
-        return (root, query, cb) -> cb.equal(root.get(MemberData_.status), MemberStatus.N);
+        return (root, query, cb) -> cb.equal(root.get(MemberData_.status), MemberDataStatus.N);
     }
 
     public static Specification<MemberData> nameLike(final String keyword) {

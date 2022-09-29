@@ -1,7 +1,11 @@
 package devgraft.module.member.app;
 
 import devgraft.module.member.domain.MemberCryptService;
+import devgraft.module.member.domain.MemberFixture;
+import devgraft.module.member.domain.MemberProvider;
 import devgraft.module.member.domain.MemberRepository;
+import devgraft.module.member.domain.MembershipDecryptedData;
+import devgraft.module.member.domain.MembershipDecryptedDataValidator;
 import devgraft.module.member.domain.Password;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
@@ -22,34 +26,34 @@ import static org.mockito.Mockito.verify;
 
 class MembershipServiceTest {
     private MembershipService membershipService;
-    private DecryptMembershipRequestProvider decryptMembershipRequestProvider;
+    private MembershipDecryptedDataProvider MembershipdecryptedDataProvider;
     private MemberCryptService memberCryptService;
-    private DecryptMembershipRequestValidator decryptMembershipRequestValidator;
+    private MembershipDecryptedDataValidator membershipDecryptedDataValidator;
     private MemberRepository memberRepository;
-    private ProfileImageProvider profileImageProvider;
+    private MemberProvider memberProvider;
+
     @BeforeEach
     void setUp() {
-        decryptMembershipRequestProvider = mock(DecryptMembershipRequestProvider.class);
+        MembershipdecryptedDataProvider = mock(MembershipDecryptedDataProvider.class);
         memberCryptService = mock(MemberCryptService.class);
-        decryptMembershipRequestValidator = mock(DecryptMembershipRequestValidator.class);
+        membershipDecryptedDataValidator = mock(MembershipDecryptedDataValidator.class);
         memberRepository = mock(MemberRepository.class);
-        profileImageProvider = mock(ProfileImageProvider.class);
+        memberProvider = mock(MemberProvider.class);
 
-        given(decryptMembershipRequestProvider.from(any(), any())).willReturn(new DecryptMembershipRequest("", "", "", ""));
+        given(MembershipdecryptedDataProvider.create(any(), any(), any())).willReturn(new MembershipDecryptedData("", "", "", ""));
         given(memberRepository.existsById(any())).willReturn(true);
         given(memberCryptService.hashingPassword(any())).willReturn(Password.from(""));
-        given(profileImageProvider.create()).willReturn("url");
+        given(memberProvider.create(any(), any())).willReturn(MemberFixture.anMember().build());
 
-
-        membershipService = new MembershipService(decryptMembershipRequestProvider, memberCryptService,
-                decryptMembershipRequestValidator, memberRepository, profileImageProvider);
+        membershipService = new MembershipService(MembershipdecryptedDataProvider, memberCryptService,
+                membershipDecryptedDataValidator, memberRepository, memberProvider);
     }
 
     @DisplayName("회원가입 요청이 입력 조건과 맞지 않는 것이 있다면 에러")
     @Test
     void membershipRequestHasError() {
         final EncryptMembershipRequest givenRequest = new EncryptMembershipRequest("", "", "", "");
-        given(decryptMembershipRequestValidator.validate(any())).willReturn(List.of(ValidationError.of("field", "message")));
+        given(membershipDecryptedDataValidator.validate(any())).willReturn(List.of(ValidationError.of("field", "message")));
 
         final ValidationException validationException = catchThrowableOfType(
                 () -> membershipService.membership(givenRequest, null),
