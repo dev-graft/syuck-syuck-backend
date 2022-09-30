@@ -2,6 +2,7 @@ package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.GenerateCryptoKeyService;
+import devgraft.module.member.app.LoginService;
 import devgraft.module.member.app.MembershipService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
@@ -38,14 +39,15 @@ class MemberApiTest extends ObjectMapperTest {
     private MembershipService membershipService;
     private GenerateCryptoKeyService generateCryptoKeyService;
     private MemberDataDao memberDataDao;
-
+    private LoginService loginService;
     @BeforeEach
     void setUp() {
         membershipService = mock(MembershipService.class);
         generateCryptoKeyService = mock(GenerateCryptoKeyService.class);
         memberDataDao = mock(MemberDataDao.class);
+        loginService = mock(LoginService.class);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new MemberApi(membershipService, generateCryptoKeyService, memberDataDao))
+        mockMvc = MockMvcBuilders.standaloneSetup(new MemberApi(membershipService, generateCryptoKeyService, memberDataDao, loginService))
                 .build();
     }
 
@@ -59,7 +61,7 @@ class MemberApiTest extends ObjectMapperTest {
                 "loginId", "password", "nickname", "profileImage"
         );
 
-        mockMvc.perform(post("/api/members/membership")
+        mockMvc.perform(post("/api/v1/members/sign-up")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(getObjectMapper().writeValueAsString(givenRequest))
                         .session(mockHttpSession))
@@ -74,7 +76,7 @@ class MemberApiTest extends ObjectMapperTest {
         final MockHttpSession mockHttpSession = new MockHttpSession();
         given(generateCryptoKeyService.process()).willReturn(RSA.generatedKeyPair());
 
-        mockMvc.perform(get("/api/members/code")
+        mockMvc.perform(get("/api/v1/members/code")
                 .session(mockHttpSession))
                 .andExpect(status().isOk());
 
@@ -86,7 +88,8 @@ class MemberApiTest extends ObjectMapperTest {
     void existsLoginId() throws Exception {
         given(memberDataDao.findOne(any())).willReturn(Optional.empty());
 
-        mockMvc.perform(get("/api/members/check/{loginId}", "loginId"))
+        mockMvc.perform(get("/api/v1/members/duplicate")
+                        .param("loginId", "loginId"))
                 .andExpect(status().isOk())
                 .andExpect(result -> Objects.equals(result, false));
     }
@@ -112,7 +115,7 @@ class MemberApiTest extends ObjectMapperTest {
                 .build();
         given(memberDataDao.findOne(any())).willReturn(Optional.of(givenMemberData));
 
-        mockMvc.perform(get("/api/members/{loginId}", "loginId"))
+        mockMvc.perform(get("/api/v1/members/{loginId}", "loginId"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.loginId", equalTo(givenMemberData.getMemberId())))
                 .andExpect(jsonPath("$.nickname", equalTo(givenMemberData.getNickname())))

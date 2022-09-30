@@ -24,15 +24,16 @@ public class LoginService {
 
     @Transactional
     public void login(final EncryptLoginRequest request, final KeyPair keyPair) {
+        // 복호화
         final LoginDecryptedData loginDecryptedData = loginDecryptedDataProvider.create(memberCryptService, request, keyPair);
-
+        // 검증
         final List<ValidationError> errors = loginDecryptedDataValidator.validate(loginDecryptedData);
         if (!errors.isEmpty()) throw new ValidationException(errors, LOGIN_FAILURE);
-
+        // 조회(아이디, 상태-N기준)
         final Member member = MemberFindHelper.findMember(memberRepository, loginDecryptedData.getLoginId());
-
-        if (!member.match(memberCryptService, loginDecryptedData.getPassword())) throw new PasswordNotMatchException();
-
-
+        // 패스워드 비교 -- 인증 통과
+        if (!member.isMatch(memberCryptService, loginDecryptedData.getPassword())) throw new PasswordNotMatchException();
+        // 인가 정보 생성
+        // 포맷 추가 후 반환
     }
 }

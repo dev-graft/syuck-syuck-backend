@@ -3,6 +3,7 @@ package devgraft.docs;
 import devgraft.module.member.api.MemberApi;
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.GenerateCryptoKeyService;
+import devgraft.module.member.app.LoginService;
 import devgraft.module.member.app.MembershipService;
 import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
@@ -30,6 +31,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -44,6 +46,8 @@ class MemberApiDoc extends AbstractApiDocTest {
     private GenerateCryptoKeyService generateCryptoKeyService;
     @MockBean
     private MemberDataDao memberDataDao;
+    @MockBean
+    private LoginService loginService;
 
     @DisplayName("공개키 발급 요청")
     @Test
@@ -52,7 +56,7 @@ class MemberApiDoc extends AbstractApiDocTest {
         given(generateCryptoKeyService.process()).willReturn(RSA.generatedKeyPair());
 
 
-        mockMvc.perform(get("/api/members/code")
+        mockMvc.perform(get("/api/v1/members/code")
                         .session(mockHttpSession))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -68,12 +72,13 @@ class MemberApiDoc extends AbstractApiDocTest {
     void existsLoginId() throws Exception {
         given(memberDataDao.findOne(any())).willReturn(Optional.of(MemberData.builder().build()));
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/check/{loginId}", "qwerty123"))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/members/duplicate")
+                        .param("loginId" ,"qwerty123"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document.document(
-                        pathParameters(
-                                parameterWithName("loginId").description("회원 ")
+                        requestParameters(
+                                parameterWithName("loginId").description("회원 아이디")
                         ),
                         responseFields.and(
                                 fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("아이디 존재 여부 결과(True=존재/False=존재안함)")
@@ -93,7 +98,7 @@ class MemberApiDoc extends AbstractApiDocTest {
                 "qwerty123", encryptPwd, "nickname", "profileImage"
         );
 
-        mockMvc.perform(post("/api/members/membership")
+        mockMvc.perform(post("/api/v1/members/sign-up")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(getObjectMapper().writeValueAsString(givenRequest))
                         .session(mockHttpSession))
@@ -122,7 +127,7 @@ class MemberApiDoc extends AbstractApiDocTest {
                 .stateMessage("좋은 날이에요!!")
                 .build()));
 
-        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/members/{loginId}", "qwerty123"))
+        mockMvc.perform(RestDocumentationRequestBuilders.get("/api/v1/members/{loginId}", "qwerty123"))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andDo(document.document(

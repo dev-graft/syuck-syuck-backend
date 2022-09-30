@@ -22,7 +22,7 @@ operation::member-api-doc/membership[snippets='curl-request,request-fields']
 operation::member-api-doc/membership[snippets='http-response,response-fields']
 
 == 아이디 존재 여부
-operation::member-api-doc/exists-login-id[snippets='curl-request,path-parameters']
+operation::member-api-doc/exists-login-id[snippets='curl-request,request-parameters']
 operation::member-api-doc/exists-login-id[snippets='http-response,response-fields']
 
 

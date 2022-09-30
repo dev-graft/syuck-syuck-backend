@@ -1,7 +1,9 @@
 package devgraft.module.member.api;
 
+import devgraft.module.member.app.EncryptLoginRequest;
 import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.GenerateCryptoKeyService;
+import devgraft.module.member.app.LoginService;
 import devgraft.module.member.app.MembershipService;
 import devgraft.module.member.app.NotFoundMemberException;
 import devgraft.module.member.query.MemberData;
@@ -10,10 +12,12 @@ import devgraft.module.member.query.MemberDataSpec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,7 +26,7 @@ import java.security.KeyPair;
 import java.util.Base64;
 import java.util.Optional;
 
-@RequestMapping("api/members")
+@RequestMapping("api/v1/members")
 @RequiredArgsConstructor
 @RestController
 public class MemberApi {
@@ -30,9 +34,16 @@ public class MemberApi {
     private final MembershipService membershipService;
     private final GenerateCryptoKeyService generateCryptoKeyService;
     private final MemberDataDao memberDataDao;
+    private final LoginService loginService;
+
+    @GetMapping("duplicate")
+    public boolean isExistsLoginId(@RequestParam(name = "loginId") String loginId) {
+        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+                .and(MemberDataSpec.normalEquals())).isPresent();
+    }
 
     @ResponseStatus(code = HttpStatus.CREATED)
-    @PostMapping("membership")
+    @PostMapping("sign-up")
     public String membership(@RequestBody final EncryptMembershipRequest request, final HttpSession httpSession) {
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
                 .orElseThrow(NotIssuedPublicKeyException::new);
@@ -40,17 +51,19 @@ public class MemberApi {
         return "환영합니다!";
     }
 
+    @PostMapping("sign-in")
+    public void login(@RequestBody final EncryptLoginRequest request, final HttpSession httpSession) {
+        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
+                .orElseThrow(NotIssuedPublicKeyException::new);
+
+        loginService.login(request, keyPair);
+    }
+
     @GetMapping("code")
     public String getPubKey(HttpSession httpSession) {
         final KeyPair keyPair = generateCryptoKeyService.process();
         httpSession.setAttribute(KEY_PAIR, keyPair);
         return Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-    }
-
-    @GetMapping("check/{loginId}")
-    public boolean isExistsLoginId(@PathVariable(name = "loginId") String loginId) {
-        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
-                .and(MemberDataSpec.normalEquals())).isPresent();
     }
 
     @GetMapping("{loginId}")
@@ -67,13 +80,9 @@ public class MemberApi {
                 .build();
     }
 
-    // 로그인
-    @PostMapping("login")
-    public void memberLogin() {
-        // ~~ 로그인 과정 이후
-        // 토큰 발급
-
-        // 여기서 토큰 할당
-    }
     // 정보수정
+    @PatchMapping("{loginId}")
+    public void updateMemberProfile() {
+
+    }
 }

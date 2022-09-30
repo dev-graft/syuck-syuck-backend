@@ -20,7 +20,7 @@ public class Password {
         return new Password(value);
     }
 
-    public boolean match(final String password) {
+    public boolean isMatch(final String password) {
         return this.value.equals(password);
     }
 }

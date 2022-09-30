@@ -35,24 +35,12 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private MemberStatus status;
 
-    public static Member of(final MemberId memberId, final Password password, final String nickname,
-                            final String profileImage, final String stateMessage, final MemberStatus memberStatus) {
-        return builder()
-                .id(memberId)
-                .password(password)
-                .nickname(nickname)
-                .profileImage(profileImage)
-                .stateMessage(stateMessage)
-                .status(memberStatus)
-                .build();
-    }
-
     public boolean isLeave() {
         return status.isLeave();
     }
 
-    public boolean match(final MemberCryptService memberCryptService, final String pwd) {
+    public boolean isMatch(final MemberCryptService memberCryptService, final String pwd) {
         final Password hashingPwd = memberCryptService.hashingPassword(pwd);
-        return password.match(hashingPwd.getValue());
+        return password.isMatch(hashingPwd.getValue());
     }
 }
