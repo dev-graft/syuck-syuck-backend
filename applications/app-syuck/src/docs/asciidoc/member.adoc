@@ -1,0 +1,36 @@
+= Member APIs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-curl-request-title: 요청 예시
+:operation-request-parameters-title: 요청 파라미터
+:operation-path-parameters-title: 경로 파라미터
+:operation-request-fields-title: 요청 필드
+:operation-http-response-title: 결과 예시
+:operation-response-fields-title: 결과 필드
+
+
+== 공개키 요청
+operation::member-api-doc/get-pub-key[snippets='curl-request']
+operation::member-api-doc/get-pub-key[snippets='http-response,response-fields']
+
+== 회원가입
+operation::member-api-doc/membership[snippets='curl-request,request-fields']
+operation::member-api-doc/membership[snippets='http-response,response-fields']
+
+== 아이디 존재 여부
+operation::member-api-doc/exists-login-id[snippets='curl-request,request-parameters']
+operation::member-api-doc/exists-login-id[snippets='http-response,response-fields']
+
+
+//== 로그인
+//operation::member-api-doc/login[snippets='curl-request,request-fields']
+//operation::member-api-doc/login[snippets='http-response,response-fields']
+
+
+== 프로필 조회
+operation::member-api-doc/get-member-profile[snippets='curl-request,path-parameters']
+operation::member-api-doc/get-member-profile[snippets='http-response,response-fields']
