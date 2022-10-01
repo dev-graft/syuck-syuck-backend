@@ -2,7 +2,7 @@ package devgraft.code.api;
 
 import devgraft.member.domain.MemberPasswordService;
 import devgraft.support.advice.SingleResult;
-import devgraft.support.crypt.MD5;
+import devgraft.support.crypto.MD5;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
