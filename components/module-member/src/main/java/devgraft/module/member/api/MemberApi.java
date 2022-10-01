@@ -1,7 +1,6 @@
 package devgraft.module.member.api;
 
 import devgraft.module.member.app.EncryptLoginRequest;
-import devgraft.module.member.app.EncryptMembershipRequest;
 import devgraft.module.member.app.GenerateCryptoKeyService;
 import devgraft.module.member.app.LoginService;
 import devgraft.module.member.app.MembershipService;
@@ -10,15 +9,12 @@ import devgraft.module.member.query.MemberData;
 import devgraft.module.member.query.MemberDataDao;
 import devgraft.module.member.query.MemberDataSpec;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
@@ -42,14 +38,14 @@ public class MemberApi {
                 .and(MemberDataSpec.normalEquals())).isPresent();
     }
 
-    @ResponseStatus(code = HttpStatus.CREATED)
-    @PostMapping("sign-up")
-    public String membership(@RequestBody final EncryptMembershipRequest request, final HttpSession httpSession) {
-        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
-                .orElseThrow(NotIssuedPublicKeyException::new);
-        membershipService.membership(request, keyPair);
-        return "환영합니다!";
-    }
+//    @ResponseStatus(code = HttpStatus.CREATED)
+//    @PostMapping("sign-up")
+//    public String membership(@RequestBody final EncryptMembershipRequest request, final HttpSession httpSession) {
+//        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
+//                .orElseThrow(NotIssuedPublicKeyException::new);
+//        membershipService.membership(request, keyPair);
+//        return "환영합니다!";
+//    }
 
     @PostMapping("sign-in")
     public void login(@RequestBody final EncryptLoginRequest request, final HttpSession httpSession) {
@@ -80,9 +76,9 @@ public class MemberApi {
                 .build();
     }
 
-    // 정보수정
-    @PatchMapping("{loginId}")
-    public void updateMemberProfile() {
-
-    }
+//    // 정보수정
+//    @PatchMapping("{loginId}")
+//    public void updateMemberProfile() {
+//
+//    }
 }

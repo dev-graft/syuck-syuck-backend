@@ -1,4 +1,4 @@
-package devgraft.module.member.auth.app;
+package devgraft.module.auth.app;
 
 public class AuthService {
     /**

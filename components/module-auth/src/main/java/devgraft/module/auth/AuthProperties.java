@@ -1,4 +1,4 @@
-package devgraft.module.member.auth;
+package devgraft.module.auth;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
