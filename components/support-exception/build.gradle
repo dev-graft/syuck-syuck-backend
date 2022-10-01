@@ -1,0 +1,3 @@
+dependencies {
+    api 'org.springframework:spring-webmvc:5.3.20'
+}
