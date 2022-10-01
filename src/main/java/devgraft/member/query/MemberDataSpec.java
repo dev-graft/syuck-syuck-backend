@@ -1,6 +1,5 @@
 package devgraft.member.query;
 
-import devgraft.member.domain.MemberStatus;
 import org.springframework.data.jpa.domain.Specification;
 
 public class MemberDataSpec {

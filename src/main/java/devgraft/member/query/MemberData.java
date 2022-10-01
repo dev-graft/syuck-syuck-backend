@@ -1,6 +1,5 @@
 package devgraft.member.query;
 
-import devgraft.member.domain.MemberStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

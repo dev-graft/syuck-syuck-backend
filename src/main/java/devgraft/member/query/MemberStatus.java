@@ -1,4 +1,4 @@
-package devgraft.member.domain;
+package devgraft.member.query;
 
 public enum MemberStatus {
     N

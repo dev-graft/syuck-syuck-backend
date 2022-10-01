@@ -1,7 +1,5 @@
 package devgraft.member.query;
 
-import devgraft.member.domain.MemberStatus;
-
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
