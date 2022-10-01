@@ -1,4 +1,4 @@
-package devgraft.support.objectmapper;
+package devgraft.support.mapper;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

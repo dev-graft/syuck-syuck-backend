@@ -1,4 +1,4 @@
-package devgraft.support.objectmapper;
+package devgraft.support.mapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
