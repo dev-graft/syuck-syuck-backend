@@ -3,7 +3,7 @@ package devgraft.local;
 import devgraft.member.app.MembershipRequest;
 import devgraft.member.app.MembershipService;
 import devgraft.member.domain.MemberPasswordService;
-import devgraft.support.crypt.RSA;
+import devgraft.support.crypto.RSA;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;

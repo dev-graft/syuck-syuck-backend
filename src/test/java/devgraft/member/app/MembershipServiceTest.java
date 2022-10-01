@@ -3,7 +3,7 @@ package devgraft.member.app;
 import devgraft.member.domain.Member;
 import devgraft.member.domain.MemberPasswordService;
 import devgraft.member.domain.SpyMemberRepository;
-import devgraft.support.crypt.RSA;
+import devgraft.support.crypto.RSA;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
 import org.assertj.core.api.Assertions;

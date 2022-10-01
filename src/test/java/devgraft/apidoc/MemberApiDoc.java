@@ -6,7 +6,7 @@ import devgraft.member.app.MemberIds;
 import devgraft.member.app.MembershipService;
 import devgraft.member.query.MemberData;
 import devgraft.member.query.MemberDataDao;
-import devgraft.support.crypt.RSA;
+import devgraft.support.crypto.RSA;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

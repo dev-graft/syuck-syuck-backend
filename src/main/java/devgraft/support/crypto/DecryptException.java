@@ -1,4 +1,4 @@
-package devgraft.support.crypt;
+package devgraft.support.crypto;
 
 import org.springframework.http.HttpStatus;
 

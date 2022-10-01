@@ -2,7 +2,7 @@ package devgraft.apidoc;
 
 import devgraft.code.api.CodeApi;
 import devgraft.member.domain.MemberPasswordService;
-import devgraft.support.crypt.RSA;
+import devgraft.support.crypto.RSA;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
