@@ -13,7 +13,7 @@ import javax.persistence.Embeddable;
 @Embeddable
 @Getter
 public class Password {
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String value;
 
     public static Password from(final String value) {
