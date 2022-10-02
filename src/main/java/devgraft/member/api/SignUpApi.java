@@ -25,7 +25,7 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 @RequiredArgsConstructor
 @RestController
 public class SignUpApi {
-    protected final static String KEY_PAIR = "M_K_P";
+    protected static final String KEY_PAIR = "M_K_P";
     private final SignUpService signUpService;
 
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -34,7 +34,7 @@ public class SignUpApi {
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
                 .orElseThrow(NotIssuedPublicKeyException::new);
 
-        JsonLogger.logI(log, "SignService:signUp \nPubKey: {} | PriKey: {} \nrequest: {}",
+        JsonLogger.logI(log, "SignUpApi.signUp \nPubKey: {} | PriKey: {} \nrequest: {}",
                 Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()),
                 Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()),
                 request);
@@ -48,6 +48,10 @@ public class SignUpApi {
     public String getPubKey(HttpSession httpSession) {
         final KeyPair keyPair = signUpService.generatedSignUpCode();
         httpSession.setAttribute(KEY_PAIR, keyPair);
-        return Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        final String enKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+
+        JsonLogger.logI(log, "SignUpApi.getPubKey Response: {}", enKey);
+
+        return enKey;
     }
 }
