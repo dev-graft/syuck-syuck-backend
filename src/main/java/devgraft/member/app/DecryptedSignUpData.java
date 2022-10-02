@@ -1,15 +1,13 @@
-package devgraft.member.api;
+package devgraft.member.app;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 
-@Builder
 @AllArgsConstructor
 @Getter
-public class MemberProfileGetResult {
+public class DecryptedSignUpData {
     private final String loginId;
+    private final String password;
     private final String nickname;
     private final String profileImage;
-    private final String stateMessage;
 }

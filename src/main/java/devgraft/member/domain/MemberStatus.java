@@ -1,15 +1,16 @@
 package devgraft.member.domain;
 
 public enum MemberStatus {
-    N
-    , L {
+    N,
+    L {
         @Override
         public boolean isLeave() {
-            return true;
+            return  true;
         }
     };
 
     public boolean isLeave() {
         return false;
     }
+
 }

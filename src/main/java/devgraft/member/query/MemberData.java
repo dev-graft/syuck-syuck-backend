@@ -1,6 +1,5 @@
 package devgraft.member.query;
 
-import devgraft.member.domain.MemberStatus;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,10 +21,8 @@ import javax.persistence.Table;
 @Getter
 public class MemberData {
     @Id
-    @Column(name = "id")
-    private Long id;
-    @Column(name = "logged_id")
-    private String loggedId;
+    @Column(name = "member_id")
+    private String memberId;
     @Column(name = "nickname")
     private String nickname;
     @Column(name = "profile_image")
@@ -34,5 +31,5 @@ public class MemberData {
     private String stateMessage;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private MemberStatus status;
+    private MemberDataStatus status;
 }
