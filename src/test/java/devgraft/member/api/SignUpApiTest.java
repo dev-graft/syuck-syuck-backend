@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.security.KeyPair;
 import java.util.Base64;
 
+import static devgraft.common.StrConstant.SIGN_UP_KEY_PAIR;
 import static devgraft.common.URLPrefix.API_PREFIX;
 import static devgraft.common.URLPrefix.MEMBER_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
@@ -107,13 +108,13 @@ class SignUpApiTest extends ObjectMapperTest {
 
     private MockHttpSession getMockHttpSession() {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(SignUpApi.KEY_PAIR, KeyPairFixture.anKeyPair());
+        mockHttpSession.setAttribute(SIGN_UP_KEY_PAIR, KeyPairFixture.anKeyPair());
         return mockHttpSession;
     }
 
     private MockHttpSession getMockHttpSession(final KeyPair keyPair) {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(SignUpApi.KEY_PAIR, keyPair);
+        mockHttpSession.setAttribute(SIGN_UP_KEY_PAIR, keyPair);
         return mockHttpSession;
     }
 }

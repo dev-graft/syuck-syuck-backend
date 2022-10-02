@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 @Builder
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class EncryptedSignUpRequest {

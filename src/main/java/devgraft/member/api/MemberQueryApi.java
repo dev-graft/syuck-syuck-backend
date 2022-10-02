@@ -14,10 +14,10 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 
 @RequiredArgsConstructor
 @RestController
-public class MemberFindApi {
+public class MemberQueryApi {
     private final MemberDataDao memberDataDao;
 
-    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/duplicate")
+    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/exists")
     public boolean isExistsLoginId(@RequestParam(name = "loginId") String loginId) {
         return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
                 .and(MemberDataSpec.normalEquals())).isPresent();

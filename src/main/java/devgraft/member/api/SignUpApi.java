@@ -17,6 +17,7 @@ import java.security.KeyPair;
 import java.util.Base64;
 import java.util.Optional;
 
+import static devgraft.common.StrConstant.SIGN_UP_KEY_PAIR;
 import static devgraft.common.URLPrefix.API_PREFIX;
 import static devgraft.common.URLPrefix.MEMBER_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
@@ -25,13 +26,12 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 @RequiredArgsConstructor
 @RestController
 public class SignUpApi {
-    protected static final String KEY_PAIR = "M_K_P";
     private final SignUpService signUpService;
 
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-up")
     public String signUp(@RequestBody final EncryptedSignUpRequest request, final HttpSession httpSession) {
-        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(KEY_PAIR))
+        final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(SIGN_UP_KEY_PAIR))
                 .orElseThrow(NotIssuedPublicKeyException::new);
 
         JsonLogger.logI(log, "SignUpApi.signUp \nPubKey: {} | PriKey: {} \nrequest: {}",
@@ -45,9 +45,9 @@ public class SignUpApi {
     }
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code")
-    public String getPubKey(HttpSession httpSession) {
+    public String getSignUpCode(final HttpSession httpSession) {
         final KeyPair keyPair = signUpService.generatedSignUpCode();
-        httpSession.setAttribute(KEY_PAIR, keyPair);
+        httpSession.setAttribute(SIGN_UP_KEY_PAIR, keyPair);
         final String enKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
 
         JsonLogger.logI(log, "SignUpApi.getPubKey Response: {}", enKey);
