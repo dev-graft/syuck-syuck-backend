@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.KeyPair;
+import java.util.Base64;
 
-import static devgraft.common.StrConstant.KEY_PAIR;
 import static devgraft.common.URLPrefix.API_PREFIX;
 import static devgraft.common.URLPrefix.MEMBER_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
@@ -24,9 +24,11 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,6 +44,17 @@ class SignUpApiTest extends ObjectMapperTest {
         mockMvc = MockMvcBuilders.standaloneSetup(new SignUpApi(mockSignUpService))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @DisplayName("회원가입 공개키 요청 결과")
+    @Test
+    void getPubKey_returnValue() throws Exception {
+        final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
+        given(mockSignUpService.generatedSignUpCode()).willReturn(givenKeyPair);
+
+        mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", equalTo(Base64.getEncoder().encodeToString(givenKeyPair.getPublic().getEncoded()))));
     }
 
     @DisplayName("회원가입 결과 HttpStatus.Created")
@@ -94,13 +107,13 @@ class SignUpApiTest extends ObjectMapperTest {
 
     private MockHttpSession getMockHttpSession() {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(KEY_PAIR, KeyPairFixture.anKeyPair());
+        mockHttpSession.setAttribute(SignUpApi.KEY_PAIR, KeyPairFixture.anKeyPair());
         return mockHttpSession;
     }
 
     private MockHttpSession getMockHttpSession(final KeyPair keyPair) {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(KEY_PAIR, keyPair);
+        mockHttpSession.setAttribute(SignUpApi.KEY_PAIR, keyPair);
         return mockHttpSession;
     }
 }

@@ -6,6 +6,7 @@ import devgraft.member.app.SignUpService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -16,7 +17,6 @@ import java.security.KeyPair;
 import java.util.Base64;
 import java.util.Optional;
 
-import static devgraft.common.StrConstant.KEY_PAIR;
 import static devgraft.common.URLPrefix.API_PREFIX;
 import static devgraft.common.URLPrefix.MEMBER_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
@@ -25,6 +25,7 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 @RequiredArgsConstructor
 @RestController
 public class SignUpApi {
+    protected final static String KEY_PAIR = "M_K_P";
     private final SignUpService signUpService;
 
     @ResponseStatus(code = HttpStatus.CREATED)
@@ -41,5 +42,12 @@ public class SignUpApi {
         signUpService.signUp(request, keyPair);
 
         return "Success";
+    }
+
+    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code")
+    public String getPubKey(HttpSession httpSession) {
+        final KeyPair keyPair = signUpService.generatedSignUpCode();
+        httpSession.setAttribute(KEY_PAIR, keyPair);
+        return Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
     }
 }

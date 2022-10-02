@@ -5,9 +5,8 @@ import org.springframework.stereotype.Component;
 import java.security.KeyPair;
 
 @Component
-public class DecryptedSignUpDataProvider {
-
-    public DecryptedSignUpData create(final EncryptedSignUpRequest request, final KeyPair keyPair) {
+public class SignUpRequestDecoder {
+    public DecryptedSignUpData decrypt(final EncryptedSignUpRequest request, final KeyPair keyPair) {
         return null;
     }
 }

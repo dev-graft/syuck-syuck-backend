@@ -2,6 +2,7 @@ package devgraft.member.app;
 
 import devgraft.member.domain.AlreadyExistsMemberIdException;
 import devgraft.member.domain.Member;
+import devgraft.member.domain.MemberCryptoService;
 import devgraft.member.domain.MemberFixture;
 import devgraft.member.domain.MemberId;
 import devgraft.member.domain.MemberRepository;
@@ -30,25 +31,26 @@ import static org.mockito.Mockito.verify;
 
 class SignUpServiceTest {
     private SignUpService signUpService;
-    private DecryptedSignUpDataProvider mockDecryptedSignUpDataProvider;
+    private SignUpRequestDecoder mockSignUpRequestDecoder;
     private DecryptedSignUpDataValidator mockDecryptedSignUpDataValidator;
     private MemberRepository mockMemberRepository;
     private MemberProvider mockMemberProvider;
+    private MemberCryptoService mockMemberCryptoService;
     @BeforeEach
     void setUp() {
-        mockDecryptedSignUpDataProvider = mock(DecryptedSignUpDataProvider.class);
+        mockSignUpRequestDecoder = mock(SignUpRequestDecoder.class);
         mockDecryptedSignUpDataValidator = mock(DecryptedSignUpDataValidator.class);
         mockMemberRepository = mock(MemberRepository.class);
         mockMemberProvider = mock(MemberProvider.class);
+        mockMemberCryptoService = mock(MemberCryptoService.class);
 
-        given(mockDecryptedSignUpDataProvider.create(any(), any()))
+        given(mockSignUpRequestDecoder.decrypt(any(), any()))
                 .willReturn(new DecryptedSignUpData("loginId", "password", "nickname", "profileImage"));
         given(mockMemberRepository.existsById(any())).willReturn(false);
         given(mockMemberProvider.create(any()))
                 .willReturn(MemberFixture.anMember().build());
 
-
-        signUpService = new SignUpService(mockDecryptedSignUpDataProvider, mockDecryptedSignUpDataValidator, mockMemberRepository, mockMemberProvider);
+        signUpService = new SignUpService(mockSignUpRequestDecoder, mockDecryptedSignUpDataValidator, mockMemberRepository, mockMemberProvider, mockMemberCryptoService);
     }
 
     @DisplayName("회원가입 요청문(암호) 복호화 요청하는지 검사")
@@ -59,7 +61,7 @@ class SignUpServiceTest {
 
         signUpService.signUp(givenRequest, givenKeyPair);
 
-        verify(mockDecryptedSignUpDataProvider, times(1)).create(refEq(givenRequest), eq(givenKeyPair));
+        verify(mockSignUpRequestDecoder, times(1)).decrypt(refEq(givenRequest), eq(givenKeyPair));
     }
 
     @DisplayName("회원가입 요청문(복호화) 정규식에 알맞지 않은 내용 예외처리")
@@ -107,5 +109,16 @@ class SignUpServiceTest {
         signUpService.signUp(givenRequest, givenKeyPair);
 
         verify(mockMemberRepository, times(1)).save(refEq(givenMember));
+    }
+
+    @DisplayName("회원가입용 키 생성 요청")
+    @Test
+    void generatedSignUpCode_wasCall_generatedCryptKey_To_MemberCryptoService() {
+        final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
+        given(mockMemberCryptoService.generatedCryptKey()).willReturn(givenKeyPair);
+
+        final KeyPair result = signUpService.generatedSignUpCode();
+
+        assertThat(result).isEqualTo(givenKeyPair);
     }
 }
