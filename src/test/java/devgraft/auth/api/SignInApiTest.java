@@ -2,6 +2,7 @@ package devgraft.auth.api;
 
 import devgraft.auth.app.EncryptedSignInRequest;
 import devgraft.auth.app.EncryptedSignInRequestFixture;
+import devgraft.auth.app.SignInCodeService;
 import devgraft.auth.app.SignInService;
 import devgraft.support.crypto.KeyPairFixture;
 import devgraft.support.mapper.ObjectMapperTest;
@@ -37,23 +38,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class SignInApiTest extends ObjectMapperTest {
     private MockMvc mockMvc;
+    private SignInCodeService mockSignInCodeService;
     private SignInService mockSignInService;
 
     @BeforeEach
     void setUp() {
+        mockSignInCodeService = mock(SignInCodeService.class);
         mockSignInService = mock(SignInService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new SignInApi(mockSignInService))
+        mockMvc = MockMvcBuilders.standaloneSetup(new SignInApi(mockSignInCodeService, mockSignInService))
                 .alwaysDo(print())
                 .build();
+    }
+
+    @DisplayName("로그인 공개키 요청 서비스 호출 검사")
+    @Test
+    void getSignInCode_wasCall_generateSignInCodeToService() throws Exception {
+        final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
+        given(mockSignInCodeService.generateSignInCode()).willReturn(givenKeyPair);
+
+        requestGetSignInCode();
+
+        verify(mockSignInCodeService, times(1)).generateSignInCode();
     }
 
     @DisplayName("로그인 공개키 요청 결과")
     @Test
     void getSignInCode_returnValue() throws Exception {
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
-        given(mockSignInService.generatedSignCode()).willReturn(givenKeyPair);
+        given(mockSignInCodeService.generateSignInCode()).willReturn(givenKeyPair);
 
-        mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code"))
+        requestGetSignInCode()
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", equalTo(Base64.getEncoder().encodeToString(givenKeyPair.getPublic().getEncoded()))));
     }
@@ -63,7 +77,7 @@ class SignInApiTest extends ObjectMapperTest {
     void signIn_return_OkHttpStatus() throws Exception {
         final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
 
-        requestSignUp(getMockHttpSession(), givenRequest)
+        requestSignIn(getMockHttpSession(), givenRequest)
                 .andExpect(status().isOk());
     }
 
@@ -72,7 +86,7 @@ class SignInApiTest extends ObjectMapperTest {
     void signIn_throw_NotIssuedSignInCodeException() throws Exception {
         final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
 
-        requestSignUp(new MockHttpSession(), givenRequest)
+        requestSignIn(new MockHttpSession(), givenRequest)
                 .andExpect(status().is4xxClientError())
                 .andExpect(result ->
                         assertTrue(result.getResolvedException() instanceof NotIssuedSignInCodeException))
@@ -85,15 +99,19 @@ class SignInApiTest extends ObjectMapperTest {
         final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
 
-        requestSignUp(getMockHttpSession(givenKeyPair), givenRequest);
+        requestSignIn(getMockHttpSession(givenKeyPair), givenRequest);
 
         verify(mockSignInService, times(1)).signIn(refEq(givenRequest), eq(givenKeyPair));
     }
 
-    private ResultActions requestSignUp(final MockHttpSession session, EncryptedSignInRequest givenRequest) throws Exception {
-        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX +"/sign-in")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(getObjectMapper().writeValueAsString(givenRequest))
+    private ResultActions requestGetSignInCode() throws Exception {
+        return mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code"));
+    }
+
+    private ResultActions requestSignIn(final MockHttpSession session, EncryptedSignInRequest givenRequest) throws Exception {
+        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-in")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(getObjectMapper().writeValueAsString(givenRequest))
                 .session(session));
     }
 
