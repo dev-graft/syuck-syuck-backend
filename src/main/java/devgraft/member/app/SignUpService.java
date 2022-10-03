@@ -38,6 +38,6 @@ public class SignUpService {
     }
 
     public KeyPair generatedSignUpCode() {
-        return memberCryptoService.generatedCryptKey();
+        return memberCryptoService.generatedCryptoKey();
     }
 }
