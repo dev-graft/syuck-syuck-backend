@@ -1,8 +1,8 @@
-package devgraft.member.api;
+package devgraft.auth.api;
 
-import devgraft.member.app.EncryptedSignUpRequest;
-import devgraft.member.app.EncryptedSignUpRequestFixture;
-import devgraft.member.app.SignUpService;
+import devgraft.auth.app.EncryptedSignInRequest;
+import devgraft.auth.app.EncryptedSignInRequestFixture;
+import devgraft.auth.app.SignInService;
 import devgraft.support.crypto.KeyPairFixture;
 import devgraft.support.mapper.ObjectMapperTest;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +17,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.security.KeyPair;
 import java.util.Base64;
 
-import static devgraft.common.StrConstant.SIGN_UP_KEY_PAIR;
+import static devgraft.common.StrConstant.SIGN_IN_KEY_PAIR;
 import static devgraft.common.URLPrefix.API_PREFIX;
-import static devgraft.common.URLPrefix.MEMBER_URL_PREFIX;
+import static devgraft.common.URLPrefix.AUTH_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,73 +35,63 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class SignUpApiTest extends ObjectMapperTest {
+class SignInApiTest extends ObjectMapperTest {
     private MockMvc mockMvc;
-    private SignUpService mockSignUpService;
+    private SignInService mockSignInService;
 
     @BeforeEach
     void setUp() {
-        mockSignUpService = mock(SignUpService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new SignUpApi(mockSignUpService))
+        mockSignInService = mock(SignInService.class);
+        mockMvc = MockMvcBuilders.standaloneSetup(new SignInApi(mockSignInService))
                 .alwaysDo(print())
                 .build();
     }
 
-    @DisplayName("회원가입 공개키 요청 결과")
+    @DisplayName("로그인 공개키 요청 결과")
     @Test
-    void getPubKey_returnValue() throws Exception {
+    void getSignInCode_returnValue() throws Exception {
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
-        given(mockSignUpService.generatedSignUpCode()).willReturn(givenKeyPair);
+        given(mockSignInService.generatedSignCode()).willReturn(givenKeyPair);
 
-        mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code"))
+        mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", equalTo(Base64.getEncoder().encodeToString(givenKeyPair.getPublic().getEncoded()))));
     }
 
-    @DisplayName("회원가입 결과 HttpStatus.Created")
+    @DisplayName("로그인 요청 status-ok")
     @Test
-    void signUp_returnCreatedHttpStatus() throws Exception {
-        final EncryptedSignUpRequest givenRequest = EncryptedSignUpRequestFixture.anRequest().build();
+    void signIn_return_OkHttpStatus() throws Exception {
+        final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
 
         requestSignUp(getMockHttpSession(), givenRequest)
-                .andExpect(status().isCreated());
+                .andExpect(status().isOk());
     }
 
-    @DisplayName("회원가입 요청 전 공개키 발급이 되지 않아 예외처리")
+    @DisplayName("로그인 요청 전 공개키 발급이 되지 않아 예외처리")
     @Test
-    void signUp_throw_NotIssuedPublicKeyException() throws Exception {
-        final EncryptedSignUpRequest givenRequest = EncryptedSignUpRequestFixture.anRequest().build();
+    void signIn_throw_NotIssuedSignInCodeException() throws Exception {
+        final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
 
         requestSignUp(new MockHttpSession(), givenRequest)
                 .andExpect(status().is4xxClientError())
                 .andExpect(result ->
-                        assertTrue(result.getResolvedException() instanceof NotIssuedSignUpCodeException))
+                        assertTrue(result.getResolvedException() instanceof NotIssuedSignInCodeException))
         ;
     }
 
-    @DisplayName("회원가입 요청문(암호) 서비스 전달")
+    @DisplayName("로그인 요청문(암호) 로그인 서비스 전달")
     @Test
-    void signUp_passesEncryptedSignUpRequestToSinUpService() throws Exception {
-        final EncryptedSignUpRequest givenRequest = EncryptedSignUpRequestFixture.anRequest().build();
+    void signIn_passes_EncryptedSignInRequestToSignInService() throws Exception {
+        final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
 
         requestSignUp(getMockHttpSession(givenKeyPair), givenRequest);
 
-        verify(mockSignUpService, times(1)).signUp(refEq(givenRequest), eq(givenKeyPair));
+        verify(mockSignInService, times(1)).signIn(refEq(givenRequest), eq(givenKeyPair));
     }
 
-    @DisplayName("회원가입 결과")
-    @Test
-    void signUp_returnValue() throws Exception {
-        final EncryptedSignUpRequest givenRequest = EncryptedSignUpRequestFixture.anRequest().build();
-
-        requestSignUp(getMockHttpSession(), givenRequest)
-                .andExpect(jsonPath("$", equalTo("Success")))
-        ;
-    }
-
-    private ResultActions requestSignUp(final MockHttpSession session, final EncryptedSignUpRequest givenRequest) throws Exception {
-        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-up")
+    private ResultActions requestSignUp(final MockHttpSession session, EncryptedSignInRequest givenRequest) throws Exception {
+        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX +"/sign-in")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(getObjectMapper().writeValueAsString(givenRequest))
                 .session(session));
@@ -109,13 +99,13 @@ class SignUpApiTest extends ObjectMapperTest {
 
     private MockHttpSession getMockHttpSession() {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(SIGN_UP_KEY_PAIR, KeyPairFixture.anKeyPair());
+        mockHttpSession.setAttribute(SIGN_IN_KEY_PAIR, KeyPairFixture.anKeyPair());
         return mockHttpSession;
     }
 
     private MockHttpSession getMockHttpSession(final KeyPair keyPair) {
         final MockHttpSession mockHttpSession = new MockHttpSession();
-        mockHttpSession.setAttribute(SIGN_UP_KEY_PAIR, keyPair);
+        mockHttpSession.setAttribute(SIGN_IN_KEY_PAIR, keyPair);
         return mockHttpSession;
     }
 }
