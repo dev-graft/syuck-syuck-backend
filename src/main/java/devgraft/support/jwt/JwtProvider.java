@@ -16,7 +16,7 @@ import java.util.Date;
 public class JwtProvider {
     private final Key signKey;
     public JwtProvider() {
-        final String secret = Base64.getEncoder().encodeToString("DKJQFNSKDLNH@IU".getBytes(StandardCharsets.UTF_8));
+        final String secret = Base64.getEncoder().encodeToString("sdAD@grdASFhjtGSFWE4@1@RFSDF23esa".getBytes(StandardCharsets.UTF_8));
         signKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
     // JWT 발급
@@ -24,6 +24,7 @@ public class JwtProvider {
         final String accessToken = _issue(Jwts.claims(), 600L);
         final Claims refreshClaims = Jwts.claims();
         refreshClaims.put("uniqId", request.getUniqId());
+        refreshClaims.put("access", accessToken);
         final String refreshToken = _issue(refreshClaims, 2592000L);
         return JwtIssuedResult.of(accessToken, refreshToken);
     }
