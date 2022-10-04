@@ -2,7 +2,6 @@ package devgraft.member.app;
 
 import devgraft.member.domain.AlreadyExistsMemberIdException;
 import devgraft.member.domain.Member;
-import devgraft.member.domain.MemberCryptoService;
 import devgraft.member.domain.MemberRepository;
 import devgraft.support.exception.ValidationError;
 import devgraft.support.exception.ValidationException;
@@ -21,7 +20,6 @@ public class SignUpService {
     private final DecryptedSignUpDataValidator decryptedSignUpDataValidator;
     private final MemberRepository memberRepository;
     private final MemberProvider memberProvider;
-    private final MemberCryptoService memberCryptoService;
 
     public void signUp(final EncryptedSignUpRequest request, final KeyPair keyPair) {
         final DecryptedSignUpData decryptedSignUpData = signUpRequestDecoder.decrypt(request, keyPair);
@@ -35,9 +33,5 @@ public class SignUpService {
 
         final Member member = memberProvider.create(decryptedSignUpData);
         memberRepository.save(member);
-    }
-
-    public KeyPair generatedSignUpCode() {
-        return memberCryptoService.generatedCryptKey();
     }
 }

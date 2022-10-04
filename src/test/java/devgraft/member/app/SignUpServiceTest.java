@@ -2,7 +2,6 @@ package devgraft.member.app;
 
 import devgraft.member.domain.AlreadyExistsMemberIdException;
 import devgraft.member.domain.Member;
-import devgraft.member.domain.MemberCryptoService;
 import devgraft.member.domain.MemberFixture;
 import devgraft.member.domain.MemberId;
 import devgraft.member.domain.MemberRepository;
@@ -35,14 +34,13 @@ class SignUpServiceTest {
     private DecryptedSignUpDataValidator mockDecryptedSignUpDataValidator;
     private MemberRepository mockMemberRepository;
     private MemberProvider mockMemberProvider;
-    private MemberCryptoService mockMemberCryptoService;
+
     @BeforeEach
     void setUp() {
         mockSignUpRequestDecoder = mock(SignUpRequestDecoder.class);
         mockDecryptedSignUpDataValidator = mock(DecryptedSignUpDataValidator.class);
         mockMemberRepository = mock(MemberRepository.class);
         mockMemberProvider = mock(MemberProvider.class);
-        mockMemberCryptoService = mock(MemberCryptoService.class);
 
         given(mockSignUpRequestDecoder.decrypt(any(), any()))
                 .willReturn(new DecryptedSignUpData("loginId", "password", "nickname", "profileImage"));
@@ -50,7 +48,7 @@ class SignUpServiceTest {
         given(mockMemberProvider.create(any()))
                 .willReturn(MemberFixture.anMember().build());
 
-        signUpService = new SignUpService(mockSignUpRequestDecoder, mockDecryptedSignUpDataValidator, mockMemberRepository, mockMemberProvider, mockMemberCryptoService);
+        signUpService = new SignUpService(mockSignUpRequestDecoder, mockDecryptedSignUpDataValidator, mockMemberRepository, mockMemberProvider);
     }
 
     @DisplayName("회원가입 요청문(암호) 복호화 요청하는지 검사")
@@ -76,7 +74,6 @@ class SignUpServiceTest {
         final ValidationException errors = catchThrowableOfType(() ->
                         signUpService.signUp(givenRequest, givenKeyPair),
                 ValidationException.class);
-        ;
 
         assertThat(errors).isNotNull();
         assertThat(errors.getErrors()).isNotEmpty();
@@ -109,16 +106,5 @@ class SignUpServiceTest {
         signUpService.signUp(givenRequest, givenKeyPair);
 
         verify(mockMemberRepository, times(1)).save(refEq(givenMember));
-    }
-
-    @DisplayName("회원가입용 키 생성 요청")
-    @Test
-    void generatedSignUpCode_wasCall_generatedCryptKey_To_MemberCryptoService() {
-        final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
-        given(mockMemberCryptoService.generatedCryptKey()).willReturn(givenKeyPair);
-
-        final KeyPair result = signUpService.generatedSignUpCode();
-
-        assertThat(result).isEqualTo(givenKeyPair);
     }
 }

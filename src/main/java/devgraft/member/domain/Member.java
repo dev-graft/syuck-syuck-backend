@@ -38,9 +38,9 @@ public class Member extends BaseEntity {
     public boolean isLeave() {
         return status.isLeave();
     }
-//
-//    public boolean isMatch(final MemberCryptoService memberCryptService, final String pwd) {
-//        final Password hashingPwd = memberCryptService.hashingPassword(pwd);
-//        return password.isMatch(hashingPwd.getValue());
-//    }
+
+    public boolean isMatch(final MemberCryptoService memberCryptService, final String pwd) {
+        final Password hashingPwd = memberCryptService.hashingPassword(pwd);
+        return password.isMatch(hashingPwd.getValue());
+    }
 }

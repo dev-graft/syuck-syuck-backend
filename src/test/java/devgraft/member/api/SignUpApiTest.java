@@ -2,6 +2,7 @@ package devgraft.member.api;
 
 import devgraft.member.app.EncryptedSignUpRequest;
 import devgraft.member.app.EncryptedSignUpRequestFixture;
+import devgraft.member.app.SignUpCodeService;
 import devgraft.member.app.SignUpService;
 import devgraft.support.crypto.KeyPairFixture;
 import devgraft.support.mapper.ObjectMapperTest;
@@ -37,12 +38,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class SignUpApiTest extends ObjectMapperTest {
     private MockMvc mockMvc;
+    private SignUpCodeService mockSignUpCodeService;
     private SignUpService mockSignUpService;
 
     @BeforeEach
     void setUp() {
+        mockSignUpCodeService = mock(SignUpCodeService.class);
         mockSignUpService = mock(SignUpService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new SignUpApi(mockSignUpService))
+        mockMvc = MockMvcBuilders.standaloneSetup(new SignUpApi(mockSignUpCodeService, mockSignUpService))
                 .alwaysDo(print())
                 .build();
     }
@@ -51,7 +54,7 @@ class SignUpApiTest extends ObjectMapperTest {
     @Test
     void getPubKey_returnValue() throws Exception {
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
-        given(mockSignUpService.generatedSignUpCode()).willReturn(givenKeyPair);
+        given(mockSignUpCodeService.generatedSignUpCode()).willReturn(givenKeyPair);
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code"))
                 .andExpect(status().isOk())
