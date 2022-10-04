@@ -1,7 +1,7 @@
 package devgraft.auth.infra;
 
 import devgraft.auth.domain.AuthCryptoService;
-import devgraft.member.domain.UnauthenticatedPublicKeyException;
+import devgraft.common.exception.UnauthenticatedPublicKeyException;
 import devgraft.support.crypto.CryptoProcessException;
 import devgraft.support.crypto.RSA;
 import org.springframework.stereotype.Service;

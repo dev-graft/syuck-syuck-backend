@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class JwtVerifyResult {
-    private final String uniqId;
+public class JwtVerifyRequest {
+    private final String accessToken;
+    private final String refreshToken;
 }
