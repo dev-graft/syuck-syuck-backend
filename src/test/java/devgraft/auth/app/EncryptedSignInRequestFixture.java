@@ -4,6 +4,9 @@ public class EncryptedSignInRequestFixture {
     public static EncryptedSignInRequest.EncryptedSignInRequestBuilder anRequest() {
         return EncryptedSignInRequest.builder()
                 .loginId("loginId")
-                .password("password");
+                .password("password")
+                .pushToken("pushToken")
+                .os("os")
+                .deviceName("deviceName");
     }
 }

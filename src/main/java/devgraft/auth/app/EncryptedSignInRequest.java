@@ -13,4 +13,7 @@ import lombok.NoArgsConstructor;
 public class EncryptedSignInRequest {
     private String loginId;
     private String password;
+    private String pushToken;
+    private String os;
+    private String deviceName;
 }
