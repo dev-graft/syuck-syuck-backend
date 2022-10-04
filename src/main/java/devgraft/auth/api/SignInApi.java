@@ -41,12 +41,12 @@ public class SignInApi {
     }
 
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-in")
-    public String signIn(@RequestBody final EncryptedSignInRequest request, final HttpSession httpSession) {
+    public void signIn(@RequestBody final EncryptedSignInRequest request, final HttpSession httpSession) {
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(SIGN_IN_KEY_PAIR))
                 .orElseThrow(NotIssuedSignInCodeException::new);
 
-        signInService.signIn(request, keyPair);
+        JsonLogger.logI(log, "SignInApi.signIn Request: {}", request);
 
-        return "";
+        signInService.signIn(request, keyPair);
     }
 }
