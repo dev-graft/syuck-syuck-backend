@@ -1,9 +1,9 @@
 package devgraft.member.infra;
 
+import devgraft.common.exception.UnauthenticatedPublicKeyException;
 import devgraft.member.domain.MemberCryptoService;
 import devgraft.member.domain.MemberEncryptException;
 import devgraft.member.domain.Password;
-import devgraft.member.domain.UnauthenticatedPublicKeyException;
 import devgraft.support.crypto.CryptoProcessException;
 import devgraft.support.crypto.PBKDF2;
 import devgraft.support.crypto.RSA;
