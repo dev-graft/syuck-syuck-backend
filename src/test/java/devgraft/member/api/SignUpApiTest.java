@@ -77,7 +77,8 @@ class SignUpApiTest extends ObjectMapperTest {
 
         requestSignUp(new MockHttpSession(), givenRequest)
                 .andExpect(status().is4xxClientError())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof NotIssuedPublicKeyException))
+                .andExpect(result ->
+                        assertTrue(result.getResolvedException() instanceof NotIssuedSignUpCodeException))
         ;
     }
 

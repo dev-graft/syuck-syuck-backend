@@ -3,7 +3,7 @@ package devgraft.member.domain;
 import java.security.KeyPair;
 
 public interface MemberCryptoService {
-    KeyPair generatedCryptKey();
+    KeyPair generatedCryptoKey();
 
     String encrypt(final KeyPair keyPair, final String plainText);
 

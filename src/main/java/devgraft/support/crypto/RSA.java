@@ -44,6 +44,12 @@ public class RSA {
         return keyPairGenerator.genKeyPair();
     }
 
+    public static KeyPair generatedKeyPair(String iKey) {
+        final SecureRandom secureRandom = new SecureRandom(iKey.getBytes(StandardCharsets.UTF_8));
+        keyPairGenerator.initialize(1024, secureRandom);
+        return keyPairGenerator.genKeyPair();
+    }
+
     public static String encrypt(final String plainText, final PublicKey publicKey) throws CryptoProcessException {
         try {
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);

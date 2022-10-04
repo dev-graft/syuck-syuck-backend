@@ -16,7 +16,7 @@ import java.util.Base64;
 public class MemberCryptoServiceImpl implements MemberCryptoService {
 
     @Override
-    public KeyPair generatedCryptKey() {
+    public KeyPair generatedCryptoKey() {
         return RSA.generatedKeyPair();
     }
 

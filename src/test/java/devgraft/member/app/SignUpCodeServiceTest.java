@@ -27,7 +27,7 @@ class SignUpCodeServiceTest {
     @Test
     void generatedSignUpCode_returnValue() {
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
-        given(mockMemberCryptoService.generatedCryptKey()).willReturn(givenKeyPair);
+        given(mockMemberCryptoService.generatedCryptoKey()).willReturn(givenKeyPair);
 
         final KeyPair keyPair = signUpCodeService.generatedSignUpCode();
 

@@ -12,6 +12,6 @@ public class SignUpCodeService {
     private final MemberCryptoService memberCryptoService;
 
     public KeyPair generatedSignUpCode() {
-        return memberCryptoService.generatedCryptKey();
+        return memberCryptoService.generatedCryptoKey();
     }
 }

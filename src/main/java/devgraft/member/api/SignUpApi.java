@@ -34,7 +34,7 @@ public class SignUpApi {
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-up")
     public String signUp(@RequestBody final EncryptedSignUpRequest request, final HttpSession httpSession) {
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(SIGN_UP_KEY_PAIR))
-                .orElseThrow(NotIssuedPublicKeyException::new);
+                .orElseThrow(NotIssuedSignUpCodeException::new);
 
         JsonLogger.logI(log, "SignUpApi.signUp \nPubKey: {} | PriKey: {} \nrequest: {}",
                 Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()),
