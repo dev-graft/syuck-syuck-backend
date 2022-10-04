@@ -3,6 +3,7 @@ package devgraft.docs;
 import devgraft.member.api.MemberQueryApi;
 import devgraft.member.api.SignUpApi;
 import devgraft.member.app.EncryptedSignUpRequest;
+import devgraft.member.app.SignUpCodeService;
 import devgraft.member.app.SignUpService;
 import devgraft.member.query.MemberData;
 import devgraft.member.query.MemberDataDao;
@@ -43,6 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest({SignUpApi.class, MemberQueryApi.class})
 class MemberApiDoc extends AbstractApiDocTest {
     @MockBean
+    private SignUpCodeService signUpCodeService;
+    @MockBean
     private SignUpService signUpService;
     @MockBean
     private MemberDataDao memberDataDao;
@@ -51,7 +54,7 @@ class MemberApiDoc extends AbstractApiDocTest {
     @Test
     void getSignUpCode() throws Exception {
         MockHttpSession mockHttpSession = new MockHttpSession();
-        given(signUpService.generatedSignUpCode()).willReturn(KeyPairFixture.anKeyPair());
+        given(signUpCodeService.generatedSignUpCode()).willReturn(KeyPairFixture.anKeyPair());
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code")
                         .session(mockHttpSession))
