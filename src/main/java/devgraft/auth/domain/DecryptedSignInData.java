@@ -11,6 +11,9 @@ import lombok.Getter;
 public class DecryptedSignInData {
     private String loginId;
     private String password;
+    private String os;
+    private String pushToken;
+    private String deviceName;
 
     public AuthenticateMemberRequest toRequest() {
         return new AuthenticateMemberRequest(loginId, password);

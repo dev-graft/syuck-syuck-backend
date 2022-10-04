@@ -2,8 +2,14 @@ package devgraft.auth.app;
 
 
 import devgraft.auth.domain.AuthMemberService;
+import devgraft.auth.domain.AuthSession;
+import devgraft.auth.domain.AuthSessionProvider;
+import devgraft.auth.domain.AuthSessionRepository;
 import devgraft.auth.domain.AuthenticateMemberResult;
 import devgraft.auth.domain.DecryptedSignInData;
+import devgraft.support.jwt.JwtIssueRequest;
+import devgraft.support.jwt.JwtIssuedResult;
+import devgraft.support.jwt.JwtProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,11 +20,21 @@ import java.security.KeyPair;
 public class SignInService {
     private final SignInRequestDecoder signInRequestDecoder;
     private final AuthMemberService authMemberService;
+    private final AuthSessionProvider authSessionProvider;
+    private final JwtProvider jwtProvider;
+    private final AuthSessionRepository authSessionRepository;
 
-    public void signIn(final EncryptedSignInRequest request, final KeyPair keyPair) {
+    public SignInResult signIn(final EncryptedSignInRequest request, final KeyPair keyPair) {
         final DecryptedSignInData signInData = signInRequestDecoder.decrypt(request, keyPair);
         final AuthenticateMemberResult authResult = authMemberService.authenticate(signInData.toRequest());
         if (!authResult.isSuccess()) throw new SignInAuthenticationFailedException();
-        // 인증 성공 시 SignInData 기반으로 인가정보 만들면 됨
+
+        final AuthSession authSession = authSessionProvider.create(signInData);
+
+        final JwtIssuedResult jwt = jwtProvider.issue(JwtIssueRequest.of(authSession.getUniqId()));
+
+        authSessionRepository.save(authSession);
+
+        return SignInResult.of(jwt.getAccessToken(), jwt.getRefreshToken());
     }
 }
