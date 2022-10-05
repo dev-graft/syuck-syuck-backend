@@ -44,8 +44,8 @@ public class RSA {
         return keyPairGenerator.genKeyPair();
     }
 
-    public static KeyPair generatedKeyPair(String iKey) {
-        final SecureRandom secureRandom = new SecureRandom(iKey.getBytes(StandardCharsets.UTF_8));
+    public static KeyPair generatedKeyPair(String seed) {
+        final SecureRandom secureRandom = new SecureRandom(seed.getBytes(StandardCharsets.UTF_8));
         keyPairGenerator.initialize(1024, secureRandom);
         return keyPairGenerator.genKeyPair();
     }

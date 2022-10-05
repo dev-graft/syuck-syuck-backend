@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -20,7 +21,8 @@ import javax.persistence.Table;
 public class AuthSession extends BaseEntity {
     @Id
     private String uniqId;
-    private String memberId; // 포링? ㄴㄴ 걸어봐야다 서비스 분리하면 어떻게 할껀데
+    @Column(name = "member_id", nullable = false)
+    private String memberId;
     private String version;
     private String pushToken;
     private String os;

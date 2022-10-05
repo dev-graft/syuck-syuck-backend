@@ -1,7 +1,11 @@
 package devgraft.member.domain;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.Optional;
 
@@ -18,5 +22,33 @@ public class MemberMatchService {
         if (!memberOpt.get().isMatch(memberCryptoService, request.getPassword())) return MemberMatchResult.of("요청한 인증이 실패하였습니다. 패스워드를 확인해주세요.", false);
 
         return MemberMatchResult.of("성공", true);
+    }
+
+    @Getter
+    public static class MemberMatchRequest {
+        private final String loginId;
+        private final String password;
+
+        private MemberMatchRequest(final String loginId, final String password) {
+            Assert.notNull(loginId, "MemberMatchRequest.loginId must not be null");
+            Assert.notNull(password, "MemberMatchRequest.password must not be null");
+            this.loginId = loginId;
+            this.password = password;
+        }
+
+        public static MemberMatchRequest of(final String loginId, final String password) {
+            return new MemberMatchRequest(loginId, password);
+        }
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    public static class MemberMatchResult {
+        private final String message;
+        private final boolean success;
+
+        public static MemberMatchResult of(final String message, final boolean success) {
+            return new MemberMatchResult(message, success);
+        }
     }
 }
