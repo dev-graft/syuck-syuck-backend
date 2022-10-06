@@ -37,7 +37,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
@@ -59,7 +58,6 @@ class MemberApiDoc extends AbstractApiDocTest {
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code")
                         .session(mockHttpSession))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andDo(document.document(
                         responseFields.and(
                                 fieldWithPath("data").type(JsonFieldType.STRING).description("RSA 기반 회원가입용 공개키")
@@ -75,7 +73,6 @@ class MemberApiDoc extends AbstractApiDocTest {
         mockMvc.perform(RestDocumentationRequestBuilders.get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/exists")
                         .param("loginId", "qwerty123"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andDo(document.document(
                         requestParameters(
                                 parameterWithName("loginId").description("회원 아이디")
@@ -103,7 +100,6 @@ class MemberApiDoc extends AbstractApiDocTest {
                         .content(getObjectMapper().writeValueAsString(givenRequest))
                         .session(mockHttpSession))
                 .andExpect(status().isCreated())
-                .andDo(print())
                 .andDo(document.document(
                         requestFields(
                                 fieldWithPath("loginId").type(JsonFieldType.STRING).description("회원 아이디"),
@@ -130,7 +126,6 @@ class MemberApiDoc extends AbstractApiDocTest {
         mockMvc.perform(RestDocumentationRequestBuilders.get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX)
                         .param("loginId", "qwerty123"))
                 .andExpect(status().isOk())
-                .andDo(print())
                 .andDo(document.document(
                                 requestParameters(
                                         parameterWithName("loginId").description("회원 아이디")

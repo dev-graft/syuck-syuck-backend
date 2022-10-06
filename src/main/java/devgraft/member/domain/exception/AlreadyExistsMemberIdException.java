@@ -1,4 +1,4 @@
-package devgraft.member.domain;
+package devgraft.member.domain.exception;
 
 import devgraft.support.exception.AbstractRequestException;
 import devgraft.support.exception.StatusConstant;

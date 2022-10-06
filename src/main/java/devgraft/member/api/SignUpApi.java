@@ -30,13 +30,28 @@ public class SignUpApi {
     private final SignUpCodeService signUpCodeService;
     private final SignUpService signUpService;
 
+    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code")
+    public String getSignUpCode(final HttpSession httpSession) {
+        JsonLogger.logI(log, "SignUpApi.signUpCode 요청");
+
+        final KeyPair keyPair = signUpCodeService.generatedSignUpCode();
+        httpSession.setAttribute(SIGN_UP_KEY_PAIR, keyPair);
+        final String enKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+
+        JsonLogger.logI(log, "SignUpApi.signUpCode 결과: {}", enKey);
+
+        return enKey;
+    }
+
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-up")
     public String signUp(@RequestBody final EncryptedSignUpRequest request, final HttpSession httpSession) {
+        JsonLogger.logI(log, "SignUpApi.signUp 요청");
+
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(SIGN_UP_KEY_PAIR))
                 .orElseThrow(NotIssuedSignUpCodeException::new);
 
-        JsonLogger.logI(log, "SignUpApi.signUp \nPubKey: {} | PriKey: {} \nrequest: {}",
+        JsonLogger.logI(log, "SignUpApi.signUp \nPubKey: {} \nPriKey: {} \nrequest: {}",
                 Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded()),
                 Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()),
                 request);
@@ -44,16 +59,5 @@ public class SignUpApi {
         signUpService.signUp(request, keyPair);
 
         return "Success";
-    }
-
-    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-code")
-    public String getSignUpCode(final HttpSession httpSession) {
-        final KeyPair keyPair = signUpCodeService.generatedSignUpCode();
-        httpSession.setAttribute(SIGN_UP_KEY_PAIR, keyPair);
-        final String enKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-
-        JsonLogger.logI(log, "SignUpApi.getPubKey Response: {}", enKey);
-
-        return enKey;
     }
 }

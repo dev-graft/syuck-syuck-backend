@@ -1,6 +1,5 @@
-package devgraft.auth.domain;
+package devgraft.auth.query;
 
-import devgraft.support.jpa.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,23 +12,25 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Builder
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "auth_session")
 @Entity
 @Getter
-public class AuthSession extends BaseEntity {
+public class AuthSessionData {
     @Id
     @Column(name = "uniq_id")
     private String uniqId;
-    @Column(name = "member_id", nullable = false)
+    @Column(name = "member_id")
     private String memberId;
+    @Column(name = "version")
     private String version;
     @Column(name = "push_token")
     private String pushToken;
+    @Column(name = "os")
     private String os;
     @Column(name = "device_name")
     private String deviceName;
+    @Column(name = "block")
     private boolean block;
 }
-

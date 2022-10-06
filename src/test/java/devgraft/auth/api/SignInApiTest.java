@@ -1,6 +1,5 @@
 package devgraft.auth.api;
 
-import devgraft.auth.app.EncryptedSignInRequest;
 import devgraft.auth.app.EncryptedSignInRequestFixture;
 import devgraft.auth.app.SignInCodeService;
 import devgraft.auth.app.SignInService;
@@ -24,6 +23,7 @@ import static devgraft.common.URLPrefix.AUTH_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
@@ -45,6 +45,9 @@ class SignInApiTest extends ObjectMapperTest {
     void setUp() {
         mockSignInCodeService = mock(SignInCodeService.class);
         mockSignInService = mock(SignInService.class);
+
+        given(mockSignInService.signIn(any(), any())).willReturn(SignInService.SignInResult.of("acc", "ref"));
+
         mockMvc = MockMvcBuilders.standaloneSetup(new SignInApi(mockSignInCodeService, mockSignInService))
                 .alwaysDo(print())
                 .build();
@@ -75,7 +78,7 @@ class SignInApiTest extends ObjectMapperTest {
     @DisplayName("로그인 요청 status-ok")
     @Test
     void signIn_return_OkHttpStatus() throws Exception {
-        final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
+        final SignInService.EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
 
         requestSignIn(getMockHttpSession(), givenRequest)
                 .andExpect(status().isOk());
@@ -84,7 +87,7 @@ class SignInApiTest extends ObjectMapperTest {
     @DisplayName("로그인 요청 전 공개키 발급이 되지 않아 예외처리")
     @Test
     void signIn_throw_NotIssuedSignInCodeException() throws Exception {
-        final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
+        final SignInService.EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
 
         requestSignIn(new MockHttpSession(), givenRequest)
                 .andExpect(status().is4xxClientError())
@@ -96,7 +99,7 @@ class SignInApiTest extends ObjectMapperTest {
     @DisplayName("로그인 요청문(암호) 로그인 서비스 전달")
     @Test
     void signIn_passes_EncryptedSignInRequestToSignInService() throws Exception {
-        final EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
+        final SignInService.EncryptedSignInRequest givenRequest = EncryptedSignInRequestFixture.anRequest().build();
         final KeyPair givenKeyPair = KeyPairFixture.anKeyPair();
 
         requestSignIn(getMockHttpSession(givenKeyPair), givenRequest);
@@ -108,7 +111,7 @@ class SignInApiTest extends ObjectMapperTest {
         return mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code"));
     }
 
-    private ResultActions requestSignIn(final MockHttpSession session, EncryptedSignInRequest givenRequest) throws Exception {
+    private ResultActions requestSignIn(final MockHttpSession session, SignInService.EncryptedSignInRequest givenRequest) throws Exception {
         return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-in")
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(getObjectMapper().writeValueAsString(givenRequest))

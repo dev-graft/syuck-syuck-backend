@@ -2,8 +2,8 @@ package devgraft.member.infra;
 
 import devgraft.common.exception.UnauthenticatedPublicKeyException;
 import devgraft.member.domain.MemberCryptoService;
-import devgraft.member.domain.MemberEncryptException;
 import devgraft.member.domain.Password;
+import devgraft.member.domain.exception.MemberEncryptException;
 import devgraft.support.crypto.CryptoProcessException;
 import devgraft.support.crypto.PBKDF2;
 import devgraft.support.crypto.RSA;
@@ -14,10 +14,10 @@ import java.util.Base64;
 
 @Service
 public class MemberCryptoServiceImpl implements MemberCryptoService {
-
     @Override
     public KeyPair generatedCryptoKey() {
-        return RSA.generatedKeyPair();
+    // TODO seed 값 properties 내보내기
+        return RSA.generatedKeyPair("M_KEY");
     }
 
     @Override
