@@ -13,12 +13,19 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
 
-import static devgraft.common.StrConstant.COOKIE_REFRESH_TOKEN_SYNTAX;
-import static devgraft.common.StrConstant.HEADER_ACCESS_TOKEN_SYNTAX;
 import static devgraft.common.StrConstant.HEADER_TOKEN_PREFIX;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthUtils {
+    private static final String HEADER_ACCESS_TOKEN_SYNTAX = "ACCESS-TOKEN";
+    private static final String COOKIE_REFRESH_TOKEN_SYNTAX = "REFRESH-TOKEN";
+
+    /**
+     * 헤더, 쿠키에 인가 정보 주입
+     * @param response
+     * @param accessToken
+     * @param refreshToken
+     */
     public static void inject(final HttpServletResponse response, final String accessToken, final String refreshToken) {
         response.addHeader(HEADER_ACCESS_TOKEN_SYNTAX, accessToken);
         Cookie cookie = new Cookie(COOKIE_REFRESH_TOKEN_SYNTAX, refreshToken);
@@ -27,6 +34,11 @@ public class AuthUtils {
         response.addCookie(cookie);
     }
 
+    /**
+     * 헤더 & 쿠키에서 인가 정보 꺼내기
+     * @param request
+     * @return
+     */
     public static Optional<AuthExportData> export(final HttpServletRequest request) {
         final String accessToken = request.getHeader(HEADER_ACCESS_TOKEN_SYNTAX);
 
@@ -43,6 +55,8 @@ public class AuthUtils {
 
         return Optional.of(new AuthExportData(_accessToken, refreshToken));
     }
+
+
 
     @AllArgsConstructor
     @Getter

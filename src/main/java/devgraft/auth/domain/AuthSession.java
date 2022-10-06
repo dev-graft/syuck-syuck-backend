@@ -20,12 +20,15 @@ import javax.persistence.Table;
 @Getter
 public class AuthSession extends BaseEntity {
     @Id
+    @Column(name = "uniq_id")
     private String uniqId;
     @Column(name = "member_id", nullable = false)
     private String memberId;
     private String version;
+    @Column(name = "push_token")
     private String pushToken;
     private String os;
+    @Column(name = "device_name")
     private String deviceName;
     private boolean block;
 }

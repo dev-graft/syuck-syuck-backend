@@ -2,6 +2,7 @@ package devgraft.auth.api;
 
 import devgraft.auth.app.SignInCodeService;
 import devgraft.auth.app.SignInService;
+import devgraft.auth.query.AuthSessionData;
 import devgraft.common.JsonLogger;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +30,7 @@ public class SignInApi {
     private final SignInService signInService;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code")
-    public String getSignInCode(final HttpSession httpSession) {
+    public String getSignInCode(@MemberCredentials final AuthSessionData authSessionInfo, final HttpSession httpSession) {
         JsonLogger.logI(log, "SignInApi.signInCode 발급 요청");
         final KeyPair keyPair = signInCodeService.generateSignInCode();
 
@@ -58,6 +59,5 @@ public class SignInApi {
         AuthUtils.inject(response, signInResult.getAccessToken(), signInResult.getRefreshToken());
         JsonLogger.logI(log, "SignInApi.signIn Success");
     }
-
     // 인가정보 갱신
 }

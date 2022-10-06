@@ -7,6 +7,5 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AuthSessionInfo {
-    boolean required() default true;
+public @interface MemberCredentials {
 }
