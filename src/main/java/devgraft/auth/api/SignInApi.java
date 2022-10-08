@@ -2,8 +2,10 @@ package devgraft.auth.api;
 
 import devgraft.auth.app.SignInCodeService;
 import devgraft.auth.app.SignInService;
-import devgraft.auth.query.AuthSessionData;
 import devgraft.common.JsonLogger;
+import devgraft.credentials.api.AuthUtils;
+import devgraft.credentials.api.Credentials;
+import devgraft.credentials.api.MemberCredentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,7 +32,7 @@ public class SignInApi {
     private final SignInService signInService;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code")
-    public String getSignInCode(@MemberCredentials final AuthSessionData authSessionInfo, final HttpSession httpSession) {
+    public String getSignInCode(@Credentials final MemberCredentials memberCredentials, final HttpSession httpSession) {
         JsonLogger.logI(log, "SignInApi.signInCode 발급 요청");
         final KeyPair keyPair = signInCodeService.generateSignInCode();
 

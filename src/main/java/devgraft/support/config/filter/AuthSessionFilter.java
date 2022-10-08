@@ -1,9 +1,9 @@
 package devgraft.support.config.filter;
 
-import devgraft.auth.api.AuthUtils;
 import devgraft.auth.query.AuthSessionData;
 import devgraft.auth.query.AuthSessionDataDao;
 import devgraft.auth.query.AuthSessionDataSpec;
+import devgraft.credentials.api.AuthUtils;
 import devgraft.support.jwt.JwtExpiredException;
 import devgraft.support.jwt.JwtProvider;
 import devgraft.support.jwt.JwtValidationFailedException;

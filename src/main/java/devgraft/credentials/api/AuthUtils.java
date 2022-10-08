@@ -1,4 +1,4 @@
-package devgraft.auth.api;
+package devgraft.credentials.api;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

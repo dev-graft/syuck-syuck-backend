@@ -1,6 +1,6 @@
 package devgraft.support.config;
 
-import devgraft.auth.api.MemberCredentialsResolver;
+import devgraft.credentials.api.MemberCredentialsResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
