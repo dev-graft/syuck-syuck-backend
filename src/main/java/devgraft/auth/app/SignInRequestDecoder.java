@@ -1,7 +1,6 @@
 package devgraft.auth.app;
 
-import devgraft.auth.domain.AuthCryptoService;
-import devgraft.auth.domain.AuthMemberService;
+import devgraft.auth.domain.SignInCryptoService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,12 +13,12 @@ import java.security.KeyPair;
 @RequiredArgsConstructor
 @Component
 public class SignInRequestDecoder {
-    private final AuthCryptoService authCryptoService;
+    private final SignInCryptoService signInCryptoService;
 
-    public DecryptedSignInData decrypt(SignInService.EncryptedSignInRequest request, KeyPair keyPair) {
+    public DecryptedSignInData decrypt(final SignInService.EncryptedSignInRequest request, final KeyPair keyPair) {
         return DecryptedSignInData.builder()
                 .loginId(request.getLoginId())
-                .password(authCryptoService.decrypt(keyPair, request.getPassword()))
+                .password(signInCryptoService.decrypt(request.getPassword(), keyPair))
                 .pushToken(request.getPushToken())
                 .os(request.getOs())
                 .deviceName(request.getDeviceName())
@@ -35,9 +34,5 @@ public class SignInRequestDecoder {
         private String os;
         private String pushToken;
         private String deviceName;
-
-        public AuthMemberService.AuthenticateMemberRequest toRequest() {
-            return new AuthMemberService.AuthenticateMemberRequest(loginId, password);
-        }
     }
 }

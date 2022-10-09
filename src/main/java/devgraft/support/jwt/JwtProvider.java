@@ -20,18 +20,20 @@ import java.util.Objects;
 public class JwtProvider {
     private static final String JWT_UNIQ_ID = "uniqId";
     private static final String JWT_ACCESS_KEY = "access";
+
     private final Key signKey;
     public JwtProvider() {
         final String secret = Base64.getEncoder().encodeToString("sdAD@grdASFhjtGSFWE4@1@RFSDF23esa".getBytes(StandardCharsets.UTF_8));
         signKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
+
     // JWT 발급
     public JwtIssuedResult issue(final JwtIssueRequest request) {
-        final String accessToken = _issue(Jwts.claims(), 600L);
+        final String accessToken = _issue(Jwts.claims(), 600L); //10분
         final Claims refreshClaims = Jwts.claims();
         refreshClaims.put(JWT_UNIQ_ID, request.getUniqId());
         refreshClaims.put(JWT_ACCESS_KEY, accessToken);
-        final String refreshToken = _issue(refreshClaims, 2592000L);
+        final String refreshToken = _issue(refreshClaims, 2592000L); //30일
         return JwtIssuedResult.of(accessToken, refreshToken);
     }
 
@@ -59,6 +61,4 @@ public class JwtProvider {
                 .signWith(signKey)
                 .compact();
     }
-
-
 }

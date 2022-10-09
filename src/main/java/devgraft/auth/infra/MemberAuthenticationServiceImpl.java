@@ -1,13 +1,13 @@
 package devgraft.auth.infra;
 
-import devgraft.auth.domain.AuthMemberService;
+import devgraft.auth.domain.MemberAuthenticationService;
 import devgraft.member.domain.MemberMatchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class AuthMemberServiceImpl implements AuthMemberService {
+public class MemberAuthenticationServiceImpl implements MemberAuthenticationService {
     private final MemberMatchService memberMatchService;
 
     @Override

@@ -1,49 +1,41 @@
 package devgraft.auth.app;
 
-
-import devgraft.auth.domain.AuthMemberService;
+import devgraft.auth.app.SignInRequestDecoder.DecryptedSignInData;
 import devgraft.auth.domain.AuthSession;
 import devgraft.auth.domain.AuthSessionRepository;
-import devgraft.common.JsonLogger;
-import devgraft.support.jwt.JwtIssueRequest;
-import devgraft.support.jwt.JwtIssuedResult;
-import devgraft.support.jwt.JwtProvider;
+import devgraft.auth.domain.AuthorizationCodeService;
+import devgraft.auth.domain.AuthorizationCodeService.SignInAuthorizationResult;
+import devgraft.auth.domain.AuthorizationElements;
+import devgraft.auth.domain.MemberAuthenticationService;
+import devgraft.auth.domain.MemberAuthenticationService.AuthenticateMemberRequest;
+import devgraft.auth.domain.MemberAuthenticationService.AuthenticateMemberResult;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyPair;
 
-@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SignInService {
     private final SignInRequestDecoder signInRequestDecoder;
-    private final AuthMemberService authMemberService;
+    private final MemberAuthenticationService memberAuthenticationService;
     private final AuthSessionProvider authSessionProvider;
-    private final JwtProvider jwtProvider;
     private final AuthSessionRepository authSessionRepository;
+    private final AuthorizationCodeService authorizationCodeService;
 
     public SignInResult signIn(final EncryptedSignInRequest request, final KeyPair keyPair) {
-        final SignInRequestDecoder.DecryptedSignInData signInData = signInRequestDecoder.decrypt(request, keyPair);
-        final AuthMemberService.AuthenticateMemberResult authResult = authMemberService.authenticate(signInData.toRequest());
-        if (!authResult.isSuccess()) {
-            JsonLogger.logI(log, "SignInService.signIn authResult is Failed message: {}", authResult.getMessage());
-            throw new SignInAuthenticationFailedException();
-        }
-
-        final AuthSession authSession = authSessionProvider.create(signInData);
-
-        final JwtIssuedResult jwt = jwtProvider.issue(JwtIssueRequest.of(authSession.getUniqId()));
-
+        final DecryptedSignInData decrypt = signInRequestDecoder.decrypt(request, keyPair);
+        final AuthenticateMemberResult authenticateResult = memberAuthenticationService.authenticate(new AuthenticateMemberRequest(decrypt.getLoginId(), decrypt.getPassword()));
+        if (!authenticateResult.isSuccess()) throw new SignInAuthenticationFailedException();
+        final AuthSession authSession = authSessionProvider.create(decrypt);
         authSessionRepository.save(authSession);
-
-        return SignInResult.of(jwt.getAccessToken(), jwt.getRefreshToken());
+        final SignInAuthorizationResult generate = authorizationCodeService.generate(authSession.getUniqId());
+        return new SignInResult(generate.getAccessToken(), generate.getRefreshToken());
     }
 
     @Builder
@@ -58,15 +50,10 @@ public class SignInService {
         private String deviceName;
     }
 
-    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor
     @Getter
-    public static class SignInResult {
-        private final String accessToken;
-
-        private final String refreshToken;
-        public static SignInResult of(final String accessToken, final String refreshToken) {
-            return new SignInResult(accessToken, refreshToken);
-        }
-
+    public static class SignInResult implements AuthorizationElements {
+        private String accessToken;
+        private String refreshToken;
     }
 }

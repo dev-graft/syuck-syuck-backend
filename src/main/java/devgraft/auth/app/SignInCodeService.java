@@ -1,6 +1,6 @@
 package devgraft.auth.app;
 
-import devgraft.auth.domain.AuthCryptoService;
+import devgraft.auth.domain.SignInCryptoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,9 +9,9 @@ import java.security.KeyPair;
 @RequiredArgsConstructor
 @Service
 public class SignInCodeService {
-    private final AuthCryptoService authCryptoService;
+    private final SignInCryptoService signInCryptoService;
 
-    public KeyPair generateSignInCode() {
-        return authCryptoService.generatedCryptoKey();
+    public KeyPair generatedSignInCode() {
+        return signInCryptoService.generatedCode();
     }
 }
