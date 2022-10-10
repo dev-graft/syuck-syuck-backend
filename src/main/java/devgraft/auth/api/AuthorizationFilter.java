@@ -36,6 +36,8 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             final String uniqId = verify.orElseThrow(AuthCodeVerifyException::new);
             final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.memberIdEquals(uniqId)
                     .and(AuthSessionDataSpec.notBlock())).orElseThrow(AuthCodeVerifyException::new);
+
+            request.setAttribute("", authSessionData);
         }
         filterChain.doFilter(request, response);
     }
