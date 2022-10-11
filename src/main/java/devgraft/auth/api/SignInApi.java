@@ -42,7 +42,7 @@ public class SignInApi {
     }
 
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-in")
-    public void signIn(@RequestBody final SignInService.EncryptedSignInRequest request, final HttpSession httpSession, final HttpServletResponse response) {
+    public String signIn(@RequestBody final SignInService.EncryptedSignInRequest request, final HttpSession httpSession, final HttpServletResponse response) {
         JsonLogger.logI(log, "SignInApi.signIn 요청");
         final KeyPair keyPair = (KeyPair) Optional.ofNullable(httpSession.getAttribute(SIGN_IN_KEY_PAIR))
                 .orElseThrow(NotIssuedSignInCodeException::new);
@@ -54,5 +54,7 @@ public class SignInApi {
         final AuthorizationElements signInResult = signInService.signIn(request, keyPair);
         AuthCodeIOService.injectAuthorizationCode(response, signInResult);
         JsonLogger.logI(log, "SignInApi.signIn Success");
+
+        return "Success";
     }
 }

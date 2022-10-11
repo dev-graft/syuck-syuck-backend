@@ -22,9 +22,10 @@ public class SignInRefreshApi {
     private final SignInRefreshService signInRefreshService;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/refresh")
-    public void refresh(final HttpServletRequest request, final HttpServletResponse response) {
+    public String refresh(final HttpServletRequest request, final HttpServletResponse response) {
         final AuthorizationCode authorizationCode = AuthCodeIOService.exportAuthorizationCode(request).orElseThrow(NotIssuedAuthCodeException::new);
         final SignInRefreshResult refreshResult = signInRefreshService.refresh(new SignInRefreshRequest(authorizationCode.getAccessToken(), authorizationCode.getRefreshToken()));
         AuthCodeIOService.injectAuthorizationCode(response, refreshResult);
+        return "Success";
     }
 }
