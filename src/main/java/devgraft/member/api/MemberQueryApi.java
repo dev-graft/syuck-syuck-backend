@@ -1,5 +1,7 @@
 package devgraft.member.api;
 
+import devgraft.common.credential.Credentials;
+import devgraft.common.credential.MemberCredentials;
 import devgraft.member.query.MemberData;
 import devgraft.member.query.MemberDataDao;
 import devgraft.member.query.MemberDataSpec;
@@ -26,6 +28,20 @@ public class MemberQueryApi {
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX)
     public MemberProfileGetResult getMemberProfile(@RequestParam(name = "loginId") String loginId) {
         final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+                        .and(MemberDataSpec.normalEquals()))
+                .orElseThrow(NotFoundMemberException::new);
+
+        return MemberProfileGetResult.builder()
+                .loginId(memberData.getMemberId())
+                .nickname(memberData.getNickname())
+                .profileImage(memberData.getProfileImage())
+                .stateMessage(memberData.getStateMessage())
+                .build();
+    }
+
+    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/self")
+    public MemberProfileGetResult getMemberProfile(@Credentials MemberCredentials memberCredentials) {
+        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(memberCredentials.getMemberId())
                         .and(MemberDataSpec.normalEquals()))
                 .orElseThrow(NotFoundMemberException::new);
 

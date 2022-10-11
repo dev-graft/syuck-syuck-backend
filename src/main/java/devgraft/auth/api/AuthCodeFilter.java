@@ -39,7 +39,7 @@ public class AuthCodeFilter extends OncePerRequestFilter {
             new PathPatternParser().parse("/swagger/**"));
     private final AuthCodeVerificationService authCodeVerificationService;
     private final AuthSessionDataDao authSessionDataDao;
-
+    // TODO Filter에서 발생하는 에러는 ExceptionHandler가 잡지 못하니 수정 필요함. (Advice는 결과 캐치함)
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         final Optional<AuthorizationCode> authorizationCodeOpt = AuthCodeIOService.exportAuthorizationCode(request);
@@ -47,7 +47,7 @@ public class AuthCodeFilter extends OncePerRequestFilter {
         if (isMatch && authorizationCodeOpt.isPresent()) {
             final AuthorizationCode authorizationCode = authorizationCodeOpt.get();
             final String uniqId = authCodeVerificationService.verify(authorizationCode);
-            final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.memberIdEquals(uniqId)).orElseThrow(NotFoundAuthSessionException::new);
+            final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.uniqIdEquals(uniqId)).orElseThrow(NotFoundAuthSessionException::new);
             if (authSessionData.isBlock()) throw new BlockAuthSessionException();
 
             request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);

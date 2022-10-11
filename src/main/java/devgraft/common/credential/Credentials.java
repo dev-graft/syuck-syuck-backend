@@ -1,4 +1,4 @@
-package devgraft.credentials.api;
+package devgraft.common.credential;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,3 +9,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Credentials {
 }
+

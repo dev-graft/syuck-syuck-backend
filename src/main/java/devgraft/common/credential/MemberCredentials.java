@@ -1,13 +1,14 @@
-package devgraft.credentials.api;
+package devgraft.common.credential;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
-@AllArgsConstructor
+@Builder
 @Getter
 public class MemberCredentials {
     private final String memberId;
-    private final String os;
+    private final String version;
     private final String pushToken;
+    private final String os;
     private final String deviceName;
 }
