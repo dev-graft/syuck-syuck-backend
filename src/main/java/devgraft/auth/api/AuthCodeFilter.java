@@ -63,11 +63,7 @@ public class AuthCodeFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        try {
-            filterChain.doFilter(request, response);
-        } finally {
-
-        }
+        filterChain.doFilter(request, response);
     }
 
     private void setErrorResponse(AbstractRequestException e, final HttpServletResponse response) {
