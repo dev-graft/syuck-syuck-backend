@@ -2,11 +2,11 @@ package devgraft.auth.api;
 
 import devgraft.auth.api.AuthCodeIOService.AuthorizationCode;
 import devgraft.auth.app.AuthCodeVerificationService;
-import devgraft.auth.app.AuthCodeVerifyException;
+import devgraft.auth.app.BlockAuthSessionException;
+import devgraft.auth.app.NotFoundAuthSessionException;
 import devgraft.auth.query.AuthSessionData;
 import devgraft.auth.query.AuthSessionDataDao;
 import devgraft.auth.query.AuthSessionDataSpec;
-import devgraft.common.wrap.ProcessOptional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -31,12 +31,9 @@ public class AuthCodeFilter extends OncePerRequestFilter {
         final Optional<AuthorizationCode> authorizationCodeOpt = AuthCodeIOService.exportAuthorizationCode(request);
         if (authorizationCodeOpt.isPresent()) {
             final AuthorizationCode authorizationCode = authorizationCodeOpt.get();
-            final ProcessOptional<String> verify = authCodeVerificationService.verify(authorizationCode);
-
-            log.info("AuthorizationFilter.verify Result: {}", verify.getMessage());
-            final String uniqId = verify.orElseThrow(AuthCodeVerifyException::new);
-            final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.memberIdEquals(uniqId)
-                    .and(AuthSessionDataSpec.notBlock())).orElseThrow(AuthCodeVerifyException::new);
+            final String uniqId = authCodeVerificationService.verify(authorizationCode);
+            final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.memberIdEquals(uniqId)).orElseThrow(NotFoundAuthSessionException::new);
+            if (authSessionData.isBlock()) throw new BlockAuthSessionException();
 
             request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);
         }

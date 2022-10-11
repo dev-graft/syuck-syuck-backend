@@ -18,14 +18,10 @@ public class SignInRefreshService {
     private final AuthSessionRepository authSessionRepository;
 
     public SignInRefreshResult refresh(final SignInRefreshRequest request) {
-        // refresh 검증(키쌍, 만료)
         final AuthCodeVerifyResult verifyResult = authCodeService.verify(request);
-        final String uniqId = verifyResult.orElseThrow(AuthCodeVerifyException::new);
-        // 결과에 나온 uniqId를 기반으로 AuthSession 조회
-        final AuthSession authSession = authSessionRepository.findById(uniqId).orElseThrow();
-        // Block 상태인지 검사
-        if (authSession.isBlock()) throw new RuntimeException();
-        final AuthCodeGeneratedResult newAuthCode = authCodeService.generate(null);
+        final AuthSession authSession = authSessionRepository.findById(verifyResult.getUniqId()).orElseThrow(NotFoundAuthSessionException::new);
+        if (authSession.isBlock()) throw new BlockAuthSessionException();
+        final AuthCodeGeneratedResult newAuthCode = authCodeService.generate(verifyResult.getUniqId());
         return new SignInRefreshResult(newAuthCode.getAccessToken(), newAuthCode.getRefreshToken());
     }
 

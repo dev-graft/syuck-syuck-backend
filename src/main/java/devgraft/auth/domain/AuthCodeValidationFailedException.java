@@ -1,10 +1,10 @@
-package devgraft.auth.app;
+package devgraft.auth.domain;
 
 import devgraft.support.exception.AbstractRequestException;
 import org.springframework.http.HttpStatus;
 
-public class AuthCodeVerifyException extends AbstractRequestException {
-    public AuthCodeVerifyException() {
+public class AuthCodeValidationFailedException extends AbstractRequestException {
+    public AuthCodeValidationFailedException() {
         super("인증정보가 올바르지 않습니다.", HttpStatus.UNAUTHORIZED);
     }
 }
