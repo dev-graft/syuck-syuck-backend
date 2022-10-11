@@ -1,5 +1,6 @@
 package devgraft.auth.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import devgraft.auth.api.AuthCodeIOService.AuthorizationCode;
 import devgraft.auth.app.AuthCodeVerificationService;
 import devgraft.auth.app.BlockAuthSessionException;
@@ -7,8 +8,12 @@ import devgraft.auth.app.NotFoundAuthSessionException;
 import devgraft.auth.query.AuthSessionData;
 import devgraft.auth.query.AuthSessionDataDao;
 import devgraft.auth.query.AuthSessionDataSpec;
+import devgraft.support.advice.CommonResult;
+import devgraft.support.exception.AbstractRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.PathContainer;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -37,8 +42,10 @@ public class AuthCodeFilter extends OncePerRequestFilter {
             new PathPatternParser().parse("/swagger-ui.html"),
             new PathPatternParser().parse("/webjars/**"),
             new PathPatternParser().parse("/swagger/**"));
+    private final ObjectMapper objectMapper;
     private final AuthCodeVerificationService authCodeVerificationService;
     private final AuthSessionDataDao authSessionDataDao;
+
     // TODO Filter에서 발생하는 에러는 ExceptionHandler가 잡지 못하니 수정 필요함. (Advice는 결과 캐치함)
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
@@ -46,12 +53,36 @@ public class AuthCodeFilter extends OncePerRequestFilter {
         final boolean isMatch = whitelist.stream().noneMatch(pathPattern -> pathPattern.matches(PathContainer.parsePath(request.getRequestURI())));
         if (isMatch && authorizationCodeOpt.isPresent()) {
             final AuthorizationCode authorizationCode = authorizationCodeOpt.get();
-            final String uniqId = authCodeVerificationService.verify(authorizationCode);
-            final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.uniqIdEquals(uniqId)).orElseThrow(NotFoundAuthSessionException::new);
-            if (authSessionData.isBlock()) throw new BlockAuthSessionException();
-
-            request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);
+            try {
+                final String uniqId = authCodeVerificationService.verify(authorizationCode);
+                final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.uniqIdEquals(uniqId)).orElseThrow(NotFoundAuthSessionException::new);
+                if (authSessionData.isBlock()) throw new BlockAuthSessionException();
+                request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);
+            } catch (AbstractRequestException e) {
+                setErrorResponse(e, response);
+                return;
+            }
         }
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+
+        }
+    }
+
+    private void setErrorResponse(AbstractRequestException e, final HttpServletResponse response) {
+        try {
+            response.setStatus(e.getStatus().value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.getWriter().write(objectMapper.writeValueAsString(CommonResult.error(e.getStatus(), e.getMessage())));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static class FilterException extends AbstractRequestException {
+        public FilterException(final String message, final HttpStatus status) {
+            super(message, status);
+        }
     }
 }
