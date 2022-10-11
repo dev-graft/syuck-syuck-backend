@@ -5,6 +5,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class JwtVerifyResult {
+public class OldJwtVerifyResult {
     private final String uniqId;
 }

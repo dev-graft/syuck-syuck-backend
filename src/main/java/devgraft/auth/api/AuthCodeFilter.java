@@ -1,7 +1,8 @@
 package devgraft.auth.api;
 
-import devgraft.auth.api.AuthorizationCodeIOService.AuthorizationCode;
-import devgraft.auth.app.SignInAuthorizationVerificationService;
+import devgraft.auth.api.AuthCodeIOService.AuthorizationCode;
+import devgraft.auth.app.AuthCodeVerificationService;
+import devgraft.auth.app.AuthCodeVerifyException;
 import devgraft.auth.query.AuthSessionData;
 import devgraft.auth.query.AuthSessionDataDao;
 import devgraft.auth.query.AuthSessionDataSpec;
@@ -21,23 +22,23 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Component
-public class AuthorizationFilter extends OncePerRequestFilter {
-    // 인증만 해달라고 요청하면 되네
-    private final SignInAuthorizationVerificationService signInAuthorizationVerificationService;
+public class AuthCodeFilter extends OncePerRequestFilter {
+    private final AuthCodeVerificationService authCodeVerificationService;
     private final AuthSessionDataDao authSessionDataDao;
 
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
-        final Optional<AuthorizationCode> authorizationCodeOpt = AuthorizationCodeIOService.exportAuthorizationCode(request);
+        final Optional<AuthorizationCode> authorizationCodeOpt = AuthCodeIOService.exportAuthorizationCode(request);
         if (authorizationCodeOpt.isPresent()) {
             final AuthorizationCode authorizationCode = authorizationCodeOpt.get();
-            final ProcessOptional<String> verify = signInAuthorizationVerificationService.verify(authorizationCode);
+            final ProcessOptional<String> verify = authCodeVerificationService.verify(authorizationCode);
+
             log.info("AuthorizationFilter.verify Result: {}", verify.getMessage());
             final String uniqId = verify.orElseThrow(AuthCodeVerifyException::new);
             final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.memberIdEquals(uniqId)
                     .and(AuthSessionDataSpec.notBlock())).orElseThrow(AuthCodeVerifyException::new);
 
-            request.setAttribute("", authSessionData);
+            request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);
         }
         filterChain.doFilter(request, response);
     }

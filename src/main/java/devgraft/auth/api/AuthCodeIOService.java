@@ -16,7 +16,7 @@ import java.util.Optional;
 
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class AuthorizationCodeIOService {
+public class AuthCodeIOService {
     private static final String HEADER_ACCESS_TOKEN_SYNTAX = "ACCESS-TOKEN";
     private static final String COOKIE_REFRESH_TOKEN_SYNTAX = "REFRESH-TOKEN";
     private static final Cookie[] COOKIES = {};

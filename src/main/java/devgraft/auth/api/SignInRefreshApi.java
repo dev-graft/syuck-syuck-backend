@@ -1,6 +1,6 @@
 package devgraft.auth.api;
 
-import devgraft.auth.api.AuthorizationCodeIOService.AuthorizationCode;
+import devgraft.auth.api.AuthCodeIOService.AuthorizationCode;
 import devgraft.auth.app.SignInRefreshService;
 import devgraft.auth.app.SignInRefreshService.SignInRefreshRequest;
 import devgraft.auth.app.SignInRefreshService.SignInRefreshResult;
@@ -23,8 +23,8 @@ public class SignInRefreshApi {
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/refresh")
     public void refresh(final HttpServletRequest request, final HttpServletResponse response) {
-        final AuthorizationCode authorizationCode = AuthorizationCodeIOService.exportAuthorizationCode(request).orElseThrow(NotIssuedAuthCodeException::new);
+        final AuthorizationCode authorizationCode = AuthCodeIOService.exportAuthorizationCode(request).orElseThrow(NotIssuedAuthCodeException::new);
         final SignInRefreshResult refreshResult = signInRefreshService.refresh(new SignInRefreshRequest(authorizationCode.getAccessToken(), authorizationCode.getRefreshToken()));
-        AuthorizationCodeIOService.injectAuthorizationCode(response, refreshResult);
+        AuthCodeIOService.injectAuthorizationCode(response, refreshResult);
     }
 }

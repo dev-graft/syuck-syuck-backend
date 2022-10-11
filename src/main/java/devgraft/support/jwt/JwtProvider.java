@@ -1,11 +1,15 @@
 package devgraft.support.jwt;
 
+import devgraft.common.wrap.ProcessOptional;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import java.util.Objects;
 
 @RequiredArgsConstructor
@@ -27,24 +32,33 @@ public class JwtProvider {
         signKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    // JWT 발급
-    public JwtIssuedResult issue(final JwtIssueRequest request) {
-        final String accessToken = _issue(Jwts.claims(), 600L); //10분
-        final Claims refreshClaims = Jwts.claims();
-        refreshClaims.put(JWT_UNIQ_ID, request.getUniqId());
-        refreshClaims.put(JWT_ACCESS_KEY, accessToken);
-        final String refreshToken = _issue(refreshClaims, 2592000L); //30일
-        return JwtIssuedResult.of(accessToken, refreshToken);
+    public String issue(final JwtIssueRequest request) {
+        final Claims claims = Jwts.claims();
+        claims.putAll(request.getClaims());
+        final Date nowDate = new Date();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(nowDate)
+                .setExpiration(new Date(nowDate.getTime() + request.getPeriodSecond() * 1000))
+                .signWith(signKey)
+                .compact();
+    }
+
+    @Builder
+    @Getter
+    public static class JwtIssueRequest {
+        private final Map<String, Object> claims;
+        private final long periodSecond;
     }
 
     // JWT 검증 (검증된 정보 반환 / 언제 생성되었고, 어떤 값이 저장되어 있는지)
-    public JwtVerifyResult verify(JwtVerifyRequest request) throws JwtExpiredException, JwtValidationFailedException {
+    public OldJwtVerifyResult verify(final JwtVerifyRequest request) throws JwtExpiredException, JwtValidationFailedException {
         final JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(signKey).build();
         try {
             jwtParser.parseClaimsJws(request.getAccessToken());
             final Claims claims = jwtParser.parseClaimsJws(request.getRefreshToken()).getBody();
             if (!Objects.equals(claims.get(JWT_ACCESS_KEY), request.getAccessToken())) throw new JwtException("not compare");
-            return new JwtVerifyResult((String)claims.get(JWT_UNIQ_ID));
+            return new OldJwtVerifyResult((String)claims.get(JWT_UNIQ_ID));
         }catch (ExpiredJwtException e) {
             throw new JwtExpiredException();
         } catch (JwtException e) {
@@ -52,13 +66,21 @@ public class JwtProvider {
         }
     }
 
-    private String _issue(final Claims claims, final Long periodSecond) {
-        final Date nowDate = new Date();
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(nowDate)
-                .setExpiration(new Date(nowDate.getTime() + periodSecond * 1000))
-                .signWith(signKey)
-                .compact();
+    public JwtVerifyResult verify(final String jwt) {
+        final JwtParser jwtParser = Jwts.parserBuilder().setSigningKey(signKey).build();
+        try {
+            final Jws<Claims> claimsJws = jwtParser.parseClaimsJws(jwt);
+            final Claims body = claimsJws.getBody();
+            return new JwtVerifyResult(body, "Success", true);
+        } catch (JwtException e) {
+            return new JwtVerifyResult(null, e.getMessage(), false);
+        }
+    }
+
+    @Getter
+    public static class JwtVerifyResult extends ProcessOptional<Map<String, Object>> {
+        private JwtVerifyResult(final Map<String, Object> value, final String message, final boolean success) {
+            super(value, message, success);
+        }
     }
 }

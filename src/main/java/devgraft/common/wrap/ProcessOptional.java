@@ -2,26 +2,21 @@ package devgraft.common.wrap;
 
 import java.util.function.Supplier;
 
-public abstract class ProcessOptional<T> {
-    private T value;
-    private String message;
-    private boolean success;
+public class ProcessOptional<T> extends ProcessResult {
+    private final T value;
+
+    public ProcessOptional(final T value, final String message, final boolean success) {
+        super(message, success);
+        this.value = value;
+    }
 
     public <X extends Throwable> T orElseThrow(Supplier<? extends X> exceptionSupplier) throws X {
-        if (!success) throw exceptionSupplier.get();
+        if (!isSuccess()) throw exceptionSupplier.get();
         return value;
     }
 
     public T orElseThrow() {
-        if (!success) throw new ProcessOptionalException(message);
+        if (!isSuccess()) throw new ProcessOptionalException(getMessage());
         return value;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public boolean isSuccess() {
-        return success;
     }
 }
