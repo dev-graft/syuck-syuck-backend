@@ -52,8 +52,7 @@ public class SignInApi {
                 Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()),
                 request);
         final AuthorizationElements signInResult = signInService.signIn(request, keyPair);
-
-//        AuthIOService.inject(response, signInResult);
-//        JsonLogger.logI(log, "SignInApi.signIn Success");
+        AuthCodeIOService.injectAuthorizationCode(response, signInResult);
+        JsonLogger.logI(log, "SignInApi.signIn Success");
     }
 }
