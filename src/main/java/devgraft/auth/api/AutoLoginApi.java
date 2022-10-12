@@ -18,6 +18,7 @@ import static devgraft.common.URLPrefix.AUTH_URL_PREFIX;
 public class AutoLoginApi {
     private final SignInCryptoService signInCryptoService;
     private final SignInService signInService;
+    private final AuthCodeIOUtils authCodeIOUtils;
 
     @GetMapping(API_PREFIX + AUTH_URL_PREFIX + "/atl")
     public String signIn(final HttpServletResponse response) {
@@ -30,7 +31,7 @@ public class AutoLoginApi {
                 .loginId(loginId)
                 .password(encryptPwd)
                 .build(), keyPair);
-        AuthCodeIOService.injectAuthorizationCode(response, signInResult);
+        authCodeIOUtils.injectAuthorizationCode(response, signInResult);
         return "Success";
     }
 }

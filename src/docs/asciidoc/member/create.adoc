@@ -1,4 +1,4 @@
-= Auth APIs
+= Member 생성 APIs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -12,10 +12,10 @@
 :operation-http-response-title: 결과 예시
 :operation-response-fields-title: 결과 필드
 
-== 로그인-공개키 요청
-operation::auth-api-doc/get-sign-in-code[snippets='curl-request']
-operation::auth-api-doc/get-sign-in-code[snippets='http-response,response-fields']
+== 회원가입-공개키 요청
+operation::sign-up-api-doc/get-sign-up-code[snippets='curl-request']
+operation::sign-up-api-doc/get-sign-up-code[snippets='http-response,response-fields']
 
-== 로그인
-operation::auth-api-doc/sign-in[snippets='curl-request,request-fields']
-operation::auth-api-doc/sign-in[snippets='http-response,response-body']
+== 회원가입
+operation::sign-up-api-doc/sign-up[snippets='curl-request,request-fields']
+operation::sign-up-api-doc/sign-up[snippets='http-response,response-fields']

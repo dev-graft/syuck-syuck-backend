@@ -34,7 +34,7 @@ public class AbstractApiDocTest {
             fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("결과 성공 여부"),
 //            fieldWithPath("status").type(JsonFieldType.NUMBER).description("결과 코드"),
             fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
-            fieldWithPath("timestamp").type(JsonFieldType.STRING).description("결과 시간(YYYY-MM-dd HH:mm:ss")
+            fieldWithPath("timestamp").type(JsonFieldType.STRING).description("결과 시간(YYYY-MM-dd HH:mm:ss)")
     );
 
     @BeforeEach

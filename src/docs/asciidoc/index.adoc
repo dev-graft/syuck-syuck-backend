@@ -6,5 +6,6 @@
 :toclevels: 4
 :sectlinks:
 
-- xref:member.adoc[Member APIs]
+- xref:member/index.adoc[Member APIs]
+- xref:auth/index.adoc[Auth APIs]
 

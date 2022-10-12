@@ -1,6 +1,6 @@
 package devgraft.auth.api;
 
-import devgraft.auth.api.AuthCodeIOService.AuthorizationCode;
+import devgraft.auth.api.AuthCodeIOUtils.AuthorizationCode;
 import devgraft.auth.app.SignInRefreshService;
 import devgraft.auth.app.SignInRefreshService.SignInRefreshRequest;
 import devgraft.auth.app.SignInRefreshService.SignInRefreshResult;
@@ -19,13 +19,14 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 @RequiredArgsConstructor
 @RestController
 public class SignInRefreshApi {
+    private final AuthCodeIOUtils authCodeIOUtils;
     private final SignInRefreshService signInRefreshService;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/refresh")
     public String refresh(final HttpServletRequest request, final HttpServletResponse response) {
-        final AuthorizationCode authorizationCode = AuthCodeIOService.exportAuthorizationCode(request).orElseThrow(NotIssuedAuthCodeException::new);
+        final AuthorizationCode authorizationCode = authCodeIOUtils.exportAuthorizationCode(request).orElseThrow(NotIssuedAuthCodeException::new);
         final SignInRefreshResult refreshResult = signInRefreshService.refresh(new SignInRefreshRequest(authorizationCode.getAccessToken(), authorizationCode.getRefreshToken()));
-        AuthCodeIOService.injectAuthorizationCode(response, refreshResult);
+        authCodeIOUtils.injectAuthorizationCode(response, refreshResult);
         return "Success";
     }
 }

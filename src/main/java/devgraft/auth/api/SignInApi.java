@@ -28,6 +28,7 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 public class SignInApi {
     private final SignInCodeService signInCodeService;
     private final SignInService signInService;
+    private final AuthCodeIOUtils authCodeIOUtils;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + AUTH_URL_PREFIX + "/sign-code")
     public String getSignInCode(final HttpSession httpSession) {
@@ -52,7 +53,7 @@ public class SignInApi {
                 Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded()),
                 request);
         final AuthorizationElements signInResult = signInService.signIn(request, keyPair);
-        AuthCodeIOService.injectAuthorizationCode(response, signInResult);
+        authCodeIOUtils.injectAuthorizationCode(response, signInResult);
         JsonLogger.logI(log, "SignInApi.signIn Success");
 
         return "Success";

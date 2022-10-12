@@ -1,7 +1,7 @@
 package devgraft.auth.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import devgraft.auth.api.AuthCodeIOService.AuthorizationCode;
+import devgraft.auth.api.AuthCodeIOUtils.AuthorizationCode;
 import devgraft.auth.app.AuthCodeVerificationService;
 import devgraft.auth.app.BlockAuthSessionException;
 import devgraft.auth.app.NotFoundAuthSessionException;
@@ -45,11 +45,12 @@ public class AuthCodeFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
     private final AuthCodeVerificationService authCodeVerificationService;
     private final AuthSessionDataDao authSessionDataDao;
+    private final AuthCodeIOUtils authCodeIOUtils;
 
     // TODO Filter에서 발생하는 에러는 ExceptionHandler가 잡지 못하니 수정 필요함. (Advice는 결과 캐치함)
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
-        final Optional<AuthorizationCode> authorizationCodeOpt = AuthCodeIOService.exportAuthorizationCode(request);
+        final Optional<AuthorizationCode> authorizationCodeOpt = authCodeIOUtils.exportAuthorizationCode(request);
         final boolean isMatch = whitelist.stream().noneMatch(pathPattern -> pathPattern.matches(PathContainer.parsePath(request.getRequestURI())));
         if (isMatch && authorizationCodeOpt.isPresent()) {
             final AuthorizationCode authorizationCode = authorizationCodeOpt.get();

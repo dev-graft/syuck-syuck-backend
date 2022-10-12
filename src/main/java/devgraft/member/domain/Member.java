@@ -43,4 +43,9 @@ public class Member extends BaseEntity {
         final Password hashingPwd = memberCryptService.hashingPassword(pwd);
         return password.isMatch(hashingPwd.getValue());
     }
+
+    public void updateProfile(final String nickname, final String stateMessage) {
+        this.nickname = nickname;
+        this.stateMessage = stateMessage;
+    }
 }

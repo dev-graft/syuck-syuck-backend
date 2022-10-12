@@ -1,0 +1,21 @@
+= 로그인 APIs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-curl-request-title: 요청 예시
+:operation-request-parameters-title: 요청 파라미터
+:operation-path-parameters-title: 경로 파라미터
+:operation-request-fields-title: 요청 필드
+:operation-http-response-title: 결과 예시
+:operation-response-fields-title: 결과 필드
+
+== 로그인-공개키 요청
+operation::sign-in-api-doc/get-sign-in-code[snippets='curl-request']
+operation::sign-in-api-doc/get-sign-in-code[snippets='http-response,response-fields']
+
+== 회원가입
+operation::sign-in-api-doc/sign-in[snippets='curl-request,request-fields']
+operation::sign-in-api-doc/sign-in[snippets='http-response,response-fields']
