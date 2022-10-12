@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class MemberProfileGetResult {
-    private String loginId;
-    private String nickname;
-    private String profileImage;
-    private String stateMessage;
+    private final String loginId;
+    private final String nickname;
+    private final String profileImage;
+    private final String stateMessage;
 }

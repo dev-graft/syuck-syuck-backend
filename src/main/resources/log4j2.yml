@@ -1,0 +1,47 @@
+Configutation:
+  name: Default
+  status: warn
+
+  Properties:
+    Property:
+      name: log-path
+      value: "./logs"
+
+  Appenders:
+    Console:
+      name: Console_Appender
+      target: SYSTEM_OUT
+      PatternLayout:
+        disableAnsi: "false"
+        pattern: "%highlight{[%-5level]}{FATAL=bg_red, ERROR=red, INFO=green, DEBUG=blue} %style{%d{yyyy-MM-dd HH:mm:ss}}{cyan} [%t] - %m%n"
+    File:
+      name: File_Appender
+      fileName: ${log-path}/aop-log.log
+      PatternLayout:
+        pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] - %m%n"
+    RollingFile:
+      - name: RollingFile_Appender
+        fileName: ${log-path}/rollingfile.log
+        filePattern: "logs/roll/rollingfile-%d{yyyy-MM-dd}.log.zip"
+        PatternLayout:
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] - %m%n"
+        Policies:
+          TimeBasedTriggeringPolicy:
+            interval: 1
+            modulate: true
+
+  Loggers:
+    Root:
+      level: info
+      AppenderRef:
+        - ref: Console_Appender
+        #- ref: File_Appender
+        - ref: RollingFile_Appender
+    Logger:
+      - name: devgraft
+        additivity: false
+        level: debug
+        AppenderRef:
+          - ref: Console_Appender
+          - ref: File_Appender
+          - ref: RollingFile_Appender
