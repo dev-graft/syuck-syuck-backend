@@ -8,6 +8,9 @@ import devgraft.auth.app.NotFoundAuthSessionException;
 import devgraft.auth.query.AuthSessionData;
 import devgraft.auth.query.AuthSessionDataDao;
 import devgraft.auth.query.AuthSessionDataSpec;
+import devgraft.member.query.MemberData;
+import devgraft.member.query.MemberDataDao;
+import devgraft.member.query.MemberDataSpec;
 import devgraft.support.advice.CommonResult;
 import devgraft.support.exception.AbstractRequestException;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +48,7 @@ public class AuthCodeFilter extends OncePerRequestFilter {
     private final ObjectMapper objectMapper;
     private final AuthCodeVerificationService authCodeVerificationService;
     private final AuthSessionDataDao authSessionDataDao;
+    private final MemberDataDao memberDataDao;
     private final AuthCodeIOUtils authCodeIOUtils;
 
     // TODO Filter에서 발생하는 에러는 ExceptionHandler가 잡지 못하니 수정 필요함. (Advice는 결과 캐치함)
@@ -58,7 +62,12 @@ public class AuthCodeFilter extends OncePerRequestFilter {
                 final String uniqId = authCodeVerificationService.verify(authorizationCode);
                 final AuthSessionData authSessionData = authSessionDataDao.findOne(AuthSessionDataSpec.uniqIdEquals(uniqId)).orElseThrow(NotFoundAuthSessionException::new);
                 if (authSessionData.isBlock()) throw new BlockAuthSessionException();
+
+                final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(authSessionData.getMemberId())).orElseThrow(NotFoundAuthSessionException::new);
+                if (memberData.isLeave()) throw new BlockAuthSessionException();
+
                 request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);
+                request.setAttribute("M_MEMBER_DATA", memberData);
             } catch (AbstractRequestException e) {
                 setErrorResponse(e, response);
                 return;

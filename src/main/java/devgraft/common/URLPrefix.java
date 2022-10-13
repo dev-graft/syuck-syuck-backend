@@ -9,4 +9,5 @@ public class URLPrefix {
     public static final String VERSION_1_PREFIX = "/v1";
     public static final String MEMBER_URL_PREFIX = "/members";
     public static final String AUTH_URL_PREFIX = "/auth";
+    public static final String FOLLOW_URL_PREFIX = "/follow";
 }
