@@ -15,17 +15,11 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 
 @RequiredArgsConstructor
 @RestController
-public class FollowApi {
+public class AskFollowApi {
     private final AskFollowService askFollowService;
-    // follow 요청(memberId)
 
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX)
     public void askFollow(@Credentials final MemberCredentials memberCredentials, @RequestBody final AskFollowRequest request) {
         askFollowService.askFollow(memberCredentials.getMemberId(), request);
     }
-    // follow 취소(memberId)
-
-    // following 목록 조회(memberId, page)
-
-    // follower 목록 조회(memberId, page)
 }

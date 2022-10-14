@@ -20,13 +20,13 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class FollowApiTest extends MemberCredentialsTestCase {
+class AskFollowApiTest extends MemberCredentialsTestCase {
     private AskFollowService askFollowService;
 
     @Override
     protected StandaloneMockMvcBuilder getStandaloneMockMvcBuilder() {
         askFollowService = Mockito.mock(AskFollowService.class);
-        return MockMvcBuilders.standaloneSetup(new FollowApi(askFollowService));
+        return MockMvcBuilders.standaloneSetup(new AskFollowApi(askFollowService));
     }
 
     @DisplayName("팔로우 요청 status 200")
