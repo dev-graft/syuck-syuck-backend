@@ -12,5 +12,5 @@
 :operation-http-response-title: 결과 예시
 :operation-response-fields-title: 결과 필드
 
-- xref:signIn.adoc[Follow Search APIs]
+- xref:query.adoc[Follow Search APIs]
 - xref:refresh.adoc[Refresh API]

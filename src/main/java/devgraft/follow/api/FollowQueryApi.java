@@ -60,16 +60,14 @@ public class FollowQueryApi {
 
     @Getter
     public static class FollowInfo {
-        private final String memberId;
-        private final String followingMemberId;
+        private final String followMemberId;
 
-        private FollowInfo(final String memberId, final String followingMemberId) {
-            this.memberId = memberId;
-            this.followingMemberId = followingMemberId;
+        private FollowInfo(final String followMemberId) {
+            this.followMemberId = followMemberId;
         }
 
         public static FollowInfo from(final FollowData followData) {
-            return new FollowInfo(followData.getMemberId(), followData.getFollowingMemberId());
+            return new FollowInfo(followData.getFollowingMemberId());
         }
     }
 }

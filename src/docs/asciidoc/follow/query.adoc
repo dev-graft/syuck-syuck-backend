@@ -1,0 +1,21 @@
+= Follow Search APIs
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-curl-request-title: 요청 예시
+:operation-request-parameters-title: 요청 파라미터
+:operation-path-parameters-title: 경로 파라미터
+:operation-request-fields-title: 요청 필드
+:operation-http-response-title: 결과 예시
+:operation-response-fields-title: 결과 필드
+
+== 팔로워 목록 조회
+operation::follow-query-api-doc/search-follower[snippets='curl-request,request-parameters']
+operation::follow-query-api-doc/search-follower[snippets='http-response,response-fields']
+
+== 팔로잉 목록 조회
+operation::follow-query-api-doc/search-following[snippets='curl-request,request-parameters']
+operation::follow-query-api-doc/search-following[snippets='http-response,response-fields']
