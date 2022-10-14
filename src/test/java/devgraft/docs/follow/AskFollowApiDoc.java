@@ -43,7 +43,7 @@ public class AskFollowApiDoc extends AbstractApiDocTest {
         given(memberCredentialsResolver.resolveArgument(any(), any(), any(), any())).willReturn(MemberCredentials.builder().memberId("qwerty123").build());
 
         final AskFollowRequest givenRequest = AskFollowRequest.builder()
-                .followerLoginId("tom01")
+                .followMemberId("tom01")
                 .build();
 
         mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX)
@@ -53,7 +53,7 @@ public class AskFollowApiDoc extends AbstractApiDocTest {
                         .cookie(new Cookie("REFRESH-TOKEN", "refreshToken")))
                 .andDo(document.document(
                         requestFields(
-                                fieldWithPath("followerLoginId").type(JsonFieldType.STRING).description("팔로우 대상 아이디")
+                                fieldWithPath("followMemberId").type(JsonFieldType.STRING).description("팔로우 대상 아이디")
                         ),
                         responseFields
                 ))

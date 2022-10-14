@@ -41,7 +41,7 @@ public class CancelFollowApiDoc extends AbstractApiDocTest {
         given(memberCredentialsResolver.resolveArgument(any(), any(), any(), any())).willReturn(MemberCredentials.builder().memberId("qwerty123").build());
 
         final AskFollowRequest givenRequest = AskFollowRequest.builder()
-                .followerLoginId("tom01")
+                .followMemberId("tom01")
                 .build();
 
         mockMvc.perform(delete(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX)

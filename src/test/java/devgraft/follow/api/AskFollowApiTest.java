@@ -32,7 +32,7 @@ class AskFollowApiTest extends MemberCredentialsTestCase {
     @DisplayName("팔로우 요청 status 200")
     @Test
     void askFollow_returnOkHttpStatus() throws Exception {
-        final AskFollowRequest givenRequest = AskFollowRequest.builder().followerLoginId("dev").build();
+        final AskFollowRequest givenRequest = AskFollowRequest.builder().followMemberId("dev").build();
 
         requestAskFollow(givenRequest)
                 .andExpect(status().isOk());
@@ -41,7 +41,7 @@ class AskFollowApiTest extends MemberCredentialsTestCase {
     @DisplayName("팔로우 요청문을 서비스에 전달")
     @Test
     void askFollow_passesAskFollowRequestToService() throws Exception {
-        final AskFollowRequest givenRequest = AskFollowRequest.builder().followerLoginId("dev").build();
+        final AskFollowRequest givenRequest = AskFollowRequest.builder().followMemberId("dev").build();
 
         requestAskFollow(givenRequest);
 

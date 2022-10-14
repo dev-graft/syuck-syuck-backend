@@ -13,8 +13,8 @@ public class AskFollowRequestValidator {
     public List<ValidationError> validate(final AskFollowRequest request) {
         final List<ValidationError> errors = new ArrayList<>();
 
-        if (!StringUtils.hasText(request.getFollowerLoginId())) {
-            errors.add(ValidationError.of("followerLoginId", "AskFollowRequest.followerLoginId must not be null."));
+        if (!StringUtils.hasText(request.getFollowMemberId())) {
+            errors.add(ValidationError.of("followMemberId", "AskFollowRequest.followMemberId must not be null."));
         }
 
         return errors;

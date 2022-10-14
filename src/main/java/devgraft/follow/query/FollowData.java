@@ -1,5 +1,6 @@
 package devgraft.follow.query;
 
+import devgraft.support.jpa.BaseEntity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ import javax.persistence.Table;
 @Table(name = "follow")
 @Getter
 @Entity
-public class FollowData {
+public class FollowData extends BaseEntity {
     @Id
     private Long id;
     private String memberId;

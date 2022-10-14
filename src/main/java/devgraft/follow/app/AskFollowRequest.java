@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public class AskFollowRequest {
-    private String followerLoginId;
+    private String followMemberId;
 }

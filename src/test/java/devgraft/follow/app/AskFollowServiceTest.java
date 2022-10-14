@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
@@ -58,7 +58,7 @@ class AskFollowServiceTest {
     @Test
     void askFollow_throwNotFoundFollowTargetException() {
         final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        given(mockFindMemberService.findMember(givenRequest.getFollowerLoginId()))
+        given(mockFindMemberService.findMember(givenRequest.getFollowMemberId()))
                 .willThrow(new NotFoundFollowTargetException());
 
         Assertions.assertThrows(NotFoundFollowTargetException.class, () ->
@@ -69,9 +69,9 @@ class AskFollowServiceTest {
     @Test
     void askFollow_throwAlreadyFollowingException() {
         final String givenMemberId = "memberId";
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        given(mockFollowRepository.streamAllByMemberId(givenMemberId))
-                .willReturn(Stream.of(FollowFixture.anFollow().followingMemberId(givenRequest.getFollowerLoginId()).build()));
+        final String followingMemberId = "FFF_ID";
+        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().followMemberId(followingMemberId).build();
+        given(mockFollowRepository.findByMemberIdAndFollowingMemberId(givenMemberId, followingMemberId)).willReturn(Optional.of(FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(followingMemberId).build()));
 
         Assertions.assertThrows(AlreadyFollowingException.class, () ->
                 askFollowService.askFollow(givenMemberId, givenRequest));
@@ -82,7 +82,7 @@ class AskFollowServiceTest {
     void follow_callSaveToRepository() {
         final String givenMemberId = "memberId";
         final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        final Follow mockFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenRequest.getFollowerLoginId()).build();
+        final Follow mockFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenRequest.getFollowMemberId()).build();
 
         askFollowService.askFollow(givenMemberId, givenRequest);
 
@@ -97,6 +97,6 @@ class AskFollowServiceTest {
 
         askFollowService.askFollow(givenMemberId, givenRequest);
 
-        verify(mockFollowEventSender, times(1)).askFollow(givenMemberId, givenRequest.getFollowerLoginId());
+        verify(mockFollowEventSender, times(1)).askFollow(givenMemberId, givenRequest.getFollowMemberId());
     }
 }

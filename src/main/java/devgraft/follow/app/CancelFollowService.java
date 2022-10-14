@@ -14,12 +14,9 @@ public class CancelFollowService {
     private final FollowEventSender followEventSender;
 
     public void cancelFollow(final String memberId, final String fId) {
-        final Follow follow = followRepository.streamAllByMemberId(memberId)
-                .filter(target -> target.isSame(fId))
-                .findFirst()
+        final Follow follow = followRepository.findByMemberIdAndFollowingMemberId(memberId, fId)
                 .orElseThrow(NotFoundFollowTargetException::new);
         followRepository.delete(follow);
-        // 이벤트 호출
         followEventSender.cancelFollow(memberId, fId);
     }
 }

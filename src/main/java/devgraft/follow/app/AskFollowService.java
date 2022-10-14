@@ -20,23 +20,21 @@ public class AskFollowService {
     private final FindMemberService findMemberService;
     private final FollowRepository followRepository;
     private final FollowEventSender followEventSender;
-
+    // TODO 자기자신 팔로우 신청 차단해야함
     public void askFollow(final String memberId, final AskFollowRequest request) {
         final List<ValidationError> errors = askFollowRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "팔로우 요청이 올바르지 않습니다.");
-        findMemberService.findMember(request.getFollowerLoginId());
+        findMemberService.findMember(request.getFollowMemberId());
+        final Optional<Follow> followOpt = followRepository.findByMemberIdAndFollowingMemberId(memberId, request.getFollowMemberId());
 
-        final Optional<Follow> followOpt = followRepository.streamAllByMemberId(memberId)
-                .filter(follow -> follow.isSame(request.getFollowerLoginId()))
-                .findFirst();
         if (followOpt.isPresent()) throw new AlreadyFollowingException();
 
         final Follow follow = Follow.builder()
                 .memberId(memberId)
-                .followingMemberId(request.getFollowerLoginId())
+                .followingMemberId(request.getFollowMemberId())
                 .build();
         followRepository.save(follow);
 
-        followEventSender.askFollow(memberId, request.getFollowerLoginId());
+        followEventSender.askFollow(memberId, request.getFollowMemberId());
     }
 }

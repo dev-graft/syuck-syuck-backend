@@ -57,7 +57,7 @@ public class FollowQueryApi {
                 .values(followInfos)
                 .build();
     }
-
+    // TODO 그냥 팔로우 목록 조회된 사용자들의 정보를 긁어와서 보여주는 형식으로 변경
     @Getter
     public static class FollowInfo {
         private final String followMemberId;
