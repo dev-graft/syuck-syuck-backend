@@ -54,6 +54,18 @@ class AskFollowServiceTest {
         assertThat(errors.getErrors()).isNotEmpty();
     }
 
+    @DisplayName("자기자신에게 팔로우 요청 시 에러")
+    @Test
+    void askFollow_throwSelfFollowException() {
+        final String givenMemberId = "memberId";
+        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest()
+                .followMemberId(givenMemberId)
+                .build();
+
+        Assertions.assertThrows(SelfFollowException.class, () ->
+                askFollowService.askFollow(givenMemberId, givenRequest));
+    }
+
     @DisplayName("팔로우 요청 대상을 찾을 수 없을 경우 에러")
     @Test
     void askFollow_throwNotFoundFollowTargetException() {
