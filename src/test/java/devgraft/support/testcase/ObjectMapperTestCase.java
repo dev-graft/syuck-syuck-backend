@@ -1,10 +1,11 @@
-package devgraft.support.mapper;
+package devgraft.support.testcase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import devgraft.support.mapper.ObjectMapperConfig;
 
-public class ObjectMapperTest {
+public class ObjectMapperTestCase {
     private final ObjectMapper objectMapper;
-    protected ObjectMapperTest() {
+    protected ObjectMapperTestCase() {
         objectMapper = new ObjectMapperConfig().objectMapper();
     }
 

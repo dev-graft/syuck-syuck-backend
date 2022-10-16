@@ -30,8 +30,8 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest({MemberQueryApi.class})
-public class MemberQueryApiDoc extends AbstractApiDocTest {
+@WebMvcTest(MemberQueryApi.class)
+class MemberQueryApiDoc extends AbstractApiDocTest {
     @MockBean
     private AuthCodeFilter authCodeFilter;
     @MockBean
@@ -43,11 +43,11 @@ public class MemberQueryApiDoc extends AbstractApiDocTest {
         given(memberDataDao.findOne(any())).willReturn(Optional.of(MemberData.builder().build()));
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/exists")
-                        .param("loginId", "qwerty123"))
+                        .param("target", "qwerty123"))
                 .andExpect(status().isOk())
                 .andDo(document.document(
                         requestParameters(
-                                parameterWithName("loginId").description("회원 아이디")
+                                parameterWithName("target").description("회원 아이디")
                         ),
                         responseFields.and(
                                 fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("아이디 존재 여부 결과(True=존재/False=존재안함)")
@@ -66,11 +66,11 @@ public class MemberQueryApiDoc extends AbstractApiDocTest {
                 .build()));
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/profile")
-                        .param("loginId", "qwerty123"))
+                        .param("target", "qwerty123"))
                 .andExpect(status().isOk())
                 .andDo(document.document(
                                 requestParameters(
-                                        parameterWithName("loginId").description("회원 아이디")
+                                        parameterWithName("target").description("회원 아이디")
                                 ),
                                 responseFields.and(
                                         fieldWithPath("data.loginId").type(JsonFieldType.STRING).description("로그인 아이디"),
@@ -103,13 +103,14 @@ public class MemberQueryApiDoc extends AbstractApiDocTest {
                                         parameterWithName("page").description("페이지 (default=0)")
                                 ),
                                 responseFields.and(
+                                        fieldWithPath("data.totalPage").type(JsonFieldType.NUMBER).description("검색 결과 총 페이지)"),
+                                        fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("검색 결과 총 요소"),
                                         fieldWithPath("data.page").type(JsonFieldType.NUMBER).description("검색 페이지"),
                                         fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("검색 결과 크기"),
-                                        fieldWithPath("data.maxSize").type(JsonFieldType.NUMBER).description("검색 결과 최대 크기(서버관리)"),
-                                        fieldWithPath("data.members").type(JsonFieldType.ARRAY).description("검색된 회원 목록"),
-                                        fieldWithPath("data.members[].loginId").type(JsonFieldType.STRING).description("아이디"),
-                                        fieldWithPath("data.members[].nickname").type(JsonFieldType.STRING).description("별명"),
-                                        fieldWithPath("data.members[].profileImage").type(JsonFieldType.STRING).description("프로필 이미지 URL")
+                                        fieldWithPath("data.values").type(JsonFieldType.ARRAY).description("검색된 회원 목록"),
+                                        fieldWithPath("data.values[].loginId").type(JsonFieldType.STRING).description("아이디"),
+                                        fieldWithPath("data.values[].nickname").type(JsonFieldType.STRING).description("별명"),
+                                        fieldWithPath("data.values[].profileImage").type(JsonFieldType.STRING).description("프로필 이미지 URL")
                                 )
                         )
                 );
@@ -136,13 +137,14 @@ public class MemberQueryApiDoc extends AbstractApiDocTest {
                                         parameterWithName("page").description("페이지 (default=0)")
                                 ),
                                 responseFields.and(
+                                        fieldWithPath("data.totalPage").type(JsonFieldType.NUMBER).description("검색 결과 총 페이지)"),
+                                        fieldWithPath("data.totalElements").type(JsonFieldType.NUMBER).description("검색 결과 총 요소"),
                                         fieldWithPath("data.page").type(JsonFieldType.NUMBER).description("검색 페이지"),
                                         fieldWithPath("data.size").type(JsonFieldType.NUMBER).description("검색 결과 크기"),
-                                        fieldWithPath("data.maxSize").type(JsonFieldType.NUMBER).description("검색 결과 최대 크기(서버관리)"),
-                                        fieldWithPath("data.members").type(JsonFieldType.ARRAY).description("검색된 회원 목록"),
-                                        fieldWithPath("data.members[].loginId").type(JsonFieldType.STRING).description("아이디"),
-                                        fieldWithPath("data.members[].nickname").type(JsonFieldType.STRING).description("별명"),
-                                        fieldWithPath("data.members[].profileImage").type(JsonFieldType.STRING).description("프로필 이미지 URL")
+                                        fieldWithPath("data.values").type(JsonFieldType.ARRAY).description("검색된 회원 목록"),
+                                        fieldWithPath("data.values[].loginId").type(JsonFieldType.STRING).description("아이디"),
+                                        fieldWithPath("data.values[].nickname").type(JsonFieldType.STRING).description("별명"),
+                                        fieldWithPath("data.values[].profileImage").type(JsonFieldType.STRING).description("프로필 이미지 URL")
                                 )
                         )
                 );

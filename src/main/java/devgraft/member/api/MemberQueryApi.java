@@ -1,11 +1,11 @@
 package devgraft.member.api;
 
+import devgraft.common.SearchResult;
 import devgraft.common.credential.Credentials;
 import devgraft.common.credential.MemberCredentials;
 import devgraft.member.query.MemberData;
 import devgraft.member.query.MemberDataDao;
 import devgraft.member.query.MemberDataSpec;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,14 +28,14 @@ public class MemberQueryApi {
     private final MemberDataDao memberDataDao;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/exists")
-    public boolean isExistsLoginId(@RequestParam(name = "loginId") String loginId) {
-        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+    public boolean isExistsLoginId(@RequestParam(name = "target") String target) {
+        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(target)
                 .and(MemberDataSpec.normalEquals())).isPresent();
     }
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/profile")
-    public MemberProfileGetResult getMemberProfile(@RequestParam(name = "loginId") String loginId) {
-        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+    public MemberProfileGetResult getMemberProfile(@RequestParam(name = "target") String target) {
+        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(target)
                         .and(MemberDataSpec.normalEquals()))
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -62,30 +62,35 @@ public class MemberQueryApi {
     }
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/nickname")
-    public SearchResult nicknameSearch(@RequestParam(name = "keyword") final String keyword, @RequestParam(name = "page", defaultValue = "0") Integer page) {
-        final Page<MemberData> memberData = memberDataDao.findAll(MemberDataSpec.nicknameLike(keyword).and(MemberDataSpec.normalEquals()), PageRequest.of(page, SIZE));
-        final List<MemberInfo> members = memberData.stream()
+    public SearchResult<MemberInfo> nicknameSearch(@RequestParam(name = "keyword") final String keyword, @RequestParam(name = "page", defaultValue = "0") Integer page) {
+        final Page<MemberData> memberDataPages = memberDataDao.findAll(MemberDataSpec.nicknameLike(keyword).and(MemberDataSpec.normalEquals()), PageRequest.of(page, SIZE));
+        final List<MemberInfo> members = memberDataPages.stream()
                 .map(MemberInfo::from)
                 .collect(Collectors.toList());
-        return new SearchResult(page, SIZE, members.size(), members);
+
+        return SearchResult.<MemberInfo>builder()
+                .totalPage(memberDataPages.getTotalPages())
+                .totalElements(memberDataPages.getTotalElements())
+                .page(page)
+                .size(members.size())
+                .values(members)
+                .build();
     }
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/login-id")
-    public SearchResult loginIdSearch(@RequestParam(name = "keyword") final String keyword, @RequestParam(name = "page", defaultValue = "0") Integer page) {
-        final Page<MemberData> memberData = memberDataDao.findAll(MemberDataSpec.loggedIdLike(keyword).and(MemberDataSpec.normalEquals()), PageRequest.of(page, SIZE));
-        final List<MemberInfo> members = memberData.stream()
+    public SearchResult<MemberInfo> loginIdSearch(@RequestParam(name = "keyword") final String keyword, @RequestParam(name = "page", defaultValue = "0") Integer page) {
+        final Page<MemberData> memberDataPages = memberDataDao.findAll(MemberDataSpec.loggedIdLike(keyword).and(MemberDataSpec.normalEquals()), PageRequest.of(page, SIZE));
+        final List<MemberInfo> members = memberDataPages.stream()
                 .map(MemberInfo::from)
                 .collect(Collectors.toList());
-        return new SearchResult(page, SIZE, members.size(), members);
-    }
 
-    @AllArgsConstructor
-    @Getter
-    public static class SearchResult {
-        private final int page;    // 페이지
-        private final int maxSize; // 최대 크기
-        private final int size;    // 크기
-        private final List<MemberInfo> members;
+        return SearchResult.<MemberInfo>builder()
+                .totalPage(memberDataPages.getTotalPages())
+                .totalElements(memberDataPages.getTotalElements())
+                .page(page)
+                .size(members.size())
+                .values(members)
+                .build();
     }
 
     @Getter

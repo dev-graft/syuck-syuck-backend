@@ -1,5 +1,6 @@
 package devgraft.common.credential;
 
+import devgraft.auth.app.NotFoundAuthSessionException;
 import devgraft.auth.query.AuthSessionData;
 import org.springframework.core.MethodParameter;
 import org.springframework.stereotype.Component;
@@ -20,10 +21,10 @@ public class MemberCredentialsResolver implements HandlerMethodArgumentResolver 
     }
 
     @Override
-    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         final HttpServletRequest httpServletRequest = (HttpServletRequest) webRequest.getNativeRequest();
         final AuthSessionData authSessionData = (AuthSessionData) httpServletRequest.getAttribute("M_AUTH_SESSION_DATA");
-
+        if (null == authSessionData) throw new NotFoundAuthSessionException();
         return MemberCredentials.builder()
                 .memberId(authSessionData.getMemberId())
                 .version(authSessionData.getVersion())
