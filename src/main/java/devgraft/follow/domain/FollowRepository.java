@@ -7,7 +7,8 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    List<Follow> findAllByMemberId(final String memberId);
-    Stream<Follow> streamAllByMemberId(final String memberId);
-    Optional<Follow> findByMemberIdAndFollowingMemberId(final String memberId, final String followingMemberId);
+    List<Follow> findAllByFollowerId(final String followerId);
+    Stream<Follow> streamAllByFollowerId(final String followerId);
+    Optional<Follow> findByFollowerIdAndFollowingId(final String followerId, final String followingId);
+
 }

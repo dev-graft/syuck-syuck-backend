@@ -83,7 +83,8 @@ class AskFollowServiceTest {
         final String givenMemberId = "memberId";
         final String followingMemberId = "FFF_ID";
         final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().followMemberId(followingMemberId).build();
-        given(mockFollowRepository.findByMemberIdAndFollowingMemberId(givenMemberId, followingMemberId)).willReturn(Optional.of(FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(followingMemberId).build()));
+        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, followingMemberId)).willReturn(Optional.of(FollowFixture.anFollow().followerId(givenMemberId)
+                .followingId(followingMemberId).build()));
 
         Assertions.assertThrows(AlreadyFollowingException.class, () ->
                 askFollowService.askFollow(givenMemberId, givenRequest));
@@ -94,7 +95,7 @@ class AskFollowServiceTest {
     void follow_callSaveToRepository() {
         final String givenMemberId = "memberId";
         final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        final Follow mockFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenRequest.getFollowMemberId()).build();
+        final Follow mockFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(givenRequest.getFollowMemberId()).build();
 
         askFollowService.askFollow(givenMemberId, givenRequest);
 

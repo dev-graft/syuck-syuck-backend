@@ -29,13 +29,13 @@ public class AskFollowService {
 
         if (Objects.equals(memberId, request.getFollowMemberId())) throw new SelfFollowException();
 
-        final Optional<Follow> followOpt = followRepository.findByMemberIdAndFollowingMemberId(memberId, request.getFollowMemberId());
+        final Optional<Follow> followOpt = followRepository.findByFollowerIdAndFollowingId(memberId, request.getFollowMemberId());
 
         if (followOpt.isPresent()) throw new AlreadyFollowingException();
 
         final Follow follow = Follow.builder()
-                .memberId(memberId)
-                .followingMemberId(request.getFollowMemberId())
+                .followerId(memberId)
+                .followingId(request.getFollowMemberId())
                 .build();
         followRepository.save(follow);
 

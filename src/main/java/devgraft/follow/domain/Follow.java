@@ -23,10 +23,10 @@ import java.util.Objects;
 public class Follow extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String memberId;
-    private String followingMemberId;
+    private String followerId;
+    private String followingId;
 
     public boolean isSame(final String fId) {
-        return Objects.equals(followingMemberId, fId);
+        return Objects.equals(followingId, fId);
     }
 }

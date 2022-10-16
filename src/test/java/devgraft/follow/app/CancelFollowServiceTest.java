@@ -39,7 +39,7 @@ class CancelFollowServiceTest {
         assertThrows(NotFoundFollowTargetException.class, () ->
                 cancelFollowService.cancelFollow(givenMemberId, followingMemberId));
 
-        verify(mockFollowRepository, times(1)).findByMemberIdAndFollowingMemberId(givenMemberId, followingMemberId);
+        verify(mockFollowRepository, times(1)).findByFollowerIdAndFollowingId(givenMemberId, followingMemberId);
     }
 
     @DisplayName("팔로우 정보 삭제")
@@ -48,7 +48,7 @@ class CancelFollowServiceTest {
         final String givenMemberId = "memberId";
         final String givenFId = "fId";
         final Follow givenFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenFId).build();
-        given(mockFollowRepository.findByMemberIdAndFollowingMemberId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
+        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
         cancelFollowService.cancelFollow(givenMemberId, givenFId);
 
@@ -61,7 +61,7 @@ class CancelFollowServiceTest {
         final String givenMemberId = "memberId";
         final String givenFId = "fId";
         final Follow givenFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenFId).build();
-        given(mockFollowRepository.findByMemberIdAndFollowingMemberId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
+        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
         cancelFollowService.cancelFollow(givenMemberId, givenFId);
 

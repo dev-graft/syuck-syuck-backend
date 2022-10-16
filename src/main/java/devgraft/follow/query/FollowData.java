@@ -20,6 +20,6 @@ import javax.persistence.Table;
 public class FollowData extends BaseEntity {
     @Id
     private Long id;
-    private String memberId;
-    private String followingMemberId;
+    private String followerId;
+    private String followingId;
 }

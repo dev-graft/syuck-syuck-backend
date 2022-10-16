@@ -14,7 +14,7 @@ public class CancelFollowService {
     private final FollowEventSender followEventSender;
 
     public void cancelFollow(final String memberId, final String fId) {
-        final Follow follow = followRepository.findByMemberIdAndFollowingMemberId(memberId, fId)
+        final Follow follow = followRepository.findByFollowerIdAndFollowingId(memberId, fId)
                 .orElseThrow(NotFoundFollowTargetException::new);
         followRepository.delete(follow);
         followEventSender.cancelFollow(memberId, fId);
