@@ -6,7 +6,6 @@ import devgraft.support.testcase.MemberCredentialsTestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
@@ -45,12 +44,11 @@ class AskFollowApiTest extends MemberCredentialsTestCase {
 
         requestAskFollow(givenRequest);
 
-        verify(askFollowService, times(1)).askFollow(refEq("memberId"), refEq(givenRequest));
+        verify(askFollowService, times(1)).askFollow(refEq("memberId"), refEq("targetId"));
     }
 
     private ResultActions requestAskFollow(final AskFollowRequest givenRequest) throws Exception {
         return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(getObjectMapper().writeValueAsString(givenRequest)));
+                .param("target", "targetId"));
     }
 }

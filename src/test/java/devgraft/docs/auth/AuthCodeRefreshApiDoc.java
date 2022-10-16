@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest({SignInRefreshApi.class})
-public class AuthCodeRefreshApiDoc extends AbstractApiDocTest {
+class AuthCodeRefreshApiDoc extends AbstractApiDocTest {
     @MockBean
     private AuthCodeFilter authCodeFilter;
     @MockBean

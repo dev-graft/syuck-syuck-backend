@@ -7,18 +7,13 @@ import devgraft.follow.domain.FollowEventSender;
 import devgraft.follow.domain.FollowFixture;
 import devgraft.follow.domain.FollowRepository;
 import devgraft.follow.domain.NotFoundFollowTargetException;
-import devgraft.support.exception.ValidationError;
-import devgraft.support.exception.ValidationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.catchThrowableOfType;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -27,77 +22,57 @@ import static org.mockito.Mockito.verify;
 
 class AskFollowServiceTest {
     private AskFollowService askFollowService;
-    private AskFollowRequestValidator mockAskFollowRequestValidator;
     private FindMemberService mockFindMemberService;
     private FollowRepository mockFollowRepository;
     private FollowEventSender mockFollowEventSender;
     @BeforeEach
     void setUp() {
-        mockAskFollowRequestValidator = mock(AskFollowRequestValidator.class);
         mockFindMemberService = mock(FindMemberService.class);
         mockFollowRepository = mock(FollowRepository.class);
         mockFollowEventSender = mock(FollowEventSender.class);
 
-        askFollowService = new AskFollowService(mockAskFollowRequestValidator, mockFindMemberService, mockFollowRepository, mockFollowEventSender);
-    }
-
-    @DisplayName("팔로우 요청문 검증 에러 발생")
-    @Test
-    void askFollow_throwValidationException() {
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        given(mockAskFollowRequestValidator.validate(givenRequest)).willReturn(List.of(ValidationError.of("field", "message")));
-
-        final ValidationException errors = catchThrowableOfType(() ->
-                askFollowService.askFollow("memberId", givenRequest), ValidationException.class);
-
-        assertThat(errors).isNotNull();
-        assertThat(errors.getErrors()).isNotEmpty();
+        askFollowService = new AskFollowService(mockFindMemberService, mockFollowRepository, mockFollowEventSender);
     }
 
     @DisplayName("자기자신에게 팔로우 요청 시 에러")
     @Test
     void askFollow_throwSelfFollowException() {
         final String givenMemberId = "memberId";
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest()
-                .followMemberId(givenMemberId)
-                .build();
 
         Assertions.assertThrows(SelfFollowException.class, () ->
-                askFollowService.askFollow(givenMemberId, givenRequest));
+                askFollowService.askFollow(givenMemberId, givenMemberId));
     }
 
     @DisplayName("팔로우 요청 대상을 찾을 수 없을 경우 에러")
     @Test
     void askFollow_throwNotFoundFollowTargetException() {
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        given(mockFindMemberService.findMember(givenRequest.getFollowMemberId()))
+        given(mockFindMemberService.findMember("targetId"))
                 .willThrow(new NotFoundFollowTargetException());
 
         Assertions.assertThrows(NotFoundFollowTargetException.class, () ->
-        askFollowService.askFollow("memberId", givenRequest));
+        askFollowService.askFollow("memberId", "targetId"));
     }
 
     @DisplayName("이미 팔로우 하고 있을 경우 에러")
     @Test
     void askFollow_throwAlreadyFollowingException() {
         final String givenMemberId = "memberId";
-        final String followingMemberId = "FFF_ID";
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().followMemberId(followingMemberId).build();
-        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, followingMemberId)).willReturn(Optional.of(FollowFixture.anFollow().followerId(givenMemberId)
-                .followingId(followingMemberId).build()));
+        final String targetId = "FFF_ID";
+        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, targetId)).willReturn(Optional.of(FollowFixture.anFollow().followerId(givenMemberId)
+                .followingId(targetId).build()));
 
         Assertions.assertThrows(AlreadyFollowingException.class, () ->
-                askFollowService.askFollow(givenMemberId, givenRequest));
+                askFollowService.askFollow(givenMemberId, targetId));
     }
 
     @DisplayName("팔로우 정보 저장")
     @Test
     void follow_callSaveToRepository() {
         final String givenMemberId = "memberId";
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
-        final Follow mockFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(givenRequest.getFollowMemberId()).build();
+        final String targetId = "targetId";
+        final Follow mockFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(targetId).build();
 
-        askFollowService.askFollow(givenMemberId, givenRequest);
+        askFollowService.askFollow(givenMemberId, targetId);
 
         verify(mockFollowRepository, times(1)).save(refEq(mockFollow));
     }
@@ -106,10 +81,10 @@ class AskFollowServiceTest {
     @Test
     void follow_callFollowingToFollowSender() {
         final String givenMemberId = "memberId";
-        final AskFollowRequest givenRequest = AskFollowRequestFixture.anRequest().build();
+        final String targetId = "targetId";
 
-        askFollowService.askFollow(givenMemberId, givenRequest);
+        askFollowService.askFollow(givenMemberId, targetId);
 
-        verify(mockFollowEventSender, times(1)).askFollow(givenMemberId, givenRequest.getFollowMemberId());
+        verify(mockFollowEventSender, times(1)).askFollow(givenMemberId, targetId);
     }
 }

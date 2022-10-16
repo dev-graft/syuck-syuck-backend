@@ -13,6 +13,6 @@
 :operation-response-fields-title: 결과 필드
 
 == 팔로우 요청
-operation::ask-follow-api-doc/ask-follow[snippets='curl-request,request-headers,request-fields']
+operation::ask-follow-api-doc/ask-follow[snippets='curl-request,request-headers,request-parameters']
 operation::ask-follow-api-doc/ask-follow[snippets='http-response,response-fields']
 
