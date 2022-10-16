@@ -3,9 +3,9 @@ package devgraft.docs.follow;
 import devgraft.auth.api.AuthCodeFilter;
 import devgraft.common.credential.MemberCredentials;
 import devgraft.common.credential.MemberCredentialsResolver;
-import devgraft.follow.api.CancelFollowApi;
+import devgraft.follow.api.UnfollowApi;
 import devgraft.follow.app.AskFollowRequest;
-import devgraft.follow.app.CancelFollowService;
+import devgraft.follow.app.UnfollowService;
 import devgraft.support.restdocs.AbstractApiDocTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,12 +26,12 @@ import static org.springframework.restdocs.request.RequestDocumentation.requestP
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @ExtendWith(RestDocumentationExtension.class)
-@WebMvcTest(CancelFollowApi.class)
-public class CancelFollowApiDoc extends AbstractApiDocTest {
+@WebMvcTest(UnfollowApi.class)
+public class UnfollowApiDoc extends AbstractApiDocTest {
     @MockBean
     private AuthCodeFilter authCodeFilter;
     @MockBean
-    private CancelFollowService cancelFollowService;
+    private UnfollowService unfollowService;
     @MockBean
     private MemberCredentialsResolver memberCredentialsResolver;
 

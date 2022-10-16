@@ -18,8 +18,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class CancelFollowServiceTest {
-    private CancelFollowService cancelFollowService;
+class UnfollowServiceTest {
+    private UnfollowService unfollowService;
     private FollowRepository mockFollowRepository;
     private FollowEventSender mockFollowEventSender;
 
@@ -27,7 +27,7 @@ class CancelFollowServiceTest {
     void setUp() {
         mockFollowRepository = Mockito.mock(FollowRepository.class);
         mockFollowEventSender = Mockito.mock(FollowEventSender.class);
-        cancelFollowService = new CancelFollowService(mockFollowRepository, mockFollowEventSender);
+        unfollowService = new UnfollowService(mockFollowRepository, mockFollowEventSender);
     }
 
     @DisplayName("자신의 팔로우 목록에서 취소 대상을 찾지 못했을 시 에러")
@@ -37,7 +37,7 @@ class CancelFollowServiceTest {
         final String followingMemberId = "FFF_ID";
 
         assertThrows(NotFoundFollowTargetException.class, () ->
-                cancelFollowService.cancelFollow(givenMemberId, followingMemberId));
+                unfollowService.Unfollow(givenMemberId, followingMemberId));
 
         verify(mockFollowRepository, times(1)).findByFollowerIdAndFollowingId(givenMemberId, followingMemberId);
     }
@@ -50,7 +50,7 @@ class CancelFollowServiceTest {
         final Follow givenFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenFId).build();
         given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
-        cancelFollowService.cancelFollow(givenMemberId, givenFId);
+        unfollowService.Unfollow(givenMemberId, givenFId);
 
         verify(mockFollowRepository, times(1)).delete(refEq(givenFollow));
     }
@@ -63,7 +63,7 @@ class CancelFollowServiceTest {
         final Follow givenFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenFId).build();
         given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
-        cancelFollowService.cancelFollow(givenMemberId, givenFId);
+        unfollowService.Unfollow(givenMemberId, givenFId);
 
         verify(mockFollowEventSender, times(1)).cancelFollow(givenMemberId, givenFId);
     }

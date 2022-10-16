@@ -2,7 +2,7 @@ package devgraft.follow.api;
 
 
 import devgraft.auth.api.MemberCredentialsFixture;
-import devgraft.follow.app.CancelFollowService;
+import devgraft.follow.app.UnfollowService;
 import devgraft.support.testcase.MemberCredentialsTestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,13 +20,13 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class CancelFollowApiTest extends MemberCredentialsTestCase {
-    private CancelFollowService mockCancelFollowService;
+class UnfollowApiTest extends MemberCredentialsTestCase {
+    private UnfollowService mockUnfollowService;
 
     @Override
     protected StandaloneMockMvcBuilder getStandaloneMockMvcBuilder() {
-        mockCancelFollowService = Mockito.mock(CancelFollowService.class);
-        return MockMvcBuilders.standaloneSetup(new CancelFollowApi(mockCancelFollowService));
+        mockUnfollowService = Mockito.mock(UnfollowService.class);
+        return MockMvcBuilders.standaloneSetup(new UnfollowApi(mockUnfollowService));
     }
 
     @DisplayName("팔로우 취소 status 200")
@@ -45,7 +45,7 @@ class CancelFollowApiTest extends MemberCredentialsTestCase {
 
         requestCancelFollow(givenFollowId);
 
-        verify(mockCancelFollowService, times(1)).cancelFollow(refEq(givenMemberId), refEq(givenFollowId));
+        verify(mockUnfollowService, times(1)).Unfollow(refEq(givenMemberId), refEq(givenFollowId));
     }
 
     private ResultActions requestCancelFollow(final String targetId) throws Exception {
