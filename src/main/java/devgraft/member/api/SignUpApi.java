@@ -43,6 +43,7 @@ public class SignUpApi {
         return enKey;
     }
 
+    // TODO 회원가입 공개키 삭제를 안하는 문제 존재
     @ResponseStatus(code = HttpStatus.CREATED)
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/sign-up")
     public String signUp(@RequestBody final EncryptedSignUpRequest request, final HttpSession httpSession) {
