@@ -31,10 +31,10 @@ create table auth_session
 
 CREATE TABLE follow
 (
-    id                  BIGINT AUTO_INCREMENT NOT NULL,
-    created_at          TIMESTAMP,
-    updated_at          TIMESTAMP,
-    follower_id           VARCHAR(255),
+    id           BIGINT AUTO_INCREMENT NOT NULL,
+    created_at   TIMESTAMP,
+    updated_at   TIMESTAMP,
+    follower_id  VARCHAR(255),
     following_id VARCHAR(255),
     CONSTRAINT pk_follow PRIMARY KEY (id)
 );

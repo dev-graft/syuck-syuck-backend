@@ -43,11 +43,11 @@ class MemberQueryApiDoc extends AbstractApiDocTest {
         given(memberDataDao.findOne(any())).willReturn(Optional.of(MemberData.builder().build()));
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/exists")
-                        .param("loginId", "qwerty123"))
+                        .param("target", "qwerty123"))
                 .andExpect(status().isOk())
                 .andDo(document.document(
                         requestParameters(
-                                parameterWithName("loginId").description("회원 아이디")
+                                parameterWithName("target").description("회원 아이디")
                         ),
                         responseFields.and(
                                 fieldWithPath("data").type(JsonFieldType.BOOLEAN).description("아이디 존재 여부 결과(True=존재/False=존재안함)")
@@ -66,11 +66,11 @@ class MemberQueryApiDoc extends AbstractApiDocTest {
                 .build()));
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/profile")
-                        .param("loginId", "qwerty123"))
+                        .param("target", "qwerty123"))
                 .andExpect(status().isOk())
                 .andDo(document.document(
                                 requestParameters(
-                                        parameterWithName("loginId").description("회원 아이디")
+                                        parameterWithName("target").description("회원 아이디")
                                 ),
                                 responseFields.and(
                                         fieldWithPath("data.loginId").type(JsonFieldType.STRING).description("로그인 아이디"),

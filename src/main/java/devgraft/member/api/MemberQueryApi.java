@@ -28,14 +28,14 @@ public class MemberQueryApi {
     private final MemberDataDao memberDataDao;
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/exists")
-    public boolean isExistsLoginId(@RequestParam(name = "loginId") String loginId) {
-        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+    public boolean isExistsLoginId(@RequestParam(name = "target") String target) {
+        return memberDataDao.findOne(MemberDataSpec.loggedIdEquals(target)
                 .and(MemberDataSpec.normalEquals())).isPresent();
     }
 
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/profile")
-    public MemberProfileGetResult getMemberProfile(@RequestParam(name = "loginId") String loginId) {
-        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(loginId)
+    public MemberProfileGetResult getMemberProfile(@RequestParam(name = "target") String target) {
+        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(target)
                         .and(MemberDataSpec.normalEquals()))
                 .orElseThrow(NotFoundMemberException::new);
 
