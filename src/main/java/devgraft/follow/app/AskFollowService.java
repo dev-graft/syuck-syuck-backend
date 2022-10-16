@@ -22,7 +22,6 @@ public class AskFollowService {
     private final FollowRepository followRepository;
     private final FollowEventSender followEventSender;
 
-    // TODO 자기자신 팔로우 신청 차단해야함
     public void askFollow(final String memberId, final AskFollowRequest request) {
         final List<ValidationError> errors = askFollowRequestValidator.validate(request);
         if (!errors.isEmpty()) throw new ValidationException(errors, "팔로우 요청이 올바르지 않습니다.");
