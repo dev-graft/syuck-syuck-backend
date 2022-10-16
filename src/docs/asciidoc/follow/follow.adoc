@@ -1,4 +1,4 @@
-= 팔로우 요청 API
+= 팔로우  APIs
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -15,4 +15,8 @@
 == 팔로우 요청
 operation::ask-follow-api-doc/ask-follow[snippets='curl-request,request-headers,request-parameters']
 operation::ask-follow-api-doc/ask-follow[snippets='http-response,response-fields']
+
+== 팔로우 취소
+operation::unfollow-api-doc/unfollow[snippets='curl-request,request-headers,request-parameters']
+operation::unfollow-api-doc/unfollow[snippets='http-response,response-fields']
 
