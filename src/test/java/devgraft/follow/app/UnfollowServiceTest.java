@@ -47,7 +47,7 @@ class UnfollowServiceTest {
     void cancelFollow_callDeleteToRepository() {
         final String givenMemberId = "memberId";
         final String givenFId = "fId";
-        final Follow givenFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenFId).build();
+        final Follow givenFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(givenFId).build();
         given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
         unfollowService.Unfollow(givenMemberId, givenFId);
@@ -60,7 +60,7 @@ class UnfollowServiceTest {
     void cancelFollow_sendCancelEvent() {
         final String givenMemberId = "memberId";
         final String givenFId = "fId";
-        final Follow givenFollow = FollowFixture.anFollow().memberId(givenMemberId).followingMemberId(givenFId).build();
+        final Follow givenFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(givenFId).build();
         given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
         unfollowService.Unfollow(givenMemberId, givenFId);

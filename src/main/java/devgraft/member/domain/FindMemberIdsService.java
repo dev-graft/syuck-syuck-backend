@@ -1,6 +1,7 @@
 package devgraft.member.domain;
 
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,8 @@ public class FindMemberIdsService {
                 .collect(Collectors.toList());
     }
 
-    @Builder(access = AccessLevel.PROTECTED)
+    @Builder(access = AccessLevel.PUBLIC)
+    @AllArgsConstructor(access = AccessLevel.PUBLIC)
     @Getter
     public static class FindMemberResult {
         private final String memberId;

@@ -5,7 +5,7 @@ public class FollowDataFixture {
     public static FollowData.FollowDataBuilder anFollowData() {
         return FollowData.builder()
                 .id(0L)
-                .memberId("qwerty123")
-                .followingMemberId("dede123");
+                .followerId("qwerty123")
+                .followingId("dede123");
     }
 }

@@ -12,12 +12,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
 import static devgraft.common.URLPrefix.API_PREFIX;
-import static devgraft.common.URLPrefix.FOLLOW_URL_PREFIX;
+import static devgraft.common.URLPrefix.UNFOLLOW_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class UnfollowApiTest extends MemberCredentialsTestCase {
@@ -49,7 +49,7 @@ class UnfollowApiTest extends MemberCredentialsTestCase {
     }
 
     private ResultActions requestCancelFollow(final String targetId) throws Exception {
-        return mockMvc.perform(delete(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX)
-                .param("fId", targetId));
+        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + UNFOLLOW_URL_PREFIX)
+                .param("target", targetId));
     }
 }
