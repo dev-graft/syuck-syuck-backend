@@ -5,15 +5,14 @@ import devgraft.member.app.EncryptedSignUpRequestFixture;
 import devgraft.member.app.SignUpCodeService;
 import devgraft.member.app.SignUpService;
 import devgraft.support.crypto.KeyPairFixture;
-import devgraft.support.mapper.ObjectMapperTest;
-import org.junit.jupiter.api.BeforeEach;
+import devgraft.support.testcase.StandaloneMockMvcTestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.setup.StandaloneMockMvcBuilder;
 
 import java.security.KeyPair;
 import java.util.Base64;
@@ -32,22 +31,18 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class SignUpApiTest extends ObjectMapperTest {
-    private MockMvc mockMvc;
+class SignUpApiTest extends StandaloneMockMvcTestCase {
     private SignUpCodeService mockSignUpCodeService;
     private SignUpService mockSignUpService;
 
-    @BeforeEach
-    void setUp() {
+    @Override
+    protected StandaloneMockMvcBuilder getStandaloneMockMvcBuilder() {
         mockSignUpCodeService = mock(SignUpCodeService.class);
         mockSignUpService = mock(SignUpService.class);
-        mockMvc = MockMvcBuilders.standaloneSetup(new SignUpApi(mockSignUpCodeService, mockSignUpService))
-                .alwaysDo(print())
-                .build();
+        return MockMvcBuilders.standaloneSetup(new SignUpApi(mockSignUpCodeService, mockSignUpService));
     }
 
     @DisplayName("회원가입 공개키 요청 결과")

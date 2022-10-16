@@ -48,4 +48,8 @@ public class Member extends BaseEntity {
         this.nickname = nickname;
         this.stateMessage = stateMessage;
     }
+
+    public String getMemberId() {
+        return id.getId();
+    }
 }

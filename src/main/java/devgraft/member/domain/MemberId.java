@@ -28,6 +28,10 @@ public class MemberId implements Serializable {
         return id.hashCode();
     }
 
+    public String getId() {
+        return id;
+    }
+
     public static MemberId from(final String id) {
         return new MemberId(id);
     }

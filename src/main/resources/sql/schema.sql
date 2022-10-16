@@ -1,5 +1,6 @@
 drop table if exists auth_session;
 drop table if exists member;
+drop table if exists follow;
 
 create table member
 (
@@ -26,4 +27,14 @@ create table auth_session
     push_token  varchar(255),
     version     varchar(255),
     primary key (uniq_id)
-)
+);
+
+CREATE TABLE follow
+(
+    id                  BIGINT AUTO_INCREMENT NOT NULL,
+    created_at          TIMESTAMP,
+    updated_at          TIMESTAMP,
+    follower_id           VARCHAR(255),
+    following_id VARCHAR(255),
+    CONSTRAINT pk_follow PRIMARY KEY (id)
+);

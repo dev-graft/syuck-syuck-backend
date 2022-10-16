@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 
@@ -28,12 +30,11 @@ public class AbstractApiDocTest {
     public ObjectMapper getObjectMapper() {
         return objectMapper;
     }
-
     protected static final ResponseFieldsSnippet responseFields = responseFields(
-            fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("결과 성공 여부"),
+            fieldWithPath("success").type(JsonFieldType.BOOLEAN).optional().description("결과 성공 여부"),
 //            fieldWithPath("status").type(JsonFieldType.NUMBER).description("결과 코드"),
-            fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
-            fieldWithPath("timestamp").type(JsonFieldType.STRING).description("결과 시간(YYYY-MM-dd HH:mm:ss")
+            fieldWithPath("message").type(JsonFieldType.STRING).optional().description("결과 메세지"),
+            fieldWithPath("timestamp").type(JsonFieldType.STRING).optional().description("결과 시간(YYYY-MM-dd HH:mm:ss")
     );
 
     @BeforeEach
@@ -41,7 +42,10 @@ public class AbstractApiDocTest {
         document = MockMvcRestDocumentation.document(
                 "{class-name}/{method-name}",
                 Preprocessors.preprocessRequest(Preprocessors.prettyPrint()),
-                Preprocessors.preprocessResponse(Preprocessors.prettyPrint())
+                Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
+                requestHeaders(
+                        headerWithName("ACCESS-TOKEN").optional().description("로그인 인가 Access Key")
+                )
         );
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
