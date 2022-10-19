@@ -13,7 +13,7 @@ public class UnfollowService {
     private final FollowRepository followRepository;
     private final FollowEventSender followEventSender;
 
-    public void Unfollow(final String memberId, final String fId) {
+    public void unfollow(final String memberId, final String fId) {
         final Follow follow = followRepository.findByFollowerIdAndFollowingId(memberId, fId)
                 .orElseThrow(NotFoundFollowTargetException::new);
         followRepository.delete(follow);
