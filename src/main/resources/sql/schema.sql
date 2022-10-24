@@ -17,13 +17,14 @@ create table member
 
 create table auth_session
 (
-    uniq_id     varchar(255) not null,
+    uniq_id     varchar(255)          not null,
     created_at  timestamp,
     updated_at  timestamp,
-    block       boolean      not null,
+    block       boolean default false not null,
+    connect     boolean default false not null,
     device_name varchar(255),
-    member_id   varchar(255) not null,
-    os          varchar(255),
+    member_id   varchar(255)          not null,
+    os          integer,
     push_token  varchar(255),
     version     varchar(255),
     primary key (uniq_id)
