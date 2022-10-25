@@ -24,6 +24,6 @@ public class FriendRelation extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private boolean areFriends;
-    private String memberId1;
-    private String memberId2;
+    private String memberId1; // 친구 요청자
+    private String memberId2; // 친구 대상
 }

@@ -12,4 +12,5 @@ public class URLPrefix {
     public static final String AUTH_URL_PREFIX = "/auth";
     public static final String FOLLOW_URL_PREFIX = "/follow";
     public static final String UNFOLLOW_URL_PREFIX = "/unfollow";
+    public static final String FRIEND_URL_PREFIX = "/friends";
 }
