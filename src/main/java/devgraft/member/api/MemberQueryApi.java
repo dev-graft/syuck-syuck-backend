@@ -15,11 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static devgraft.common.URLPrefix.API_PREFIX;
 import static devgraft.common.URLPrefix.MEMBER_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
+import static devgraft.common.URLPrefix.VERSION_2_PREFIX;
 
 @RequiredArgsConstructor
 @RestController
@@ -47,9 +50,9 @@ public class MemberQueryApi {
                 .build();
     }
 
-    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/self")
-    public MemberProfileGetResult getMemberProfile(@Credentials MemberCredentials memberCredentials) {
-        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(memberCredentials.getMemberId())
+    @GetMapping(API_PREFIX + VERSION_2_PREFIX + MEMBER_URL_PREFIX + "/profile")
+    public MemberProfileGetResult getMemberProfileV2(@Credentials Optional<MemberCredentials> memberCredentialsOpt, @RequestParam(name = "target") String target) {
+        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(target)
                         .and(MemberDataSpec.normalEquals()))
                 .orElseThrow(NotFoundMemberException::new);
 
@@ -58,6 +61,22 @@ public class MemberQueryApi {
                 .nickname(memberData.getNickname())
                 .profileImage(memberData.getProfileImage())
                 .stateMessage(memberData.getStateMessage())
+                .self(memberCredentialsOpt.isPresent() && Objects.equals(memberCredentialsOpt.get().getMemberId(), target))
+                .build();
+    }
+
+    @GetMapping(API_PREFIX + VERSION_1_PREFIX + MEMBER_URL_PREFIX + "/self")
+    public MemberProfileGetResult getMemberProfile(@Credentials MemberCredentials memberCredentials) {
+        final MemberData memberData = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(memberCredentials.getMemberId())
+                        .and(MemberDataSpec.normalEquals()))
+                .orElseThrow(NotFoundMemberException::new);
+        // TODO 활동 상태 표시 추가
+        return MemberProfileGetResult.builder()
+                .loginId(memberData.getMemberId())
+                .nickname(memberData.getNickname())
+                .profileImage(memberData.getProfileImage())
+                .stateMessage(memberData.getStateMessage())
+                .self(true)
                 .build();
     }
 

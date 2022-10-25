@@ -25,7 +25,7 @@ public class Follow extends BaseEntity {
     private Long id;
     private String followerId;
     private String followingId;
-
+    // TODO 서로 팔로우 상태인지 확인하는 도메인이 필요할 수 있다.
     public boolean isSame(final String fId) {
         return Objects.equals(followingId, fId);
     }
