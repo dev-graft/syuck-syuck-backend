@@ -1,9 +1,13 @@
 package devgraft.friend.app;
 
+import devgraft.friend.domain.ExistsFriendTargetService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+@RequiredArgsConstructor
 @Service
 public class PostFriendService {
+    private final ExistsFriendTargetService existsFriendTargetService;
 
     public void postFriend(final String memberId, final String target) {
         // TODO Member 도메인에 target 존재 확인 요청
