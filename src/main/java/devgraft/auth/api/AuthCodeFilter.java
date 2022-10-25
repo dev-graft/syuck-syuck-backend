@@ -51,7 +51,6 @@ public class AuthCodeFilter extends OncePerRequestFilter {
     private final MemberDataDao memberDataDao;
     private final AuthCodeIOUtils authCodeIOUtils;
 
-    // TODO Filter에서 발생하는 에러는 ExceptionHandler가 잡지 못하니 수정 필요함. (Advice는 결과 캐치함)
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response, final FilterChain filterChain) throws ServletException, IOException {
         final Optional<AuthorizationCode> authorizationCodeOpt = authCodeIOUtils.exportAuthorizationCode(request);
