@@ -36,7 +36,16 @@ public class AuthSession extends BaseEntity {
     private String deviceName;
     @ColumnDefault("false")
     private boolean connect;
+    @ColumnDefault("0")
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private AccessStatusType accessStatus;
     @ColumnDefault("false")
     private boolean block;
+
+    public AccessStatusType currentAccessType() {
+        if (!connect) return AccessStatusType.OFFLINE;
+        return accessStatus;
+    }
 }
 

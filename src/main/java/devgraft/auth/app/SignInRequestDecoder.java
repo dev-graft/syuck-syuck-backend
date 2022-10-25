@@ -22,7 +22,7 @@ public class SignInRequestDecoder {
                 .password(signInCryptoService.decrypt(request.getPassword(), keyPair))
                 .pushToken(request.getPushToken())
                 .deviceName(request.getDeviceName())
-                .os(DeviceOSType.valueOf(request.getOs()))
+                .os(DeviceOSType.of(request.getOs()))
                 .build();
     }
 
