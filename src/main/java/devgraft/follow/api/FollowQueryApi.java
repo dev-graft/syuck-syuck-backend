@@ -4,7 +4,7 @@ import devgraft.common.SearchResult;
 import devgraft.follow.query.FollowData;
 import devgraft.follow.query.FollowDataDao;
 import devgraft.follow.query.FollowDataSpec;
-import devgraft.member.domain.FindMemberIdsService;
+import devgraft.member.domain.FindMemberService;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +28,7 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 public class FollowQueryApi {
     private static final int SIZE = 20;
     private final FollowDataDao followDataDao;
-    private final FindMemberIdsService findMemberIdsService;
+    private final FindMemberService findMemberService;
 
     // target이 팔로우 한 사람
     @GetMapping(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX + "/following")
@@ -49,7 +49,7 @@ public class FollowQueryApi {
     private SearchResult<FollowMemberInfo> getFollowMemberInfoSearchResult(@RequestParam(name = "page", defaultValue = "0") final Integer page, final Page<FollowData> followDataPage, final Stream<String> stringStream) {
         final List<String> followingIds = stringStream.collect(Collectors.toList());
 
-        final List<FollowMemberInfo> memberInfos = findMemberIdsService.findMembers(followingIds).stream()
+        final List<FollowMemberInfo> memberInfos = findMemberService.findMembers(followingIds).stream()
                 .map(FollowMemberInfo::from)
                 .collect(Collectors.toList());
 
@@ -69,7 +69,7 @@ public class FollowQueryApi {
         private final String nickname;
         private final String profileImage;
 
-        public static FollowMemberInfo from(final FindMemberIdsService.FindMemberResult findMemberResult) {
+        public static FollowMemberInfo from(final FindMemberService.FindMemberResult findMemberResult) {
             return builder()
                     .loginId(findMemberResult.getMemberId())
                     .nickname(findMemberResult.getNickname())

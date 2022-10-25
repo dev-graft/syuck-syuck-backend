@@ -4,7 +4,7 @@ import devgraft.auth.api.AuthCodeFilter;
 import devgraft.follow.api.FollowQueryApi;
 import devgraft.follow.query.FollowDataDao;
 import devgraft.follow.query.FollowDataFixture;
-import devgraft.member.domain.FindMemberIdsService;
+import devgraft.member.domain.FindMemberService;
 import devgraft.support.restdocs.AbstractApiDocTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,13 +37,13 @@ public class FollowQueryApiDoc extends AbstractApiDocTest {
     private FollowDataDao followDataDao;
 
     @MockBean
-    private FindMemberIdsService findMemberIdsService;
+    private FindMemberService findMemberService;
 
     @DisplayName("팔로워 목록 조회(Target을 팔로우한 회원 목록 조회)")
     @Test
     void searchFollower() throws Exception {
         given(followDataDao.findAll(any(), any())).willReturn(new PageImpl<>(List.of(FollowDataFixture.anFollowData().build())));
-        given(findMemberIdsService.findMembers(any())).willReturn(List.of(new FindMemberIdsService.FindMemberResult("tom12345", "Tom", "https://w7.pngwing.com/pngs/117/60/png-transparent-kid-tom-illustration-tom-cat-jerry-mouse-tom-and-jerry-cartoon-jerry-mouse-s-white-mammal-cat-like-mammal.png", "냐옹")));
+        given(findMemberService.findMembers(any())).willReturn(List.of(new FindMemberService.FindMemberResult("tom12345", "Tom", "https://w7.pngwing.com/pngs/117/60/png-transparent-kid-tom-illustration-tom-cat-jerry-mouse-tom-and-jerry-cartoon-jerry-mouse-s-white-mammal-cat-like-mammal.png", "냐옹")));
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX + "/follower")
                 .param("target", "qwerty123")
@@ -71,7 +71,7 @@ public class FollowQueryApiDoc extends AbstractApiDocTest {
     @Test
     void searchFollowing() throws Exception {
         given(followDataDao.findAll(any(), any())).willReturn(new PageImpl<>(List.of(FollowDataFixture.anFollowData().build())));
-        given(findMemberIdsService.findMembers(any())).willReturn(List.of(new FindMemberIdsService.FindMemberResult("tom12345", "Tom", "https://w7.pngwing.com/pngs/117/60/png-transparent-kid-tom-illustration-tom-cat-jerry-mouse-tom-and-jerry-cartoon-jerry-mouse-s-white-mammal-cat-like-mammal.png", "냐옹")));
+        given(findMemberService.findMembers(any())).willReturn(List.of(new FindMemberService.FindMemberResult("tom12345", "Tom", "https://w7.pngwing.com/pngs/117/60/png-transparent-kid-tom-illustration-tom-cat-jerry-mouse-tom-and-jerry-cartoon-jerry-mouse-s-white-mammal-cat-like-mammal.png", "냐옹")));
 
         mockMvc.perform(get(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX + "/following")
                         .param("target", "qwerty123")
