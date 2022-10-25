@@ -1,7 +1,7 @@
 package devgraft.follow.app;
 
 import devgraft.follow.domain.AlreadyFollowingException;
-import devgraft.follow.domain.FindMemberService;
+import devgraft.follow.domain.ExistsFollowTargetService;
 import devgraft.follow.domain.Follow;
 import devgraft.follow.domain.FollowEventSender;
 import devgraft.follow.domain.FollowFixture;
@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -22,16 +23,17 @@ import static org.mockito.Mockito.verify;
 
 class AskFollowServiceTest {
     private AskFollowService askFollowService;
-    private FindMemberService mockFindMemberService;
+    private ExistsFollowTargetService mockExistsFollowTargetService;
     private FollowRepository mockFollowRepository;
     private FollowEventSender mockFollowEventSender;
     @BeforeEach
     void setUp() {
-        mockFindMemberService = mock(FindMemberService.class);
+        mockExistsFollowTargetService = mock(ExistsFollowTargetService.class);
         mockFollowRepository = mock(FollowRepository.class);
         mockFollowEventSender = mock(FollowEventSender.class);
+        given(mockExistsFollowTargetService.isExistsFollowTarget(any())).willReturn(true);
 
-        askFollowService = new AskFollowService(mockFindMemberService, mockFollowRepository, mockFollowEventSender);
+        askFollowService = new AskFollowService(mockExistsFollowTargetService, mockFollowRepository, mockFollowEventSender);
     }
 
     @DisplayName("자기자신에게 팔로우 요청 시 에러")
@@ -46,8 +48,7 @@ class AskFollowServiceTest {
     @DisplayName("팔로우 요청 대상을 찾을 수 없을 경우 에러")
     @Test
     void askFollow_throwNotFoundFollowTargetException() {
-        given(mockFindMemberService.findMember("targetId"))
-                .willThrow(new NotFoundFollowTargetException());
+        given(mockExistsFollowTargetService.isExistsFollowTarget("targetId")).willReturn(false);
 
         Assertions.assertThrows(NotFoundFollowTargetException.class, () ->
         askFollowService.askFollow("memberId", "targetId"));
@@ -58,8 +59,8 @@ class AskFollowServiceTest {
     void askFollow_throwAlreadyFollowingException() {
         final String givenMemberId = "memberId";
         final String targetId = "FFF_ID";
-        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, targetId)).willReturn(Optional.of(FollowFixture.anFollow().followerId(givenMemberId)
-                .followingId(targetId).build()));
+        given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, targetId))
+                .willReturn(Optional.of(FollowFixture.anFollow().followerId(givenMemberId).followingId(targetId).build()));
 
         Assertions.assertThrows(AlreadyFollowingException.class, () ->
                 askFollowService.askFollow(givenMemberId, targetId));
