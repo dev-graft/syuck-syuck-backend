@@ -48,12 +48,12 @@ class PostFriendApiTest extends MemberCredentialsTestCase {
     }
 
     private ResultActions requestPostFriend() throws Exception {
-        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX)
+        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts")
                 .param("target", "targetId"));
     }
 
     private ResultActions requestPostFriend(final String target) throws Exception {
-        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX)
+        return mockMvc.perform(post(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts")
                 .param("target", target));
     }
 }
