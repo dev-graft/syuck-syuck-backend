@@ -1,5 +1,9 @@
 package devgraft.friend.app;
 
+import devgraft.friend.app.exception.AlreadyFriendRelationException;
+import devgraft.friend.app.exception.NotFoundFriendRelationException;
+import devgraft.friend.app.exception.SelfAcceptFriendException;
+import devgraft.friend.app.exception.UnrelatedAcceptFriendException;
 import devgraft.friend.domain.FriendEventSender;
 import devgraft.friend.domain.FriendRelation;
 import devgraft.friend.domain.FriendRelationFixture;
@@ -48,7 +52,9 @@ class AcceptFriendServiceTest {
     @Test
     void acceptFriend_throwAlreadyFriendRelationException() {
         final long givenFriendRelationId = 10L;
-        given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation().areFriends(true).build()));
+        given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation()
+                .receiver("memberId")
+                .areFriends(true).build()));
 
         Assertions.assertThrows(AlreadyFriendRelationException.class, () ->
                 acceptFriendService.acceptFriend("memberId", givenFriendRelationId));

@@ -1,4 +1,4 @@
-package devgraft.friend.app;
+package devgraft.friend.app.exception;
 
 import devgraft.support.exception.AbstractRequestException;
 import devgraft.support.exception.StatusConstant;

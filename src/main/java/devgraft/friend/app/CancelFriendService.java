@@ -1,5 +1,6 @@
 package devgraft.friend.app;
 
+import devgraft.friend.app.exception.NotFoundFriendRelationException;
 import devgraft.friend.domain.FriendEventSender;
 import devgraft.friend.domain.FriendRelation;
 import devgraft.friend.domain.FriendRelationRepository;
