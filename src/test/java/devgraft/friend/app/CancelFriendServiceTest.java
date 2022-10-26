@@ -1,7 +1,10 @@
 package devgraft.friend.app;
 
+import devgraft.friend.app.exception.AlreadyFriendRelationException;
 import devgraft.friend.app.exception.NotFoundFriendRelationException;
+import devgraft.friend.app.exception.UnrelatedCancelFriendException;
 import devgraft.friend.domain.FriendEventSender;
+import devgraft.friend.domain.FriendRelation;
 import devgraft.friend.domain.FriendRelationFixture;
 import devgraft.friend.domain.FriendRelationRepository;
 import org.junit.jupiter.api.Assertions;
@@ -12,8 +15,12 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class CancelFriendServiceTest {
     private CancelFriendService cancelFriendService;
@@ -38,5 +45,57 @@ class CancelFriendServiceTest {
 
         Assertions.assertThrows(NotFoundFriendRelationException.class, () ->
                 cancelFriendService.cancelFriend("memberId", givenFriendRelationId));
+    }
+
+    @DisplayName("자신과 관계없는 친구요청에 대해 취소를 시도할 경우 예외처리")
+    @Test
+    void cancelFriend_throwUnrelatedCancelFriendException() {
+        final long givenFriendRelationId = 10L;
+        given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation()
+                .sender("dede")
+                .areFriends(false).build()));
+
+        Assertions.assertThrows(UnrelatedCancelFriendException.class, () ->
+                cancelFriendService.cancelFriend("memberId", givenFriendRelationId));
+    }
+
+    @DisplayName("이미 친구관계일 경우 예외처리")
+    @Test
+    void cancelFriend_throwAlreadyFriendRelationException() {
+        final long givenFriendRelationId = 10L;
+        given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation()
+                .sender("memberId")
+                .areFriends(true).build()));
+
+        Assertions.assertThrows(AlreadyFriendRelationException.class, () ->
+                cancelFriendService.cancelFriend("memberId", givenFriendRelationId));
+    }
+
+    @DisplayName("친구관계 정보를 Repository에서 제거")
+    @Test
+    void cancelFriend_callDeleteToRepository() {
+        final long givenFriendRelationId = 10L;
+        final FriendRelation givenFriendRelation = FriendRelationFixture.anFriendRelation()
+                .sender("memberId")
+                .areFriends(false).build();
+        given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(givenFriendRelation));
+
+        cancelFriendService.cancelFriend("memberId", givenFriendRelationId);
+
+        verify(mockFriendRelationRepository, times(1)).delete(refEq(givenFriendRelation));
+    }
+
+    @DisplayName("친구 요청 취소 이벤트 발행")
+    @Test
+    void cancelFriend_PubEvent() {
+        final long givenFriendRelationId = 10L;
+        final FriendRelation givenFriendRelation = FriendRelationFixture.anFriendRelation()
+                .sender("memberId")
+                .areFriends(false).build();
+        given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(givenFriendRelation));
+
+        cancelFriendService.cancelFriend("memberId", givenFriendRelationId);
+
+        verify(mockFriendEventSender, times(1)).cancelFriend(eq(givenFriendRelation.getSender()), eq(givenFriendRelation.getReceiver()));
     }
 }

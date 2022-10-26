@@ -42,4 +42,12 @@ public class FriendRelation extends BaseEntity {
     public void acceptFriendRequest() {
         this.areFriends = true;
     }
+
+    public boolean compareSenderTo(final String target) {
+        return sender.equals(target);
+    }
+
+    public boolean compareReceiverTo(final String target) {
+        return receiver.equals(target);
+    }
 }

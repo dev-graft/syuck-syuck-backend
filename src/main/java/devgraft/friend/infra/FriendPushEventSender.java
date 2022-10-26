@@ -18,6 +18,11 @@ public class FriendPushEventSender implements FriendEventSender {
         Events.raise(new AcceptFriendEvent(friendRelationId, sender, receiver));
     }
 
+    @Override
+    public void cancelFriend(final String sender, final String receiver) {
+        Events.raise(new CancelFriendEvent(sender, receiver));
+    }
+
     @Getter
     public static class PostFriendEvent extends Event {
         private final Long fId;
@@ -41,6 +46,18 @@ public class FriendPushEventSender implements FriendEventSender {
         public AcceptFriendEvent(final Long fId, final String sender, final String receiver) {
             super("Accept-Friend");
             this.fId = fId;
+            this.sender = sender;
+            this.receiver = receiver;
+        }
+    }
+
+    @Getter
+    public static class CancelFriendEvent extends Event {
+        private final String sender;
+        private final String receiver;
+
+        public CancelFriendEvent(final String sender, final String receiver) {
+            super("Accept-Friend");
             this.sender = sender;
             this.receiver = receiver;
         }
