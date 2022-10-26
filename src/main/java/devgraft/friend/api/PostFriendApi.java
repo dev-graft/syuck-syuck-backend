@@ -17,7 +17,7 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 public class PostFriendApi {
     private final PostFriendService postFriendService;
 
-    @PostMapping(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX)
+    @PostMapping(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts")
     public void postFriendApi(@Credentials MemberCredentials memberCredentials, @RequestParam String target) {
         postFriendService.postFriend(memberCredentials.getMemberId(), target);
     }

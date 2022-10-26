@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,7 +24,22 @@ public class FriendRelation extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(nullable = false)
     private boolean areFriends;
-    private String memberId1; // 친구 요청자
-    private String memberId2; // 친구 대상
+    @Column(nullable = false)
+    private String sender; // 친구 요청자
+    @Column(nullable = false)
+    private String receiver; // 친구 대상
+
+    public static FriendRelation create(final String sender, final String receiver) {
+        return builder()
+                .sender(sender)
+                .receiver(receiver)
+                .areFriends(false)
+                .build();
+    }
+
+    public void acceptFriendRequest() {
+        this.areFriends = true;
+    }
 }
