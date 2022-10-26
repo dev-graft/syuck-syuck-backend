@@ -2,7 +2,7 @@ package devgraft.friend.app;
 
 import devgraft.friend.app.exception.AlreadyFriendRelationException;
 import devgraft.friend.app.exception.NotFoundFriendRelationException;
-import devgraft.friend.app.exception.UnrelatedCancelFriendException;
+import devgraft.friend.app.exception.UnrelatedCancelPostFriendException;
 import devgraft.friend.domain.FriendEventSender;
 import devgraft.friend.domain.FriendRelation;
 import devgraft.friend.domain.FriendRelationFixture;
@@ -22,8 +22,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class CancelFriendServiceTest {
-    private CancelFriendService cancelFriendService;
+class CancelPostFriendServiceTest {
+    private CancelPostFriendService cancelPostFriendService;
     private FriendRelationRepository mockFriendRelationRepository;
     private FriendEventSender mockFriendEventSender;
 
@@ -34,68 +34,68 @@ class CancelFriendServiceTest {
 
         given(mockFriendRelationRepository.findById(any())).willReturn(Optional.of(FriendRelationFixture.anFriendRelation().areFriends(false).build()));
 
-        cancelFriendService = new CancelFriendService(mockFriendRelationRepository, mockFriendEventSender);
+        cancelPostFriendService = new CancelPostFriendService(mockFriendRelationRepository, mockFriendEventSender);
     }
 
     @DisplayName("친구관계 id 기준 조회 결과가 없음으로 예외처리")
     @Test
-    void cancelFriend_throwNotFoundFriendRelation() {
+    void cancelPostFriend_throwNotFoundFriendRelation() {
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundFriendRelationException.class, () ->
-                cancelFriendService.cancelFriend("memberId", givenFriendRelationId));
+                cancelPostFriendService.cancelPostFriend("memberId", givenFriendRelationId));
     }
 
     @DisplayName("자신과 관계없는 친구요청에 대해 취소를 시도할 경우 예외처리")
     @Test
-    void cancelFriend_throwUnrelatedCancelFriendException() {
+    void cancelPostFriend_throwUnrelatedCancelPostFriendException() {
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation()
                 .sender("dede")
                 .areFriends(false).build()));
 
-        Assertions.assertThrows(UnrelatedCancelFriendException.class, () ->
-                cancelFriendService.cancelFriend("memberId", givenFriendRelationId));
+        Assertions.assertThrows(UnrelatedCancelPostFriendException.class, () ->
+                cancelPostFriendService.cancelPostFriend("memberId", givenFriendRelationId));
     }
 
     @DisplayName("이미 친구관계일 경우 예외처리")
     @Test
-    void cancelFriend_throwAlreadyFriendRelationException() {
+    void cancelPostFriend_throwAlreadyFriendRelationException() {
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation()
                 .sender("memberId")
                 .areFriends(true).build()));
 
         Assertions.assertThrows(AlreadyFriendRelationException.class, () ->
-                cancelFriendService.cancelFriend("memberId", givenFriendRelationId));
+                cancelPostFriendService.cancelPostFriend("memberId", givenFriendRelationId));
     }
 
     @DisplayName("친구관계 정보를 Repository에서 제거")
     @Test
-    void cancelFriend_callDeleteToRepository() {
+    void cancelPostFriend_callDeleteToRepository() {
         final long givenFriendRelationId = 10L;
         final FriendRelation givenFriendRelation = FriendRelationFixture.anFriendRelation()
                 .sender("memberId")
                 .areFriends(false).build();
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(givenFriendRelation));
 
-        cancelFriendService.cancelFriend("memberId", givenFriendRelationId);
+        cancelPostFriendService.cancelPostFriend("memberId", givenFriendRelationId);
 
         verify(mockFriendRelationRepository, times(1)).delete(refEq(givenFriendRelation));
     }
 
     @DisplayName("친구 요청 취소 이벤트 발행")
     @Test
-    void cancelFriend_PubEvent() {
+    void cancelPostFriend_PubEvent() {
         final long givenFriendRelationId = 10L;
         final FriendRelation givenFriendRelation = FriendRelationFixture.anFriendRelation()
                 .sender("memberId")
                 .areFriends(false).build();
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(givenFriendRelation));
 
-        cancelFriendService.cancelFriend("memberId", givenFriendRelationId);
+        cancelPostFriendService.cancelPostFriend("memberId", givenFriendRelationId);
 
-        verify(mockFriendEventSender, times(1)).cancelFriend(eq(givenFriendRelation.getSender()), eq(givenFriendRelation.getReceiver()));
+        verify(mockFriendEventSender, times(1)).cancelPostFriend(eq(givenFriendRelation.getSender()), eq(givenFriendRelation.getReceiver()));
     }
 }

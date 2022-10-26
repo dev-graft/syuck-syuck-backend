@@ -6,10 +6,10 @@ public class FriendApi {
     // TODO GET 친구 요청 목록 조회 (Self) / 내가한 친구요청 목록만
     // TODO GET 친구 요청 목록 조회 (Self) / 나한테 온 친구요청 목록만
 
-    // TODO POST 친구 요청 (Self) /friends/posts
-    // TODO PUT 친구 요청 승인 (Self) /friends/posts/accept
-    // TODO PUT 친구 요청 취소 (Self) /friends/posts/cancel
-    // TODO PUT 친구 요청 거절 (Self) /friends/reject
+    // POST 친구 요청 (Self) /friends/posts
+    // PUT 친구 요청 승인 (Self) /friends/posts/accept
+    // PUT 친구 요청 취소 (Self) /friends/posts/cancel
+    // PUT 친구 요청 거절 (Self) /friends/posts/refuse
 
     // TODO DELETE 친구 취소 (Self) /friends/cancel
     // 요청과 승인이 분리될 필요가 있는지 검토 필요

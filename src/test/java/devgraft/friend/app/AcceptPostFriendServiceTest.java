@@ -2,8 +2,8 @@ package devgraft.friend.app;
 
 import devgraft.friend.app.exception.AlreadyFriendRelationException;
 import devgraft.friend.app.exception.NotFoundFriendRelationException;
-import devgraft.friend.app.exception.SelfAcceptFriendException;
-import devgraft.friend.app.exception.UnrelatedAcceptFriendException;
+import devgraft.friend.app.exception.SelfAcceptPostFriendException;
+import devgraft.friend.app.exception.UnrelatedAcceptPostFriendException;
 import devgraft.friend.domain.FriendEventSender;
 import devgraft.friend.domain.FriendRelation;
 import devgraft.friend.domain.FriendRelationFixture;
@@ -23,8 +23,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class AcceptFriendServiceTest {
-    private AcceptFriendService acceptFriendService;
+class AcceptPostFriendServiceTest {
+    private AcceptPostFriendService acceptPostFriendService;
     private FriendRelationRepository mockFriendRelationRepository;
     private FriendEventSender mockFriendEventSender;
 
@@ -35,64 +35,64 @@ class AcceptFriendServiceTest {
 
         given(mockFriendRelationRepository.findById(any())).willReturn(Optional.of(FriendRelationFixture.anFriendRelation().areFriends(false).build()));
 
-        acceptFriendService = new AcceptFriendService(mockFriendRelationRepository, mockFriendEventSender);
+        acceptPostFriendService = new AcceptPostFriendService(mockFriendRelationRepository, mockFriendEventSender);
     }
 
     @DisplayName("친구관계 id 기준 조회 결과가 없음으로 예외처리")
     @Test
-    void acceptFriend_throwNotFoundFriendRelation() {
+    void acceptPostFriend_throwNotFoundFriendRelation() {
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.empty());
 
         Assertions.assertThrows(NotFoundFriendRelationException.class, () ->
-                acceptFriendService.acceptFriend("memberId", givenFriendRelationId));
+                acceptPostFriendService.acceptPostFriend("memberId", givenFriendRelationId));
     }
 
     @DisplayName("이미 친구관계일 경우 예외처리")
     @Test
-    void acceptFriend_throwAlreadyFriendRelationException() {
+    void acceptPostFriend_throwAlreadyFriendRelationException() {
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId)).willReturn(Optional.of(FriendRelationFixture.anFriendRelation()
                 .receiver("memberId")
                 .areFriends(true).build()));
 
         Assertions.assertThrows(AlreadyFriendRelationException.class, () ->
-                acceptFriendService.acceptFriend("memberId", givenFriendRelationId));
+                acceptPostFriendService.acceptPostFriend("memberId", givenFriendRelationId));
     }
 
     @DisplayName("자신이 요청한 친구관계를 스스로 승인하려 할 경우 예외처리")
     @Test
-    void acceptFriend_throwSelfAcceptFriendException() {
+    void acceptPostFriend_throwSelfAcceptPostFriendException() {
         final String givenMemberId = "memberId";
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId))
                 .willReturn(Optional.of(FriendRelationFixture.anFriendRelation().sender(givenMemberId).areFriends(false).build()));
 
-        Assertions.assertThrows(SelfAcceptFriendException.class, () ->
-                acceptFriendService.acceptFriend(givenMemberId, givenFriendRelationId));
+        Assertions.assertThrows(SelfAcceptPostFriendException.class, () ->
+                acceptPostFriendService.acceptPostFriend(givenMemberId, givenFriendRelationId));
     }
 
     @DisplayName("자신과 관계없는 친구요청을 요청했을 경우 예외처리")
     @Test
-    void acceptFriend_throwUnrelatedAcceptFriendException() {
+    void acceptPostFriend_throwUnrelatedAcceptPostFriendException() {
         final String givenMemberId = "memberId";
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId))
                 .willReturn(Optional.of(FriendRelationFixture.anFriendRelation().areFriends(false).build()));
 
-        Assertions.assertThrows(UnrelatedAcceptFriendException.class, () ->
-                acceptFriendService.acceptFriend(givenMemberId, givenFriendRelationId));
+        Assertions.assertThrows(UnrelatedAcceptPostFriendException.class, () ->
+                acceptPostFriendService.acceptPostFriend(givenMemberId, givenFriendRelationId));
     }
 
     @DisplayName("친구 요청 상태 승인으로 변경 후 저장")
     @Test
-    void acceptFriend_callSaveToRepository() {
+    void acceptPostFriend_callSaveToRepository() {
         final String givenMemberId = "memberId";
         final long givenFriendRelationId = 10L;
         given(mockFriendRelationRepository.findById(givenFriendRelationId))
                 .willReturn(Optional.of(FriendRelationFixture.anFriendRelation().id(givenFriendRelationId).receiver(givenMemberId).areFriends(false).build()));
 
-        acceptFriendService.acceptFriend(givenMemberId, givenFriendRelationId);
+        acceptPostFriendService.acceptPostFriend(givenMemberId, givenFriendRelationId);
 
         final FriendRelation correctFriendRelation = FriendRelationFixture.anFriendRelation()
                 .id(givenFriendRelationId)
@@ -105,7 +105,7 @@ class AcceptFriendServiceTest {
 
     @DisplayName("친구 요청 수락 이벤트 발행")
     @Test
-    void acceptFriend_PubEvent() {
+    void acceptPostFriend_PubEvent() {
         final String givenReceiver = "memberId";
         final Long givenFriendRelationId = 10L;
         final String givenSender = "g-sender";
@@ -118,8 +118,8 @@ class AcceptFriendServiceTest {
         given(mockFriendRelationRepository.findById(givenFriendRelationId))
                 .willReturn(Optional.of(givenFriendRelation));
 
-        acceptFriendService.acceptFriend(givenReceiver, givenFriendRelationId);
+        acceptPostFriendService.acceptPostFriend(givenReceiver, givenFriendRelationId);
 
-        verify(mockFriendEventSender, times(1)).acceptFriend(eq(givenFriendRelationId), eq(givenSender), eq(givenReceiver));
+        verify(mockFriendEventSender, times(1)).acceptPostFriend(eq(givenFriendRelationId), eq(givenSender), eq(givenReceiver));
     }
 }

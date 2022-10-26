@@ -2,7 +2,7 @@ package devgraft.friend.api;
 
 import devgraft.common.credential.Credentials;
 import devgraft.common.credential.MemberCredentials;
-import devgraft.friend.app.AcceptFriendService;
+import devgraft.friend.app.CancelPostFriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,11 +14,11 @@ import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
 
 @RequiredArgsConstructor
 @RestController
-public class AcceptFriendApi {
-    private final AcceptFriendService acceptFriendService;
+public class CancelPostFriendApi {
+    private final CancelPostFriendService cancelPostFriendService;
 
-    @PutMapping(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/accept")
-    public void acceptFriend(@Credentials MemberCredentials memberCredentials, @RequestParam(name = "target") Long friendRelationId) {
-        acceptFriendService.acceptFriend(memberCredentials.getMemberId(), friendRelationId);
+    @PutMapping(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/cancel")
+    public void cancelPostFriend(@Credentials final MemberCredentials memberCredentials, @RequestParam(name = "target") final Long friendRelationId) {
+        cancelPostFriendService.cancelPostFriend(memberCredentials.getMemberId(), friendRelationId);
     }
 }

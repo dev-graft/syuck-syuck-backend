@@ -1,7 +1,7 @@
 package devgraft.friend.api;
 
 import devgraft.auth.api.MemberCredentialsFixture;
-import devgraft.friend.app.CancelFriendService;
+import devgraft.friend.app.CancelPostFriendService;
 import devgraft.support.testcase.MemberCredentialsTestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,41 +19,40 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
-class CancelFriendApiTest extends MemberCredentialsTestCase {
-    private CancelFriendService mockCancelFriendService;
+class CancelPostFriendApiTest extends MemberCredentialsTestCase {
+    private CancelPostFriendService mockCancelPostFriendService;
     @Override
     protected StandaloneMockMvcBuilder getStandaloneMockMvcBuilder() {
-        mockCancelFriendService = Mockito.mock(CancelFriendService.class);
-        return standaloneSetup(new CancelFriendApi(mockCancelFriendService));
+        mockCancelPostFriendService = Mockito.mock(CancelPostFriendService.class);
+        return standaloneSetup(new CancelPostFriendApi(mockCancelPostFriendService));
     }
-
 
     @DisplayName("친구요청 취소 ok status 확인")
     @Test
-    void cancelFriend_returnOkHttpStatus() throws Exception {
-        requestCancelFriend()
+    void cancelPostFriend_returnOkHttpStatus() throws Exception {
+        requestCancelPostFriend()
                 .andExpect(status().isOk());
     }
 
     @DisplayName("전달받은 정보 서비스에 전달")
     @Test
-    void cancelFriend_passesInfoToService() throws Exception {
+    void cancelPostFriend_passesInfoToService() throws Exception {
         final String givenMemberId = "member";
         final long givenFriendRelationId = 10L;
         setGivenMemberCredentials(MemberCredentialsFixture.anCredentials().memberId(givenMemberId).build());
 
-        requestCancelFriend(givenFriendRelationId)
+        requestCancelPostFriend(givenFriendRelationId)
                 .andExpect(status().isOk());
 
-        verify(mockCancelFriendService, times(1)).cancelFriend(eq(givenMemberId), eq(givenFriendRelationId));
+        verify(mockCancelPostFriendService, times(1)).cancelPostFriend(eq(givenMemberId), eq(givenFriendRelationId));
     }
 
-    public ResultActions requestCancelFriend() throws Exception {
+    public ResultActions requestCancelPostFriend() throws Exception {
         return mockMvc.perform(put(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/cancel")
                 .param("target", String.valueOf(0)));
     }
 
-    public ResultActions requestCancelFriend(final Long friendRelationId) throws Exception {
+    public ResultActions requestCancelPostFriend(final Long friendRelationId) throws Exception {
         return mockMvc.perform(put(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/cancel")
                 .param("target", String.valueOf(friendRelationId)));
     }

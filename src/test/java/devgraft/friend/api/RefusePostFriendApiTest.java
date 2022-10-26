@@ -1,7 +1,7 @@
 package devgraft.friend.api;
 
 import devgraft.auth.api.MemberCredentialsFixture;
-import devgraft.friend.app.AcceptFriendService;
+import devgraft.friend.app.RefusePostFriendService;
 import devgraft.support.testcase.MemberCredentialsTestCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,42 +19,43 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class AcceptFriendApiTest extends MemberCredentialsTestCase {
-    private AcceptFriendService mockAcceptFriendService;
+class RefusePostFriendApiTest extends MemberCredentialsTestCase {
+    private RefusePostFriendService mockRefusePostFriendService;
     @Override
     protected StandaloneMockMvcBuilder getStandaloneMockMvcBuilder() {
-        mockAcceptFriendService = Mockito.mock(AcceptFriendService.class);
-        return MockMvcBuilders.standaloneSetup(new AcceptFriendApi(mockAcceptFriendService));
+        mockRefusePostFriendService = Mockito.mock(RefusePostFriendService.class);
+
+        return MockMvcBuilders.standaloneSetup(new RefusePostFriendApi(mockRefusePostFriendService));
     }
 
-    @DisplayName("친구 요청 수락 ok status 확인")
+    @DisplayName("친구 요청 거절 ok status 확인")
     @Test
-    void acceptFriend_returnOkHttpStatus() throws Exception {
-        requestAcceptFriend()
+    void refusePostFriend_returnOkHttpStatus() throws Exception {
+        requestRefusePostFriend()
                 .andExpect(status().isOk());
     }
 
     @DisplayName("전달받은 정보 서비스에 전달")
     @Test
-    void acceptFriend_passesInfoToService() throws Exception {
+    void refusePostFriend_passesInfoToService() throws Exception {
         final String givenMemberId = "gg";
         final long givenFriendRelationId = 10L;
 
         setGivenMemberCredentials(MemberCredentialsFixture.anCredentials().memberId(givenMemberId).build());
 
-        requestAcceptFriend(givenFriendRelationId)
+        requestRefusePostFriend(givenFriendRelationId)
                 .andExpect(status().isOk());
 
-        verify(mockAcceptFriendService, times(1)).acceptFriend(eq(givenMemberId), eq(givenFriendRelationId));
+        verify(mockRefusePostFriendService, times(1)).refusePostFriend(eq(givenMemberId), eq(givenFriendRelationId));
     }
 
-    private ResultActions requestAcceptFriend() throws Exception {
-        return mockMvc.perform(put(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/accept")
-                .param("target", "0"));
+    private ResultActions requestRefusePostFriend() throws Exception {
+        return mockMvc.perform(put(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/refuse")
+                .param("target", "1"));
     }
 
-    private ResultActions requestAcceptFriend(final long target) throws Exception {
-        return mockMvc.perform(put(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/accept")
+    private ResultActions requestRefusePostFriend(final Long target) throws Exception {
+        return mockMvc.perform(put(API_PREFIX + VERSION_1_PREFIX + FRIEND_URL_PREFIX + "/posts/refuse")
                 .param("target", String.valueOf(target)));
     }
 }
