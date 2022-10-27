@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class FindMemberIdsService {
+public class FindMemberService {
     private final MemberRepository memberRepository;
 
     public List<FindMemberResult> findMembers(final List<String> memberIds) {

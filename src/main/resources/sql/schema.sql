@@ -1,6 +1,7 @@
 drop table if exists auth_session;
 drop table if exists member;
 drop table if exists follow;
+drop table if exists friend_relation;
 
 create table member
 (
@@ -39,4 +40,15 @@ CREATE TABLE follow
     follower_id  VARCHAR(255),
     following_id VARCHAR(255),
     CONSTRAINT pk_follow PRIMARY KEY (id)
+);
+
+create table friend_relation
+(
+    id          BIGINT AUTO_INCREMENT NOT NULL,
+    created_at  timestamp,
+    updated_at  timestamp,
+    are_friends boolean      not null,
+    receiver    varchar(255) not null,
+    sender      varchar(255) not null,
+    primary key (id)
 );
