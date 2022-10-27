@@ -9,4 +9,5 @@
 - xref:member/index.adoc[Member APIs]
 - xref:auth/index.adoc[Auth APIs]
 - xref:follow/index.adoc[Follow APIs]
+- xref:friend/index.adoc[Friend APIs]
 
