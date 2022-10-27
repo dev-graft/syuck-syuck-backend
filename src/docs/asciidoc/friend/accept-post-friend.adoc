@@ -1,4 +1,4 @@
-= Friend APIs
+= 친구 요청 수락 API
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -12,6 +12,6 @@
 :operation-http-response-title: 결과 예시
 :operation-response-fields-title: 결과 필드
 
-- xref:post-friend.adoc[친구 요청 API]
-- xref:cancel-post-friend.adoc[친구 요청 취소 API]
-- xref:refuse-post-friend.adoc[친구 요청 취소 API]
+== 친구 요청 수락
+operation::accept-post-friend-api-doc/accept-post-friend[snippets='curl-request,request-headers,request-parameters']
+operation::accept-post-friend-api-doc/accept-post-friend[snippets='http-response,response-fields']
