@@ -13,5 +13,8 @@
 :operation-response-fields-title: 결과 필드
 
 - xref:post-friend.adoc[친구 요청 API]
+- xref:accept-post-friend.adoc[친구 요청 수락 API]
 - xref:cancel-post-friend.adoc[친구 요청 취소 API]
-- xref:refuse-post-friend.adoc[친구 요청 취소 API]
+- xref:refuse-post-friend.adoc[친구 요청 거절 API]
+- xref:delete-friend.adoc[친구 삭제 API]
+- xref:query.adoc[친구 Query API]

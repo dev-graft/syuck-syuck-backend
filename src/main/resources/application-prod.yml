@@ -4,6 +4,7 @@ spring:
       platform: mysql
       schema-locations: classpath:sql/schema.sql
       data-locations: classpath:sql/data.sql
+      mode: always
   datasource:
     url: ${db.url}
     username: ${db.username}
