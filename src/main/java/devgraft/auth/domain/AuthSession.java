@@ -6,9 +6,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -27,9 +30,22 @@ public class AuthSession extends BaseEntity {
     private String version;
     @Column(name = "push_token")
     private String pushToken;
-    private String os;
+    @Enumerated(EnumType.ORDINAL)
+    private DeviceOSType os;
     @Column(name = "device_name")
     private String deviceName;
+    @ColumnDefault("false")
+    private boolean connect;
+    @ColumnDefault("0")
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false)
+    private AccessStatusType accessStatus;
+    @ColumnDefault("false")
     private boolean block;
+
+    public AccessStatusType currentAccessType() {
+        if (!connect) return AccessStatusType.OFFLINE;
+        return accessStatus;
+    }
 }
 

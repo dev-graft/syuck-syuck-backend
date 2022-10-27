@@ -1,6 +1,7 @@
 package devgraft.auth.app;
 
 import devgraft.auth.app.SignInRequestDecoder.DecryptedSignInData;
+import devgraft.auth.domain.AccessStatusType;
 import devgraft.auth.domain.AuthSession;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ public class AuthSessionProvider {
                 .os(data.getOs())
                 .deviceName(data.getDeviceName())
                 .block(false)
+                .accessStatus(AccessStatusType.OFFLINE)
                 .build();
     }
 }

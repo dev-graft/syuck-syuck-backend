@@ -29,23 +29,23 @@ class UnfollowApiTest extends MemberCredentialsTestCase {
         return MockMvcBuilders.standaloneSetup(new UnfollowApi(mockUnfollowService));
     }
 
-    @DisplayName("팔로우 취소 status 200")
+    @DisplayName("언팔로우 status 200")
     @Test
-    void cancelFollow_returnOkHttpStatus() throws Exception {
+    void unfollow_returnOkHttpStatus() throws Exception {
         requestCancelFollow("followId")
                 .andExpect(status().isOk());
     }
 
-    @DisplayName("팔로우 취소 대상의 아이디를 서비스에 전달")
+    @DisplayName("언팔로우 대상의 아이디를 서비스에 전달")
     @Test
-    void cancelFollow_passesIdToService() throws Exception {
+    void unfollow_passesIdToService() throws Exception {
         final String givenMemberId = "CancelTestId";
         final String givenFollowId = "GFollowId";
         setGivenMemberCredentials(MemberCredentialsFixture.anCredentials().memberId(givenMemberId).build());
 
         requestCancelFollow(givenFollowId);
 
-        verify(mockUnfollowService, times(1)).Unfollow(refEq(givenMemberId), refEq(givenFollowId));
+        verify(mockUnfollowService, times(1)).unfollow(refEq(givenMemberId), refEq(givenFollowId));
     }
 
     private ResultActions requestCancelFollow(final String targetId) throws Exception {

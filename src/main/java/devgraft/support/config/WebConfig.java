@@ -1,6 +1,7 @@
 package devgraft.support.config;
 
 import devgraft.common.credential.MemberCredentialsResolver;
+import devgraft.common.credential.OptionalMemberCredentialsResolver;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,6 +14,7 @@ import java.util.List;
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
     private final MemberCredentialsResolver memberCredentialsResolver;
+    private final OptionalMemberCredentialsResolver optMemberCredentialsResolver;
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -38,5 +40,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(memberCredentialsResolver);
+        resolvers.add(optMemberCredentialsResolver);
     }
 }

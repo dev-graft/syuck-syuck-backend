@@ -22,4 +22,6 @@ public class UpdateMemberProfileApi {
     public void updateProfile(@Credentials final MemberCredentials memberCredentials, @RequestBody final UpdateMemberProfileRequest request) {
         updateMemberProfileService.update(memberCredentials.getMemberId(), request);
     }
+
+    // TODO 활동 상태 변경 API 추가
 }

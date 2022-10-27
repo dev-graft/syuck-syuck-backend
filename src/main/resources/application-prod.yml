@@ -1,4 +1,9 @@
 spring:
+  sql:
+    init:
+      platform: mysql
+      schema-locations: classpath:sql/schema.sql
+      data-locations: classpath:sql/data.sql
   datasource:
     url: ${db.url}
     username: ${db.username}

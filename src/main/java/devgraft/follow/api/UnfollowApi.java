@@ -19,7 +19,7 @@ public class UnfollowApi {
     private final UnfollowService unfollowService;
 
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + UNFOLLOW_URL_PREFIX)
-    public void Unfollow(@Credentials final MemberCredentials memberCredentials, @RequestParam(name = "target") String target) {
-        unfollowService.Unfollow(memberCredentials.getMemberId(), target);
+    public void unfollow(@Credentials final MemberCredentials memberCredentials, @RequestParam(name = "target") String target) {
+        unfollowService.unfollow(memberCredentials.getMemberId(), target);
     }
 }

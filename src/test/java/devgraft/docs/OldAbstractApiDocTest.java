@@ -20,7 +20,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 @ExtendWith(RestDocumentationExtension.class)
-public class AbstractApiDocTest {
+public class OldAbstractApiDocTest {
     protected MockMvc mockMvc;
     protected RestDocumentationResultHandler document;
     @Autowired

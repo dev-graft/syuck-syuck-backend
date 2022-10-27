@@ -6,7 +6,7 @@ import devgraft.auth.api.AuthCodeIOUtils.AuthorizationCode;
 import devgraft.auth.api.SignInRefreshApi;
 import devgraft.auth.app.SignInRefreshService;
 import devgraft.auth.app.SignInRefreshService.SignInRefreshResult;
-import devgraft.docs.AbstractApiDocTest;
+import devgraft.docs.OldAbstractApiDocTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest({SignInRefreshApi.class})
-class AuthCodeRefreshApiDoc extends AbstractApiDocTest {
+class AuthCodeRefreshApiDoc extends OldAbstractApiDocTest {
     @MockBean
     private AuthCodeFilter authCodeFilter;
     @MockBean

@@ -27,10 +27,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @ExtendWith(RestDocumentationExtension.class)
 @WebMvcTest(AskFollowApi.class)
 public class AskFollowApiDoc extends AbstractApiDocTest {
-    @MockBean
-    private AuthCodeFilter authCodeFilter;
+
     @MockBean
     private AskFollowService askFollowService;
+    @MockBean
+    private AuthCodeFilter authCodeFilter;
     @MockBean
     private MemberCredentialsResolver memberCredentialsResolver;
 

@@ -1,5 +1,6 @@
 package devgraft.auth.app;
 
+import devgraft.auth.domain.DeviceOSType;
 import devgraft.auth.domain.SignInCryptoService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,8 @@ public class SignInRequestDecoder {
                 .loginId(request.getLoginId())
                 .password(signInCryptoService.decrypt(request.getPassword(), keyPair))
                 .pushToken(request.getPushToken())
-                .os(request.getOs())
                 .deviceName(request.getDeviceName())
+                .os(DeviceOSType.of(request.getOs()))
                 .build();
     }
 
@@ -31,7 +32,7 @@ public class SignInRequestDecoder {
     public static class DecryptedSignInData {
         private String loginId;
         private String password;
-        private String os;
+        private DeviceOSType os;
         private String pushToken;
         private String deviceName;
     }

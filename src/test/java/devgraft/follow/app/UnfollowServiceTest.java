@@ -30,40 +30,40 @@ class UnfollowServiceTest {
         unfollowService = new UnfollowService(mockFollowRepository, mockFollowEventSender);
     }
 
-    @DisplayName("자신의 팔로우 목록에서 취소 대상을 찾지 못했을 시 에러")
+    @DisplayName("자신의 팔로우 목록에서 언팔로우 대상을 찾지 못했을 시 에러")
     @Test
-    void cancelFollow_throwNotFoundFollowTargetException() {
+    void unfollow_throwNotFoundFollowTargetException() {
         final String givenMemberId = "memberId";
         final String followingMemberId = "FFF_ID";
 
         assertThrows(NotFoundFollowTargetException.class, () ->
-                unfollowService.Unfollow(givenMemberId, followingMemberId));
+                unfollowService.unfollow(givenMemberId, followingMemberId));
 
         verify(mockFollowRepository, times(1)).findByFollowerIdAndFollowingId(givenMemberId, followingMemberId);
     }
 
     @DisplayName("팔로우 정보 삭제")
     @Test
-    void cancelFollow_callDeleteToRepository() {
+    void unfollow_callDeleteToRepository() {
         final String givenMemberId = "memberId";
         final String givenFId = "fId";
         final Follow givenFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(givenFId).build();
         given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
-        unfollowService.Unfollow(givenMemberId, givenFId);
+        unfollowService.unfollow(givenMemberId, givenFId);
 
         verify(mockFollowRepository, times(1)).delete(refEq(givenFollow));
     }
 
-    @DisplayName("팔로우 삭제 이벤트 올리기")
+    @DisplayName("언팔로우 이벤트 올리기")
     @Test
-    void cancelFollow_sendCancelEvent() {
+    void unfollow_sendCancelEvent() {
         final String givenMemberId = "memberId";
         final String givenFId = "fId";
         final Follow givenFollow = FollowFixture.anFollow().followerId(givenMemberId).followingId(givenFId).build();
         given(mockFollowRepository.findByFollowerIdAndFollowingId(givenMemberId, givenFId)).willReturn(Optional.of(givenFollow));
 
-        unfollowService.Unfollow(givenMemberId, givenFId);
+        unfollowService.unfollow(givenMemberId, givenFId);
 
         verify(mockFollowEventSender, times(1)).cancelFollow(givenMemberId, givenFId);
     }
