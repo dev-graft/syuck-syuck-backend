@@ -23,9 +23,10 @@ public class RefusePostFriendService {
         // 이미 친구가 승인되었는지 검사 & 승인되었다면 예외처리
         if(friendRelation.isAreFriends()) throw new AlreadyFriendRelationException();
         // Entity 삭제 처리
+        final String sender = friendRelation.getSender();
         friendRelationRepository.delete(friendRelation);
         // 이벤트 발행
-        friendEventSender.refusePostFriend(friendRelation.getSender(), friendRelation.getReceiver());
+        friendEventSender.refusePostFriend(sender, memberId);
     }
 
 }

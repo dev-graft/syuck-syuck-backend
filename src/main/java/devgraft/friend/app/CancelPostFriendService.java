@@ -23,8 +23,9 @@ public class CancelPostFriendService {
         // 이미 친구상태인지 검사
         if(friendRelation.isAreFriends()) throw new AlreadyFriendRelationException();
         // 조회된 Entity 제거
+        final String receiver = friendRelation.getReceiver();
         friendRelationRepository.delete(friendRelation);
         // 이벤트 발행
-        friendEventSender.cancelPostFriend(friendRelation.getSender(), friendRelation.getReceiver());
+        friendEventSender.cancelPostFriend(memberId, receiver);
     }
 }

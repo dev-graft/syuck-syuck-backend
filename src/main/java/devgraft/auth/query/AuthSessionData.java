@@ -1,5 +1,7 @@
 package devgraft.auth.query;
 
+import devgraft.auth.domain.AccessStatusType;
+import devgraft.auth.domain.DeviceOSType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,9 +30,12 @@ public class AuthSessionData {
     @Column(name = "push_token")
     private String pushToken;
     @Column(name = "os")
-    private String os;
+    private DeviceOSType os;
     @Column(name = "device_name")
     private String deviceName;
+    @Column(name = "connect")
+    private boolean connect;
+    private AccessStatusType accessStatus;
     @Column(name = "block")
     private boolean block;
 }

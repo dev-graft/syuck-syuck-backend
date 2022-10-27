@@ -33,7 +33,7 @@ public class OptionalMemberCredentialsResolver implements HandlerMethodArgumentR
                 .version(authSessionData.getVersion())
                 .deviceName(authSessionData.getDeviceName())
                 .pushToken(authSessionData.getPushToken())
-                .os(authSessionData.getOs())
+                .os(authSessionData.getOs().name())
                 .build());
     }
 

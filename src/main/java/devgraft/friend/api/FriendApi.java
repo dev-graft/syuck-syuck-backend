@@ -2,16 +2,16 @@ package devgraft.friend.api;
 
 public class FriendApi {
     public void postFriend() {}
-    // TODO GET 친구 목록 조회 (Self)
-    // TODO GET 친구 요청 목록 조회 (Self) / 내가한 친구요청 목록만
-    // TODO GET 친구 요청 목록 조회 (Self) / 나한테 온 친구요청 목록만
+    // GET 친구 목록 조회 (Self)
+    // GET 친구 요청 목록 조회 (Self) / 내가한 친구요청 목록만
+    // GET 친구 요청 목록 조회 (Self) / 나한테 온 친구요청 목록만
 
     // POST 친구 요청 (Self) /friends/posts
     // PUT 친구 요청 승인 (Self) /friends/posts/accept
     // PUT 친구 요청 취소 (Self) /friends/posts/cancel
     // PUT 친구 요청 거절 (Self) /friends/posts/refuse
 
-    // TODO DELETE 친구 취소 (Self) /friends/cancel
+    // DELETE 친구 취소 (Self) /friends/cancel
     // 요청과 승인이 분리될 필요가 있는지 검토 필요
 }
 
