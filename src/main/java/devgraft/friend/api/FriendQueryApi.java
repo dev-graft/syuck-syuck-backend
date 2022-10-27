@@ -1,6 +1,7 @@
 package devgraft.friend.api;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import devgraft.auth.domain.AccessStatusType;
 import devgraft.auth.query.AuthSessionData;
 import devgraft.auth.query.AuthSessionDataDao;
@@ -154,8 +155,9 @@ public class FriendQueryApi {
 
     @Getter
     public static class FriendDetails {
-        private final Long fId; // 친구관계 ID
-        private final String memberId; // 친구 ID
+        @JsonProperty(namespace = "fId")
+        private final Long frId; // 친구관계 ID
+        private final String loginId; // 친구 ID
         private final String nickname;
         private final String profileImage;
         private final String stateMessage;
@@ -168,8 +170,8 @@ public class FriendQueryApi {
 
         @Builder(access = AccessLevel.PUBLIC)
         private FriendDetails(final Long fId, final String memberId, final String nickname, final String profileImage, final String stateMessage, final AccessStatusType accessStatusType) {
-            this.fId = fId;
-            this.memberId = memberId;
+            this.frId = fId;
+            this.loginId = memberId;
             this.nickname = nickname;
             this.profileImage = profileImage;
             this.stateMessage = stateMessage;

@@ -31,9 +31,9 @@ public class AskFollowApiDoc extends AbstractApiDocTest {
     @MockBean
     private AskFollowService askFollowService;
     @MockBean
-    protected AuthCodeFilter authCodeFilter;
+    private AuthCodeFilter authCodeFilter;
     @MockBean
-    protected MemberCredentialsResolver memberCredentialsResolver;
+    private MemberCredentialsResolver memberCredentialsResolver;
 
     @DisplayName("팔로우 요청")
     @Test

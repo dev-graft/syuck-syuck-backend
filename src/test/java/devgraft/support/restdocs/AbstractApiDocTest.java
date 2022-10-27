@@ -47,6 +47,7 @@ public class AbstractApiDocTest {
                         headerWithName("ACCESS-TOKEN").optional().description("로그인 인가 Access Key")
                 )
         );
+
         mockMvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(MockMvcRestDocumentation.documentationConfiguration(provider))
                 .alwaysDo(this.document)
