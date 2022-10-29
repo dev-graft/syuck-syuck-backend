@@ -31,6 +31,15 @@ public class FriendPushEventSender implements FriendEventSender {
         }
     }
 
+    /**
+     * 이벤트 클래스를 타임라인과 푸쉬용을 상속받아서 리스너들이 읽도록 하는 방법이 있고
+     * 아무것도 의존하지 않은 PostFriendEvent를 리스너들이 긁어가는 방법이 있다.
+     *
+     * 흠 후자로 처리하면 각 리스너들이 해당 도메인에 대한 이해도와 의존을 갖어야하므로 복잡해질 것 같다.
+     * 차라리 발생할 이벤트가 필요한 리스너와 연관된 클래스를 의존하는 것이 좋을듯듯     */
+
+
+
     @Override
     public void postFriend(final Long friendRelationId, final String sender, final String receiver) {
         // receiver 님에게 친구를 요청했습니다.
