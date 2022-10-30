@@ -6,6 +6,7 @@ import devgraft.auth.query.AuthSessionDataDao;
 import devgraft.member.query.MemberData;
 import devgraft.member.query.MemberDataDao;
 import devgraft.member.query.MemberDataSpec;
+import devgraft.support.event.push.PushEventInterface;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -24,14 +25,14 @@ public class PushEventHandler {
 
     @EventListener(PushEventInterface.class)
     public void handle(final PushEventInterface event) throws JsonProcessingException {
-        // 회원 정보 조회
-        final Optional<MemberData> memberDataOptional = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(event.getMemberId()).and(MemberDataSpec.normalEquals()));
-        if (memberDataOptional.isEmpty()) return;
-        // 알람 허용 여부 확인
-        // fcm 토큰 얻음
-        // 메세지 전송
-//        memberDataOptional.get().getNickname()
-        log.info("PushEvent: {}", memberDataOptional.get().getNickname() + event.getMessage());
-        // DB 저장(전송 성공 여부까지)
+//        // 회원 정보 조회
+//        final Optional<MemberData> memberDataOptional = memberDataDao.findOne(MemberDataSpec.loggedIdEquals(event.getMemberId()).and(MemberDataSpec.normalEquals()));
+//        if (memberDataOptional.isEmpty()) return;
+//        // 알람 허용 여부 확인
+//        // fcm 토큰 얻음
+//        // 메세지 전송
+////        memberDataOptional.get().getNickname()
+//        log.info("PushEvent: {}", memberDataOptional.get().getNickname() + event.getContent());
+//        // DB 저장(전송 성공 여부까지)
     }
 }

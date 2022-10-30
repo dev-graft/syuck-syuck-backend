@@ -1,27 +1,35 @@
 package devgraft.friend.infra;
 
+import devgraft.client.member.MemberClient;
+import devgraft.client.member.MemberClient.FindMemberResult;
 import devgraft.friend.domain.FriendEventSender;
-import devgraft.support.event.Event;
 import devgraft.support.event.EventCode;
 import devgraft.support.event.Events;
-import devgraft.support.event.PushEventInterface;
+import devgraft.support.event.push.PushEventInterface;
 import devgraft.support.event.TimeLineEventInterface;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+@RequiredArgsConstructor
 @Component
 public class FriendPushEventSender implements FriendEventSender {
-
+    private final MemberClient memberClient;
 
     @Getter @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum FriendEventCode implements EventCode {
-        POST_SEND("post-send", "{name}님에게 친구를 요청했습니다."),
-        POST_RECEIVE("post-receive", "{name}님에게 친구요청이 왔습니다."),
+        POST_SEND("POST-SEND", "[%s]님에게 친구를 요청했습니다."),
+        POST_RECEIVE("POST-RECEIVE", "[%s]님에게 친구요청이 왔습니다."),
+        ACCEPT_POST_SEND("ACCEPT-POST-SEND", "[%s]님이 친구요청을 수락했습니다."),
+        ACCEPT_POST_RECEIVE("ACCEPT-POST-RECEIVE", "[%s]님의 친구요청을 수락했습니다."),
+        REFUSE_POST("REFUSE-POST", "[%s]님의 친구요청을 거절했습니다."),
+        DELETE_SEND("DELETE-SEND", "[%s]님과 친구관계를 취소했습니다."),
+        CANCEL_POST("CANCEL-POST", "[%s]님에게 요청한 친구요청을 취소했습니다."),
+        DELETE_RECEIVE("DELETE-RECEIVE", "[%s]님이 친구관계를 취소했습니다."),
         ;
-
-        private static final String TAG = "friend";
+        private static final String TAG = "FRIEND";
         private final String code;
         private final String messageFormat;
 
@@ -31,143 +39,48 @@ public class FriendPushEventSender implements FriendEventSender {
         }
     }
 
-    /**
-     * 이벤트 클래스를 타임라인과 푸쉬용을 상속받아서 리스너들이 읽도록 하는 방법이 있고
-     * 아무것도 의존하지 않은 PostFriendEvent를 리스너들이 긁어가는 방법이 있다.
-     *
-     * 흠 후자로 처리하면 각 리스너들이 해당 도메인에 대한 이해도와 의존을 갖어야하므로 복잡해질 것 같다.
-     * 차라리 발생할 이벤트가 필요한 리스너와 연관된 클래스를 의존하는 것이 좋을듯듯     */
-
-
-
     @Override
     public void postFriend(final Long friendRelationId, final String sender, final String receiver) {
-        // receiver 님에게 친구를 요청했습니다.
-        Events.raise(FriendEvent.create("post-friend", sender,   "님에게 친구를 요청했습니다."));
-        // sender 님에게 친구요청이 왔습니다.
-        Events.raise(FriendEvent.create("post-friend", receiver, "님에게 친구요청이 왔습니다."));
+        final FindMemberResult senderInfo = memberClient.findMember(sender);
+        final FindMemberResult receiverInfo = memberClient.findMember(receiver);
+
+        // receiver 님에게 친구를 요청했습니다. (타임라인만 체크하면 될 것 같은데...)
+        Events.raise(FriendEvent.of(FriendEventCode.POST_SEND, sender, "친구요청 알림",  receiverInfo.getNickname()));
+        // sender 님에게 친구요청이 왔습니다. (타임라인, Push 둘다)
+        Events.raise(FriendEvent.of(FriendEventCode.POST_RECEIVE, receiver, "친구요청 알림", senderInfo.getNickname()));
     }
 
     @Override
     public void acceptPostFriend(final Long friendRelationId, final String sender, final String receiver) {
         // sender 님의 친구요청을 수락했습니다.
         // receiver 님이 친구요청을 수락했습니다.
-        Events.raise(new AcceptPostFriendEvent(friendRelationId, sender, receiver));
     }
 
     @Override
     public void cancelPostFriend(final String sender, final String receiver) {
-        Events.raise(new CancelPostFriendEvent(sender, receiver));
+        // TODO 추가 예정
     }
 
     @Override
     public void refusePostFriend(final String sender, final String receiver) {
-        Events.raise(new RefusePostFriendEvent(sender, receiver));
+        // TODO 추가 예정
     }
 
     @Override
     public void deleteFriend(final String issuer, final String receiver) {
-        Events.raise(new DeleteFriendEvent(issuer, receiver));
+        // TODO 추가 예정
     }
 
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @Getter
-    public static class PostFriendEvent extends Event implements TimeLineEventInterface {
-        private final Long fId;
-        private final String sender;
-        private final String receiver;
-
-        public PostFriendEvent(final Long fId, final String sender, final String receiver) {
-            super("Post-Friend");
-            this.fId = fId;
-            this.sender = sender;
-            this.receiver = receiver;
-        }
-
-        @Override
-        public String getMemberId() {
-            return sender;
-        }
-
-        @Override
-        public String getMessage() {
-            return receiver + "님에게 친구요청을 신청했습니다.";
-        }
-    }
-
-
-    @Getter
-    public static class FriendEvent extends Event implements PushEventInterface {
+    public static class FriendEvent implements PushEventInterface, TimeLineEventInterface {
+        private final FriendEventCode eventCode;
         private final String memberId;
-        private final String message;
+        private final String title;
+        private final String content;
 
-        private FriendEvent(final String tag, final String memberId, final String message) {
-            super(tag);
-            this.memberId = memberId;
-            this.message = message;
-        }
-
-        public static FriendEvent create(final String tag, final String memberId, final String message) {
-            return new FriendEvent(tag,memberId, message);
-        }
-
-        @Override
-        public String getMemberId() {
-            return memberId;
-        }
-
-        @Override
-        public String getMessage() {
-            return message;
-        }
-    }
-
-    @Getter
-    public static class AcceptPostFriendEvent extends Event {
-        private final Long fId;
-        private final String sender;
-        private final String receiver;
-
-        public AcceptPostFriendEvent(final Long fId, final String sender, final String receiver) {
-            super("Accept-Post-Friend");
-            this.fId = fId;
-            this.sender = sender;
-            this.receiver = receiver;
-        }
-    }
-
-    @Getter
-    public static class CancelPostFriendEvent extends Event {
-        private final String sender;
-        private final String receiver;
-
-        public CancelPostFriendEvent(final String sender, final String receiver) {
-            super("Cancel-Post-Friend");
-            this.sender = sender;
-            this.receiver = receiver;
-        }
-    }
-
-    @Getter
-    public static class RefusePostFriendEvent extends Event {
-        private final String sender;
-        private final String receiver;
-
-        public RefusePostFriendEvent(final String sender, final String receiver) {
-            super("Refuse-Post-Friend");
-            this.sender = sender;
-            this.receiver = receiver;
-        }
-    }
-
-    @Getter
-    public static class DeleteFriendEvent extends Event {
-        private final String issuer;
-        private final String receiver;
-
-        public DeleteFriendEvent(final String issuer, final String receiver) {
-            super("Delete-Friend");
-            this.issuer = issuer;
-            this.receiver = receiver;
+        public static FriendEvent of(final FriendEventCode friendEventCode, final String memberId, final String title, final String messageArg) {
+            return new FriendEvent(friendEventCode, memberId, title, String.format(friendEventCode.getMessageFormat(), messageArg));
         }
     }
 }
