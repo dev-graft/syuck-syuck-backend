@@ -129,7 +129,7 @@ public class FriendQueryApi {
 
         final List<FriendDetails> values = memberDataDaoAll.stream()
                 .map(memberData -> FriendDetails.builder()
-                        .fId(friendRelationDataDaoAll.stream().filter(data -> data.getReceiver().equals(memberData.getMemberId())).map(FriendRelationData::getId).findFirst().orElse(-1L))
+                        .fId(friendRelationDataDaoAll.stream().filter(data -> data.getSender().equals(memberData.getMemberId())).map(FriendRelationData::getId).findFirst().orElse(-1L))
                         .memberId(memberData.getMemberId())
                         .nickname(memberData.getNickname())
                         .profileImage(memberData.getProfileImage())

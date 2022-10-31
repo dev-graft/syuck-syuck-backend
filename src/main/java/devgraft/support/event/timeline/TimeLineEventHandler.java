@@ -1,4 +1,4 @@
-package devgraft.support.event;
+package devgraft.support.event.timeline;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

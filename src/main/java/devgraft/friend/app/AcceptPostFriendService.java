@@ -29,6 +29,6 @@ public class AcceptPostFriendService {
         friendRelation.acceptFriendRequest();
         friendRelationRepository.save(friendRelation);
         // 이벤트 호출
-        friendEventSender.acceptPostFriend(friendRelation.getId(), friendRelation.getSender(), friendRelation.getReceiver());
+        friendEventSender.acceptPostFriend(friendRelation.getId(), friendRelation.getReceiver(), friendRelation.getSender());
     }
 }

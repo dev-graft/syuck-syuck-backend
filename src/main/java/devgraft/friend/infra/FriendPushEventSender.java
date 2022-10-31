@@ -6,27 +6,32 @@ import devgraft.friend.domain.FriendEventSender;
 import devgraft.support.event.EventCode;
 import devgraft.support.event.Events;
 import devgraft.support.event.push.PushEventInterface;
-import devgraft.support.event.TimeLineEventInterface;
+import devgraft.support.event.timeline.TimeLineEventInterface;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * sender receiver 햇갈림.
+ **/
 @RequiredArgsConstructor
 @Component
 public class FriendPushEventSender implements FriendEventSender {
     private final MemberClient memberClient;
 
-    @Getter @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public enum FriendEventCode implements EventCode {
         POST_SEND("POST-SEND", "[%s]님에게 친구를 요청했습니다."),
         POST_RECEIVE("POST-RECEIVE", "[%s]님에게 친구요청이 왔습니다."),
-        ACCEPT_POST_SEND("ACCEPT-POST-SEND", "[%s]님이 친구요청을 수락했습니다."),
-        ACCEPT_POST_RECEIVE("ACCEPT-POST-RECEIVE", "[%s]님의 친구요청을 수락했습니다."),
+        ACCEPT_POST_SEND("ACCEPT-POST-SEND", "[%s]님의 친구요청을 수락했습니다."),
+        ACCEPT_POST_RECEIVE("ACCEPT-POST-RECEIVE", "[%s]님이 친구요청을 수락했습니다."),
         REFUSE_POST("REFUSE-POST", "[%s]님의 친구요청을 거절했습니다."),
-        DELETE_SEND("DELETE-SEND", "[%s]님과 친구관계를 취소했습니다."),
+        REFUSE_RECEIVE("REFUSE-RECEIVE", "[%s]님이 친구요청을 거절했습니다."),
         CANCEL_POST("CANCEL-POST", "[%s]님에게 요청한 친구요청을 취소했습니다."),
+        DELETE_SEND("DELETE-SEND", "[%s]님과 친구관계를 취소했습니다."),
         DELETE_RECEIVE("DELETE-RECEIVE", "[%s]님이 친구관계를 취소했습니다."),
         ;
         private static final String TAG = "FRIEND";
@@ -40,47 +45,69 @@ public class FriendPushEventSender implements FriendEventSender {
     }
 
     @Override
-    public void postFriend(final Long friendRelationId, final String sender, final String receiver) {
-        final FindMemberResult senderInfo = memberClient.findMember(sender);
+    public void postFriend(final Long friendRelationId, final String poster, final String target) {
+        final FindMemberResult senderInfo = memberClient.findMember(poster);
+        final FindMemberResult receiverInfo = memberClient.findMember(target);
+        Events.raise(FriendSenderEvent.of(FriendEventCode.POST_SEND, poster, receiverInfo.getNickname()));
+        Events.raise(FriendReceiverEvent.of(FriendEventCode.POST_RECEIVE, target, senderInfo.getNickname()));
+    }
+
+    @Override
+    public void acceptPostFriend(final Long friendRelationId, final String accepter, final String target) {
+        final FindMemberResult accepterInfo = memberClient.findMember(accepter);
+        final FindMemberResult receiverInfo = memberClient.findMember(target);
+        Events.raise(FriendSenderEvent.of(FriendEventCode.ACCEPT_POST_SEND, accepter, receiverInfo.getNickname()));
+        Events.raise(FriendReceiverEvent.of(FriendEventCode.ACCEPT_POST_RECEIVE, target, accepterInfo.getNickname()));
+    }
+
+    @Override
+    public void cancelPostFriend(final String canceler, final String target) {
+        final FindMemberResult receiverInfo = memberClient.findMember(target);
+        Events.raise(FriendSenderEvent.of(FriendEventCode.CANCEL_POST, canceler, receiverInfo.getNickname()));
+    }
+
+    @Override
+    public void refusePostFriend(final String requester, final String target) {
+        final FindMemberResult requestInfo = memberClient.findMember(requester);
+        final FindMemberResult targetInfo = memberClient.findMember(target);
+        Events.raise(FriendSenderEvent.of(FriendEventCode.REFUSE_POST, requester, targetInfo.getNickname()));
+        Events.raise(FriendReceiverEvent.of(FriendEventCode.REFUSE_RECEIVE, target, requestInfo.getNickname()));
+    }
+
+    @Override
+    public void deleteFriend(final String requester, final String receiver) {
+        final FindMemberResult senderInfo = memberClient.findMember(requester);
         final FindMemberResult receiverInfo = memberClient.findMember(receiver);
-
-        // receiver 님에게 친구를 요청했습니다. (타임라인만 체크하면 될 것 같은데...)
-        Events.raise(FriendEvent.of(FriendEventCode.POST_SEND, sender, "친구요청 알림",  receiverInfo.getNickname()));
-        // sender 님에게 친구요청이 왔습니다. (타임라인, Push 둘다)
-        Events.raise(FriendEvent.of(FriendEventCode.POST_RECEIVE, receiver, "친구요청 알림", senderInfo.getNickname()));
-    }
-
-    @Override
-    public void acceptPostFriend(final Long friendRelationId, final String sender, final String receiver) {
-        // sender 님의 친구요청을 수락했습니다.
-        // receiver 님이 친구요청을 수락했습니다.
-    }
-
-    @Override
-    public void cancelPostFriend(final String sender, final String receiver) {
-        // TODO 추가 예정
-    }
-
-    @Override
-    public void refusePostFriend(final String sender, final String receiver) {
-        // TODO 추가 예정
-    }
-
-    @Override
-    public void deleteFriend(final String issuer, final String receiver) {
-        // TODO 추가 예정
+        Events.raise(FriendSenderEvent.of(FriendEventCode.DELETE_SEND, requester, receiverInfo.getNickname()));
+        Events.raise(FriendReceiverEvent.of(FriendEventCode.DELETE_RECEIVE, receiver, senderInfo.getNickname()));
     }
 
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     @Getter
-    public static class FriendEvent implements PushEventInterface, TimeLineEventInterface {
+    public static class FriendSenderEvent implements TimeLineEventInterface {
+        private final FriendEventCode eventCode;
+        private final String memberId;
+        private final String content;
+
+        public static FriendSenderEvent of(final FriendEventCode friendEventCode, final String memberId, final String messageArg) {
+            return new FriendSenderEvent(friendEventCode, memberId, String.format(friendEventCode.getMessageFormat(), messageArg));
+        }
+    }
+
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    public static class FriendReceiverEvent implements PushEventInterface, TimeLineEventInterface {
         private final FriendEventCode eventCode;
         private final String memberId;
         private final String title;
         private final String content;
 
-        public static FriendEvent of(final FriendEventCode friendEventCode, final String memberId, final String title, final String messageArg) {
-            return new FriendEvent(friendEventCode, memberId, title, String.format(friendEventCode.getMessageFormat(), messageArg));
+        public static FriendReceiverEvent of(final FriendEventCode friendEventCode, final String memberId, final String title, final String messageArg) {
+            return new FriendReceiverEvent(friendEventCode, memberId, title, String.format(friendEventCode.getMessageFormat(), messageArg));
+        }
+
+        public static FriendReceiverEvent of(final FriendEventCode friendEventCode, final String memberId, final String messageArg) {
+            return new FriendReceiverEvent(friendEventCode, memberId, "친구 알림", String.format(friendEventCode.getMessageFormat(), messageArg));
         }
     }
 }
