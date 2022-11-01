@@ -95,6 +95,6 @@ class RefusePostFriendServiceTest {
 
         refusePostFriendService.refusePostFriend(givenFriendRelation.getReceiver(), givenFriendRelationId);
 
-        verify(mockFriendEventSender, times(1)).refusePostFriend(eq(givenFriendRelation.getSender()), eq(givenFriendRelation.getReceiver()));
+        verify(mockFriendEventSender, times(1)).refusePostFriend(any(), any());
     }
 }

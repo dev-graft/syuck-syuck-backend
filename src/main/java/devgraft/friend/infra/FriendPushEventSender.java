@@ -6,7 +6,7 @@ import devgraft.friend.domain.FriendEventSender;
 import devgraft.support.event.EventCode;
 import devgraft.support.event.Events;
 import devgraft.support.event.push.PushEventInterface;
-import devgraft.support.event.timeline.TimeLineEventInterface;
+import devgraft.timeline.event.TimeLineEventInterface;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

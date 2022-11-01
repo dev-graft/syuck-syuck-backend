@@ -2,6 +2,7 @@ drop table if exists auth_session;
 drop table if exists member;
 drop table if exists follow;
 drop table if exists friend_relation;
+drop table if exists time_line;
 
 create table member
 (
@@ -52,3 +53,15 @@ create table friend_relation
     sender      varchar(255) not null,
     primary key (id)
 );
+
+create table time_line
+(
+    id         BIGINT AUTO_INCREMENT NOT NULL,
+    created_at timestamp,
+    updated_at timestamp,
+    code       varchar(255),
+    content    varchar(255),
+    member_id  varchar(255),
+    tag        varchar(255),
+    primary key (id)
+)

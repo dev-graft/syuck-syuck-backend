@@ -1,4 +1,4 @@
-package devgraft.support.event.timeline;
+package devgraft.timeline.event;
 
 import devgraft.support.event.EventInterface;
 

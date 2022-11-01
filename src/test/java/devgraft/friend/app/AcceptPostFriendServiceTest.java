@@ -120,6 +120,6 @@ class AcceptPostFriendServiceTest {
 
         acceptPostFriendService.acceptPostFriend(givenReceiver, givenFriendRelationId);
 
-        verify(mockFriendEventSender, times(1)).acceptPostFriend(eq(givenFriendRelationId), eq(givenSender), eq(givenReceiver));
+        verify(mockFriendEventSender, times(1)).acceptPostFriend(eq(givenFriendRelationId), any(), any());
     }
 }

@@ -13,4 +13,5 @@ public class URLPrefix {
     public static final String FOLLOW_URL_PREFIX = "/follow";
     public static final String UNFOLLOW_URL_PREFIX = "/unfollow";
     public static final String FRIEND_URL_PREFIX = "/friends";
+    public static final String TIMELINE_URL_PREFIX = "/time-line";
 }
