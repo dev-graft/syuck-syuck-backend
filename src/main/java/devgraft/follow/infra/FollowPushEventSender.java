@@ -1,7 +1,8 @@
 package devgraft.follow.infra;
 
 import devgraft.follow.domain.FollowEventSender;
-import devgraft.support.event.Event;
+import devgraft.support.event.EventCode;
+import devgraft.support.event.EventInterface;
 import devgraft.support.event.Events;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +19,23 @@ public class FollowPushEventSender implements FollowEventSender {
 
     }
 
-    public static class AskFollowEvent extends Event {
+    public static class AskFollowEvent implements EventInterface {
         public AskFollowEvent() {
-            super("Ask-Follow");
+        }
+
+        @Override
+        public EventCode getEventCode() {
+            return null;
         }
     }
 
-    public static class CancelFollowEvent extends Event {
+    public static class CancelFollowEvent implements EventInterface {
         public CancelFollowEvent() {
-            super("Cancel-Follow");
+        }
+
+        @Override
+        public EventCode getEventCode() {
+            return null;
         }
     }
 

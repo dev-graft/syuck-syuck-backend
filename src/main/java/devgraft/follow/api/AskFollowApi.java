@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
+
 import static devgraft.common.URLPrefix.API_PREFIX;
 import static devgraft.common.URLPrefix.FOLLOW_URL_PREFIX;
 import static devgraft.common.URLPrefix.VERSION_1_PREFIX;
@@ -19,6 +21,7 @@ public class AskFollowApi {
 
     @PostMapping(API_PREFIX + VERSION_1_PREFIX + FOLLOW_URL_PREFIX)
     public void askFollow(@Credentials final MemberCredentials memberCredentials, @RequestParam(name = "target") String target) {
+
         askFollowService.askFollow(memberCredentials.getMemberId(), target);
     }
 }

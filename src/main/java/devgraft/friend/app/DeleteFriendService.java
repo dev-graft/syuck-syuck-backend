@@ -23,9 +23,9 @@ public class DeleteFriendService {
         // 친구상태인지 검사
         if (!friendRelation.isAreFriends()) throw new NotAlreadyFriendRelationException();
         // 삭제
-        final String receiver = friendRelation.compareSenderTo(memberId) ? friendRelation.getReceiver() : friendRelation.getSender();
+        final String target = friendRelation.compareSenderTo(memberId) ? friendRelation.getReceiver() : friendRelation.getSender();
         friendRelationRepository.delete(friendRelation);
         // event 발행(누가 삭제 요청했는지, 누가 관계가 끊겼는지)
-        friendEventSender.deleteFriend(memberId, receiver);
+        friendEventSender.deleteFriend(memberId, target);
     }
 }

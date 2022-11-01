@@ -16,6 +16,4 @@ public class EventHandler {
     public void handle(final EventInterface event) throws JsonProcessingException {
         log.info("Event: {}", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(event));
     }
-
-
 }

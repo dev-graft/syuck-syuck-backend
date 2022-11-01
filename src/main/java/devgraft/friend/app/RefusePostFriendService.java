@@ -26,7 +26,7 @@ public class RefusePostFriendService {
         final String sender = friendRelation.getSender();
         friendRelationRepository.delete(friendRelation);
         // 이벤트 발행
-        friendEventSender.refusePostFriend(sender, memberId);
+        friendEventSender.refusePostFriend(memberId, sender);
     }
 
 }
