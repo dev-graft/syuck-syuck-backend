@@ -67,7 +67,7 @@ public class AuthCodeFilter extends OncePerRequestFilter {
 
                 request.setAttribute("M_AUTH_SESSION_DATA", authSessionData);
                 request.setAttribute("M_MEMBER_DATA", memberData);
-            } catch (AbstractRequestException e) {
+            } catch (final AbstractRequestException e) {
                 setErrorResponse(e, response);
                 return;
             }
@@ -80,7 +80,7 @@ public class AuthCodeFilter extends OncePerRequestFilter {
             response.setStatus(e.getStatus().value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.getWriter().write(objectMapper.writeValueAsString(CommonResult.error(e.getStatus(), e.getMessage())));
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             ex.printStackTrace();
         }
     }
